@@ -265,11 +265,28 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 
 <script>
 var API = 'https://zrofarm-backend.onrender.com';
-var tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
-if(tg){ tg.ready(); tg.expand(); }
-var user = tg ? (tg.initDataUnsafe && tg.initDataUnsafe.user) : null;
+var tg = null;
+try { tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null; } catch(e){}
+if(tg){ try{ tg.ready(); tg.expand(); }catch(e){} }
+
+var user = null;
+try {
+  if(tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+    user = tg.initDataUnsafe.user;
+  }
+} catch(e){}
+
+if(!user && tg && tg.initData && tg.initData.length > 0){
+  try {
+    var params = new URLSearchParams(tg.initData);
+    var userStr = params.get('user');
+    if(userStr) user = JSON.parse(decodeURIComponent(userStr));
+  } catch(e){}
+}
+
 var userId = (user && user.id) ? user.id : ('guest_' + Math.random().toString(36).substr(2,9));
 var refCode = new URLSearchParams(location.search).get('ref') || '';
+console.log('TG user:', user, 'userId:', userId);
 
 var TIERS = [{min:1,max:2,mult:1.25},{min:3,max:5,mult:1.75},{min:6,max:9,mult:2.5},{min:10,max:999,mult:4.0}];
 
