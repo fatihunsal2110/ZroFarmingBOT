@@ -181,6 +181,8 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
     <button class="tab" onclick="switchTab('biz')">ISLETME</button>
     <button class="tab" onclick="switchTab('quest')">GOREV</button>
     <button class="tab" onclick="switchTab('ref')">REF</button>
+    <button class="tab" onclick="switchTab('leader')">TOP</button>
+    <button class="tab" onclick="switchTab('ton')">TON</button>
   </div>
 
   <!-- MINE -->
@@ -260,6 +262,32 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
     </div>
     <button class="invite-btn" onclick="shareLink()">+ ARKADAS DAVET ET</button>
   </div>
+
+  <!-- LEADERBOARD -->
+  <div class="panel" id="tab-leader">
+    <div class="section-label">// TOP 50 LIDER TABLOSU</div>
+    <div id="leader-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
+      <div style="font-size:10px;color:rgba(0,220,255,0.3);text-align:center;padding:20px;">Yukleniyor...</div>
+    </div>
+  </div>
+
+  <!-- TON BOOST -->
+  <div class="panel" id="tab-ton">
+    <div style="background:rgba(80,120,255,0.06);border:1px solid rgba(80,120,255,0.2);border-radius:8px;padding:14px;margin-bottom:12px;">
+      <div style="font-family:Orbitron,monospace;font-size:11px;letter-spacing:0.15em;color:#8ab0ff;margin-bottom:4px;">TON BOOST PROTOKOLU</div>
+      <div style="font-size:9px;color:rgba(120,160,255,0.5);margin-bottom:12px;">TON ile anlık güç kazan</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" id="ton-boosts"></div>
+    </div>
+    <div style="background:rgba(255,150,0,0.04);border:1px solid rgba(255,150,0,0.12);border-radius:8px;padding:14px;">
+      <div style="font-family:Orbitron,monospace;font-size:10px;color:rgba(255,180,0,0.7);margin-bottom:8px;">YUKSELTME HIZLANDIRMA</div>
+      <div style="font-size:9px;color:rgba(255,180,0,0.4);line-height:1.6;">
+        Herhangi bir yükseltme veya işletmede bekleme süresi varken<br>
+        <b style="color:rgba(255,200,0,0.7)">0.1 TON / saat</b> ödeyerek anında tamamlayabilirsin.<br><br>
+        YUKSEL veya ISLETME sekmesinde ⚡ butonuna bas.
+      </div>
+    </div>
+  </div>
+
 </div>
 </div>
 
@@ -410,12 +438,14 @@ function fmtTime(sec){
 }
 
 function switchTab(t){
-  document.querySelectorAll('.tab').forEach(function(b,i){b.classList.toggle('active',['mine','upgrade','biz','quest','ref'][i]===t);});
+  document.querySelectorAll('.tab').forEach(function(b,i){b.classList.toggle('active',['mine','upgrade','biz','quest','ref','leader','ton'][i]===t);});
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
   document.getElementById('tab-'+t).classList.add('active');
   if(t==='ref') loadReferrals();
   if(t==='quest') renderQuests();
   if(t==='upgrade') renderUpgrades();
+  if(t==='leader') loadLeaderboard();
+  if(t==='ton') renderTonBoosts();
 }
 
 function copyLink(){
@@ -910,6 +940,75 @@ async function loadReferrals(){
       renderHUD();
     }
   } catch(e){}
+}
+
+async function loadLeaderboard(){
+  var el = document.getElementById('leader-list');
+  el.innerHTML = '<div style="font-size:10px;color:rgba(0,220,255,0.3);text-align:center;padding:20px;">Yukleniyor...</div>';
+  try {
+    var res = await fetch(API + '/api/leaderboard');
+    var data = await res.json();
+    if(data.success && data.leaderboard && data.leaderboard.length > 0){
+      el.innerHTML = '';
+      data.leaderboard.forEach(function(u, i){
+        var isMe = u.id == userId;
+        var medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+        var d = document.createElement('div');
+        d.style.cssText = 'display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:6px;border:1px solid ' + (isMe?'rgba(0,255,150,0.3)':'rgba(0,220,255,0.08)') + ';background:' + (isMe?'rgba(0,255,150,0.05)':'rgba(0,0,0,0.2)');
+        d.innerHTML =
+          '<div style="font-family:Orbitron,monospace;font-size:12px;color:rgba(0,220,255,0.4);width:24px;text-align:center;">' + (medal || '#'+(i+1)) + '</div>' +
+          '<div style="flex:1;">' +
+            '<div style="font-size:11px;font-family:Orbitron,monospace;color:' + (isMe?'#00ff96':'#a0c8e8') + ';">' + (u.first_name||u.username||'PLAYER').toUpperCase() + (isMe?' (SEN)':'') + '</div>' +
+            '<div style="font-size:9px;color:rgba(0,220,255,0.35);margin-top:1px;">' + u.ref_count + ' referral</div>' +
+          '</div>' +
+          '<div style="font-family:Orbitron,monospace;font-size:12px;color:#00dcff;">' + fmt(u.coins) + ' ZRC</div>';
+        el.appendChild(d);
+      });
+    } else {
+      el.innerHTML = '<div style="font-size:10px;color:rgba(0,220,255,0.3);text-align:center;padding:20px;">Henuz veri yok</div>';
+    }
+  } catch(e){
+    el.innerHTML = '<div style="font-size:10px;color:rgba(255,80,80,0.4);text-align:center;padding:20px;">Baglanamadi</div>';
+  }
+}
+
+var TON_BOOSTS = [
+  {id:'tap2x',  name:'TAP 2X',      desc:'1 saat tap gucu 2 kat', ton:0.1, icon:'👆'},
+  {id:'farm3x', name:'FARM 3X',     desc:'1 saat pasif gelir 3 kat', ton:0.3, icon:'⛏️'},
+  {id:'energy', name:'ENERJI DOLU', desc:'Aninda enerji doldur', ton:0.05, icon:'⚡'},
+  {id:'ref2x',  name:'REF BONUS 2X',desc:'24 saat referral bonusu 2 kat', ton:0.5, icon:'👥'},
+];
+
+function renderTonBoosts(){
+  var el = document.getElementById('ton-boosts');
+  if(!el) return;
+  el.innerHTML = '';
+  TON_BOOSTS.forEach(function(b){
+    var active = S.activeBoosts && S.activeBoosts[b.id] && Date.now() < S.activeBoosts[b.id];
+    var d = document.createElement('div');
+    d.style.cssText = 'background:rgba(80,120,255,0.06);border:1px solid rgba(80,120,255,0.15);border-radius:6px;padding:10px;';
+    d.innerHTML =
+      '<div style="font-size:20px;margin-bottom:4px;">' + b.icon + '</div>' +
+      '<div style="font-size:10px;font-family:Orbitron,monospace;color:#8ab0ff;margin-bottom:2px;">' + b.name + '</div>' +
+      '<div style="font-size:8px;color:rgba(120,160,255,0.45);margin-bottom:7px;">' + b.desc + '</div>' +
+      '<button style="width:100%;background:rgba(80,120,255,0.1);border:1px solid rgba(80,120,255,0.3);border-radius:4px;padding:5px;font-family:Share Tech Mono,monospace;font-size:10px;color:' + (active?'#00ff96':'#8ab0ff') + ';cursor:pointer;" ' + (active?'disabled':'') + ' data-tonbid="' + b.id + '">' +
+        (active ? 'AKTIF ✓' : '⬡ ' + b.ton + ' TON') +
+      '</button>';
+    el.appendChild(d);
+  });
+  el.querySelectorAll('[data-tonbid]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var bid = btn.dataset.tonbid;
+      var boost = TON_BOOSTS.find(function(x){return x.id===bid;});
+      // Gercek TON entegrasyonu icin placeholder
+      showNotif('TON odeme yakinda aktif edilecek! (' + boost.ton + ' TON)');
+      // Simdi demo modunda aktif et
+      if(!S.activeBoosts) S.activeBoosts = {};
+      if(bid==='energy'){ S.energy = S.maxEnergy; showNotif('Enerji doldu! (Demo)'); }
+      else { S.activeBoosts[bid] = Date.now() + (bid==='ref2x'?86400000:3600000); showNotif(boost.name + ' aktif! (Demo)'); }
+      renderTonBoosts(); renderAll();
+    });
+  });
 }
 
 document.getElementById('u-name').textContent=user?(user.first_name||(user.username||'PLAYER')).toUpperCase():'PLAYER';
