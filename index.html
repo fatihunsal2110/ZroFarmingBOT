@@ -1,1 +1,369 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ZRo Farm</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;overflow-x:hidden;}
+#app{max-width:480px;margin:0 auto;padding:14px;position:relative;min-height:100vh;}
+#app::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,220,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,220,255,0.025) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+.rel{position:relative;z-index:1;}
+.cy-title{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;letter-spacing:0.2em;color:#00dcff;text-align:center;margin-bottom:12px;opacity:0.85;}
+.user-bar{display:flex;align-items:center;gap:8px;background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.12);border-radius:6px;padding:8px 12px;margin-bottom:12px;}
+.user-avatar{width:32px;height:32px;border-radius:50%;background:rgba(0,220,255,0.1);border:1px solid rgba(0,220,255,0.25);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.user-name{font-size:12px;color:#a0c8e8;font-family:'Orbitron',monospace;letter-spacing:0.04em;flex:1;}
+.user-id{font-size:9px;color:rgba(0,220,255,0.35);}
+.hud-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:12px;}
+.hud-card{background:rgba(0,220,255,0.05);border:1px solid rgba(0,220,255,0.18);border-radius:6px;padding:8px 6px;text-align:center;position:relative;overflow:hidden;}
+.hud-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,220,255,0.6),transparent);}
+.hud-label{font-size:8px;letter-spacing:0.12em;color:rgba(0,220,255,0.5);margin-bottom:3px;}
+.hud-val{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:#00dcff;}
+.hud-val.green{color:#00ff96;}
+.tabs{display:flex;gap:6px;margin-bottom:12px;}
+.tab{flex:1;padding:7px 0;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.1em;border:1px solid rgba(0,220,255,0.18);border-radius:5px;background:transparent;color:rgba(0,220,255,0.45);cursor:pointer;transition:all 0.2s;}
+.tab.active{background:rgba(0,220,255,0.1);border-color:rgba(0,220,255,0.5);color:#00dcff;}
+.panel{display:none;}
+.panel.active{display:block;}
+.energy-wrap{margin-bottom:12px;}
+.energy-top{display:flex;justify-content:space-between;font-size:9px;color:rgba(0,220,255,0.45);margin-bottom:4px;letter-spacing:0.1em;}
+.energy-track{height:5px;background:rgba(0,220,255,0.08);border-radius:3px;overflow:hidden;border:1px solid rgba(0,220,255,0.1);}
+.energy-fill{height:100%;background:linear-gradient(90deg,#0066aa,#00dcff);border-radius:3px;transition:width 0.3s;}
+.sphere-wrap{display:flex;justify-content:center;align-items:center;margin:0 auto 14px;position:relative;height:160px;width:160px;}
+#sphere-canvas{cursor:pointer;border-radius:50%;display:block;}
+.tap-hint{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:8px;letter-spacing:0.2em;color:rgba(0,220,255,0.35);white-space:nowrap;}
+.float-plus{position:absolute;font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:#00dcff;pointer-events:none;animation:floatUp 0.8s ease-out forwards;text-shadow:0 0 8px #00dcff;}
+@keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1);}100%{opacity:0;transform:translateY(-50px) scale(1.2);}}
+.section-label{font-size:8px;letter-spacing:0.2em;color:rgba(0,220,255,0.4);margin-bottom:7px;border-bottom:1px solid rgba(0,220,255,0.08);padding-bottom:4px;}
+.biz-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.biz-row{background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.1);border-radius:6px;padding:9px 11px;display:flex;align-items:center;gap:9px;transition:border-color 0.2s;}
+.biz-icon{font-size:20px;flex-shrink:0;width:26px;text-align:center;}
+.biz-info{flex:1;min-width:0;}
+.biz-name{font-size:11px;font-family:'Orbitron',monospace;color:#a0c8e8;letter-spacing:0.04em;}
+.biz-sub{font-size:9px;color:rgba(0,220,255,0.4);margin-top:2px;}
+.biz-btn{flex-shrink:0;background:rgba(0,220,255,0.07);border:1px solid rgba(0,220,255,0.22);border-radius:4px;padding:5px 9px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#00dcff;cursor:pointer;white-space:nowrap;transition:background 0.15s;}
+.biz-btn:hover:not(:disabled){background:rgba(0,220,255,0.15);}
+.biz-btn:disabled{opacity:0.3;cursor:not-allowed;}
+.biz-btn.active{border-color:rgba(0,255,150,0.35);color:#00ff96;}
+.ref-hero{background:rgba(0,255,150,0.04);border:1px solid rgba(0,255,150,0.15);border-radius:8px;padding:14px;margin-bottom:12px;}
+.ref-link-label{font-size:8px;letter-spacing:0.15em;color:rgba(0,255,150,0.5);margin-bottom:8px;}
+.ref-link-box{display:flex;gap:6px;align-items:center;background:rgba(0,0,0,0.3);border:1px solid rgba(0,255,150,0.2);border-radius:5px;padding:8px 10px;margin-bottom:10px;}
+.ref-link-text{flex:1;font-size:10px;color:#00ff96;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.copy-btn{flex-shrink:0;background:rgba(0,255,150,0.1);border:1px solid rgba(0,255,150,0.3);border-radius:4px;padding:4px 9px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#00ff96;cursor:pointer;}
+.ref-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.ref-stat{background:rgba(0,0,0,0.3);border:1px solid rgba(0,255,150,0.12);border-radius:6px;padding:10px;text-align:center;}
+.ref-stat-label{font-size:8px;color:rgba(0,255,150,0.4);letter-spacing:0.1em;margin-bottom:4px;}
+.ref-stat-val{font-family:'Orbitron',monospace;font-size:16px;color:#00ff96;}
+.bonus-info{background:rgba(0,255,150,0.04);border:1px solid rgba(0,255,150,0.12);border-radius:6px;padding:10px 12px;margin-bottom:12px;}
+.bonus-title{font-size:9px;letter-spacing:0.15em;color:rgba(0,255,150,0.5);margin-bottom:8px;}
+.bonus-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(0,255,150,0.06);}
+.bonus-row:last-child{border-bottom:none;}
+.bonus-tier{font-size:10px;color:rgba(0,220,255,0.6);}
+.bonus-val{font-size:11px;color:#00ff96;font-family:'Orbitron',monospace;}
+.bonus-active{font-size:8px;color:#00ff96;background:rgba(0,255,150,0.1);border:1px solid rgba(0,255,150,0.25);border-radius:3px;padding:2px 6px;}
+.friend-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+.friend-row{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(0,220,255,0.08);border-radius:6px;padding:9px 11px;}
+.friend-avatar{width:32px;height:32px;border-radius:50%;background:rgba(0,220,255,0.1);border:1px solid rgba(0,220,255,0.2);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.friend-info{flex:1;}
+.friend-name{font-size:11px;color:#a0c8e8;font-family:'Orbitron',monospace;letter-spacing:0.03em;}
+.friend-sub{font-size:9px;color:rgba(0,220,255,0.4);margin-top:1px;}
+.friend-earn{font-size:11px;color:#00ff96;font-family:'Orbitron',monospace;white-space:nowrap;}
+.invite-btn{width:100%;padding:11px;background:rgba(0,255,150,0.08);border:1px solid rgba(0,255,150,0.3);border-radius:6px;font-family:'Orbitron',monospace;font-size:11px;letter-spacing:0.1em;color:#00ff96;cursor:pointer;transition:background 0.2s;margin-bottom:8px;}
+.pulse-ring{position:absolute;border-radius:50%;border:1px solid rgba(0,220,255,0.18);animation:pring 2.4s ease-in-out infinite;}
+@keyframes pring{0%{transform:scale(0.95);opacity:0.5;}50%{transform:scale(1.05);opacity:1;}100%{transform:scale(0.95);opacity:0.5;}}
+.notif{position:fixed;top:14px;right:14px;left:14px;background:rgba(0,255,150,0.12);border:1px solid rgba(0,255,150,0.4);border-radius:6px;padding:8px 12px;font-size:11px;color:#00ff96;animation:fadeSlide 2.5s ease forwards;pointer-events:none;z-index:100;text-align:center;}
+@keyframes fadeSlide{0%{opacity:0;transform:translateY(-8px);}15%{opacity:1;transform:translateY(0);}80%{opacity:1;}100%{opacity:0;}}
+.mine-cards{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;}
+.mine-card{background:rgba(0,255,150,0.04);border:1px solid rgba(0,255,150,0.12);border-radius:6px;padding:10px;}
+.mine-card.blue{background:rgba(0,220,255,0.04);border-color:rgba(0,220,255,0.12);}
+.mc-label{font-size:8px;color:rgba(0,255,150,0.4);letter-spacing:0.1em;margin-bottom:4px;}
+.mine-card.blue .mc-label{color:rgba(0,220,255,0.4);}
+.mc-val{font-family:'Orbitron',monospace;font-size:18px;color:#00ff96;}
+.mine-card.blue .mc-val{color:#00dcff;}
+.mc-sub{font-size:9px;color:rgba(0,255,150,0.35);margin-top:2px;}
+.mine-card.blue .mc-sub{color:rgba(0,220,255,0.35);}
+</style>
+</head>
+<body>
+<div id="app">
+<div class="rel">
+  <div class="cy-title">ZRo FARM</div>
 
+  <div class="user-bar">
+    <div class="user-avatar" id="u-avatar">👤</div>
+    <div>
+      <div class="user-name" id="u-name">PLAYER</div>
+      <div class="user-id" id="u-id">ID: ---</div>
+    </div>
+  </div>
+
+  <div class="hud-row">
+    <div class="hud-card"><div class="hud-label">COIN</div><div class="hud-val" id="hud-coin">0</div></div>
+    <div class="hud-card"><div class="hud-label">/ SN</div><div class="hud-val" id="hud-ps">0</div></div>
+    <div class="hud-card"><div class="hud-label">REFERRAL</div><div class="hud-val green" id="hud-ref">0</div></div>
+    <div class="hud-card"><div class="hud-label">BONUS</div><div class="hud-val green" id="hud-bonus">x1.0</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('mine')">MINE</button>
+    <button class="tab" onclick="switchTab('biz')">İŞLETME</button>
+    <button class="tab" onclick="switchTab('ref')">REFERRAL</button>
+  </div>
+
+  <div class="panel active" id="tab-mine">
+    <div class="energy-wrap">
+      <div class="energy-top"><span>ENERJİ</span><span id="egy-txt">500/500</span></div>
+      <div class="energy-track"><div class="energy-fill" id="egy-bar" style="width:100%"></div></div>
+    </div>
+    <div class="sphere-wrap" id="sphere-wrap">
+      <div class="pulse-ring" style="width:176px;height:176px;animation-delay:0s"></div>
+      <div class="pulse-ring" style="width:196px;height:196px;animation-delay:0.9s;opacity:0.4"></div>
+      <canvas id="sphere-canvas" width="150" height="150"></canvas>
+      <div class="tap-hint">[ TAP TO MINE ]</div>
+    </div>
+    <div class="mine-cards">
+      <div class="mine-card">
+        <div class="mc-label">REFERRAL BONUSU</div>
+        <div class="mc-val" id="mine-bonus">x1.0</div>
+        <div class="mc-sub" id="mine-bonus-sub">0 arkadas</div>
+      </div>
+      <div class="mine-card blue">
+        <div class="mc-label">TAP GUCU</div>
+        <div class="mc-val" id="mine-tap">+1</div>
+        <div class="mc-sub">coin / tap</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="tab-biz">
+    <div class="section-label">// ISLETMELER</div>
+    <div class="biz-list" id="biz-list"></div>
+  </div>
+
+  <div class="panel" id="tab-ref">
+    <div class="ref-hero">
+      <div class="ref-link-label">// DAVET LİNKİN</div>
+      <div class="ref-link-box">
+        <span class="ref-link-text" id="ref-link">t.me/ZRoFarmBOT?start=loading</span>
+        <button class="copy-btn" id="copy-btn" onclick="copyLink()">KOPYALA</button>
+      </div>
+      <div class="ref-stats">
+        <div class="ref-stat"><div class="ref-stat-label">DAVET</div><div class="ref-stat-val" id="rs-total">0</div></div>
+        <div class="ref-stat"><div class="ref-stat-label">AKTİF</div><div class="ref-stat-val" id="rs-active">0</div></div>
+        <div class="ref-stat"><div class="ref-stat-label">KAZANÇ</div><div class="ref-stat-val" id="rs-earn">0</div></div>
+      </div>
+    </div>
+
+    <div class="bonus-info">
+      <div class="bonus-title">// FARM BONUS TABLOSU</div>
+      <div class="bonus-row"><span class="bonus-tier">1-2 arkadas</span><span class="bonus-val">x 1.25</span><span class="bonus-active" id="tier0-badge" style="display:none">AKTİF</span></div>
+      <div class="bonus-row"><span class="bonus-tier">3-5 arkadas</span><span class="bonus-val">x 1.75</span><span class="bonus-active" id="tier1-badge" style="display:none">AKTİF</span></div>
+      <div class="bonus-row"><span class="bonus-tier">6-9 arkadas</span><span class="bonus-val">x 2.5</span><span class="bonus-active" id="tier2-badge" style="display:none">AKTİF</span></div>
+      <div class="bonus-row"><span class="bonus-tier">10+ arkadas</span><span class="bonus-val">x 4.0</span><span class="bonus-active" id="tier3-badge" style="display:none">AKTİF</span></div>
+    </div>
+
+    <div class="section-label">// ARKADASLARIN</div>
+    <div class="friend-list" id="friend-list">
+      <div style="font-size:10px;color:rgba(0,220,255,0.3);text-align:center;padding:16px;">Henuz kimse yok - davet et!</div>
+    </div>
+    <button class="invite-btn" onclick="shareLink()">+ ARKADAS DAVET ET</button>
+  </div>
+</div>
+</div>
+
+<script>
+const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+if(tg){ tg.ready(); tg.expand(); }
+
+const user = tg ? tg.initDataUnsafe?.user : null;
+const userId = user ? user.id : Math.floor(Math.random()*999999);
+const refCode = new URLSearchParams(location.search).get('ref') || '';
+
+// Set user info
+document.getElementById('u-name').textContent = user ? (user.first_name + (user.last_name ? ' '+user.last_name : '')).toUpperCase() : 'PLAYER';
+document.getElementById('u-id').textContent = 'ID: ' + userId;
+document.getElementById('u-avatar').textContent = user && user.first_name ? user.first_name[0].toUpperCase() : '👤';
+document.getElementById('ref-link').textContent = 't.me/ZRoFarmBOT?start=USR_' + userId;
+
+const TIERS = [
+  {min:1, max:2,  mult:1.25},
+  {min:3, max:5,  mult:1.75},
+  {min:6, max:9,  mult:2.5},
+  {min:10,max:999,mult:4.0},
+];
+
+const S = {
+  coins:0, energy:500, maxEnergy:500, tapPower:1,
+  totalEarned:0, refCount:0, refEarned:0,
+  businesses:[
+    {id:0,name:'NODE WALLET',  icon:'💳',base:50,   bInc:0.5, lv:0,cost:50,   inc:0},
+    {id:1,name:'MINING FARM',  icon:'⛏️',base:200,  bInc:2,   lv:0,cost:200,  inc:0},
+    {id:2,name:'CRYPTO DEX',   icon:'📈',base:800,  bInc:8,   lv:0,cost:800,  inc:0},
+    {id:3,name:'DEFI PROTOCOL',icon:'🔗',base:3000, bInc:30,  lv:0,cost:3000, inc:0},
+    {id:4,name:'NFT MATRIX',   icon:'🖼️',base:10000,bInc:100, lv:0,cost:10000,inc:0},
+  ]
+};
+
+function getBonus(){
+  for(let i=TIERS.length-1;i>=0;i--){
+    if(S.refCount>=TIERS[i].min) return TIERS[i].mult;
+  }
+  return 1.0;
+}
+
+function fmt(n){
+  if(n>=1e6)return(n/1e6).toFixed(1)+'M';
+  if(n>=1e3)return(n/1e3).toFixed(1)+'K';
+  return Math.floor(n)+'';
+}
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach((b,i)=>{b.classList.toggle('active',['mine','biz','ref'][i]===t);});
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+}
+
+function copyLink(){
+  const link = 't.me/ZRoFarmBOT?start=USR_' + userId;
+  if(navigator.clipboard) navigator.clipboard.writeText(link);
+  const btn = document.getElementById('copy-btn');
+  btn.textContent = 'KOPYALANDI!';
+  setTimeout(()=>btn.textContent='KOPYALA', 1800);
+}
+
+function shareLink(){
+  const link = 'https://t.me/ZRoFarmBOT?start=USR_' + userId;
+  const text = 'ZRo Farm oynuyorum! Coin kaz, imparatorluk kur. Katil: ' + link;
+  if(tg) tg.openTelegramLink('https://t.me/share/url?url=' + encodeURIComponent(link) + '&text=' + encodeURIComponent(text));
+  else copyLink();
+}
+
+function showNotif(msg){
+  const old = document.querySelector('.notif');
+  if(old) old.remove();
+  const n = document.createElement('div');
+  n.className = 'notif';
+  n.textContent = msg;
+  document.body.appendChild(n);
+  setTimeout(()=>n.remove(), 2600);
+}
+
+function updateBadges(){
+  [0,1,2,3].forEach(i=>{
+    const t=TIERS[i];
+    const el=document.getElementById('tier'+i+'-badge');
+    const active=(S.refCount>=t.min)&&(i===3?true:S.refCount<=t.max);
+    el.style.display=active?'inline':'none';
+  });
+}
+
+function renderHUD(){
+  const bonus=getBonus();
+  const ps=S.businesses.reduce((a,b)=>a+b.inc,0)*bonus;
+  document.getElementById('hud-coin').textContent=fmt(S.coins);
+  document.getElementById('hud-ps').textContent=fmt(ps);
+  document.getElementById('hud-ref').textContent=S.refCount;
+  document.getElementById('hud-bonus').textContent='x'+bonus.toFixed(2);
+  document.getElementById('mine-bonus').textContent='x'+bonus.toFixed(2);
+  document.getElementById('mine-bonus-sub').textContent=S.refCount+' arkadas';
+  document.getElementById('mine-tap').textContent='+'+S.tapPower;
+  document.getElementById('rs-total').textContent=S.refCount;
+  document.getElementById('rs-earn').textContent=fmt(S.refEarned);
+}
+
+function renderEnergy(){
+  const p=(S.energy/S.maxEnergy*100).toFixed(0);
+  document.getElementById('egy-bar').style.width=p+'%';
+  document.getElementById('egy-txt').textContent=Math.floor(S.energy)+'/'+S.maxEnergy;
+}
+
+function renderBiz(){
+  const el=document.getElementById('biz-list');
+  el.innerHTML='';
+  const bonus=getBonus();
+  S.businesses.forEach(b=>{
+    const cost=b.lv===0?b.cost:Math.floor(b.base*Math.pow(1.5,b.lv));
+    const canBuy=S.coins>=cost;
+    const incB=b.lv>0?(b.inc*bonus):0;
+    const d=document.createElement('div');
+    d.className='biz-row';
+    d.innerHTML=`<div class="biz-icon">${b.icon}</div><div class="biz-info"><div class="biz-name">${b.name}</div><div class="biz-sub">${b.lv>0?'LV'+b.lv+' · +'+fmt(incB)+'/sn':'LOCKED'}</div></div><button class="biz-btn${b.lv>0?' active':''}" ${canBuy?'':'disabled'} data-id="${b.id}">${b.lv===0?fmt(cost)+' C':fmt(cost)+' UP'}</button>`;
+    el.appendChild(d);
+  });
+  el.querySelectorAll('[data-id]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const b=S.businesses[+btn.dataset.id];
+      const cost=b.lv===0?b.cost:Math.floor(b.base*Math.pow(1.5,b.lv));
+      if(S.coins<cost)return;
+      S.coins-=cost; b.lv++; b.inc=b.bInc*b.lv;
+      renderAll();
+    });
+  });
+}
+
+function renderAll(){renderHUD();renderEnergy();renderBiz();updateBadges();}
+
+// Sphere
+const canvas=document.getElementById('sphere-canvas');
+const ctx=canvas.getContext('2d');
+let angle=0,pulseR=0,pulseA=0;
+function drawSphere(){
+  ctx.clearRect(0,0,150,150);
+  const cx=75,cy=75,r=54;
+  const bonus=getBonus();
+  const hue=bonus>=4?120:bonus>=2.5?160:bonus>=1.75?180:200;
+  for(let i=3;i>0;i--){ctx.beginPath();ctx.arc(cx,cy,r+i*6,0,Math.PI*2);ctx.strokeStyle=`hsla(${hue},100%,60%,${0.04*i})`;ctx.lineWidth=5;ctx.stroke();}
+  const g=ctx.createRadialGradient(cx-16,cy-16,4,cx,cy,r);
+  g.addColorStop(0,`hsla(${hue},100%,65%,0.9)`);
+  g.addColorStop(0.4,`hsla(${hue},80%,35%,0.75)`);
+  g.addColorStop(1,'rgba(0,10,40,0.95)');
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+  ctx.save();ctx.translate(cx,cy);ctx.rotate(angle);
+  for(let i=0;i<3;i++){ctx.rotate(Math.PI*2/3);ctx.beginPath();ctx.ellipse(0,0,r*0.88,r*0.26,0,0,Math.PI*2);ctx.strokeStyle=`hsla(${hue},100%,65%,${0.12+i*0.08})`;ctx.lineWidth=0.8;ctx.stroke();}
+  ctx.restore();
+  const nc=Math.min(8+S.refCount*2,20);
+  for(let i=0;i<nc;i++){const a=angle*1.5+i*(Math.PI*2/nc);const nx=cx+Math.cos(a)*r*0.72;const ny=cy+Math.sin(a)*r*0.52;ctx.beginPath();ctx.arc(nx,ny,2,0,Math.PI*2);ctx.fillStyle=`hsla(${hue},100%,70%,${0.4+0.4*Math.sin(angle*3+i)})`;ctx.fill();}
+  if(pulseA>0){ctx.beginPath();ctx.arc(cx,cy,r+pulseR,0,Math.PI*2);ctx.strokeStyle=`hsla(${hue},100%,65%,${pulseA})`;ctx.lineWidth=1.5;ctx.stroke();pulseR+=2.5;pulseA-=0.04;}
+  ctx.beginPath();ctx.arc(cx-16,cy-18,12,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.06)';ctx.fill();
+  angle+=0.012;
+  requestAnimationFrame(drawSphere);
+}
+drawSphere();
+
+canvas.addEventListener('click',function(e){
+  if(S.energy<=0)return;
+  const bonus=getBonus();
+  const earned=Math.ceil(S.tapPower*bonus);
+  S.coins+=earned;S.totalEarned+=earned;S.energy=Math.max(0,S.energy-1);
+  pulseR=0;pulseA=0.85;
+  const wrap=document.getElementById('sphere-wrap');
+  const sp=document.createElement('div');
+  sp.className='float-plus';
+  sp.textContent='+'+earned;
+  sp.style.cssText=`left:${55+Math.random()*40}px;top:16px;`;
+  wrap.appendChild(sp);
+  setTimeout(()=>sp.remove(),800);
+  renderAll();
+});
+
+setInterval(()=>{
+  const bonus=getBonus();
+  const inc=S.businesses.reduce((a,b)=>a+b.inc,0)*bonus;
+  if(inc>0){S.coins+=inc;S.totalEarned+=inc;}
+  if(S.energy<S.maxEnergy)S.energy=Math.min(S.maxEnergy,S.energy+1);
+  renderAll();
+},1000);
+
+// Referral kodu ile gelen kullanıcı
+if(refCode && refCode.startsWith('USR_')){
+  showNotif('Referral ile katildin! Bonus aktif.');
+}
+
+renderAll();
+</script>
+</body>
+</html>
