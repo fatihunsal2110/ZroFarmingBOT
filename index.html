@@ -17,15 +17,16 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 .user-avatar{width:32px;height:32px;border-radius:50%;background:rgba(0,220,255,0.1);border:1px solid rgba(0,220,255,0.25);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
 .user-name{font-size:12px;color:#a0c8e8;font-family:'Orbitron',monospace;flex:1;}
 .user-id{font-size:9px;color:rgba(0,220,255,0.35);}
-.save-indicator{font-size:9px;color:rgba(0,255,150,0.5);text-align:right;}
+.save-indicator{font-size:9px;color:rgba(0,255,150,0.5);}
 .hud-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:12px;}
 .hud-card{background:rgba(0,220,255,0.05);border:1px solid rgba(0,220,255,0.18);border-radius:6px;padding:8px 6px;text-align:center;position:relative;overflow:hidden;}
 .hud-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,220,255,0.6),transparent);}
-.hud-label{font-size:8px;letter-spacing:0.12em;color:rgba(0,220,255,0.5);margin-bottom:3px;}
-.hud-val{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:#00dcff;}
+.hud-label{font-size:7px;letter-spacing:0.1em;color:rgba(0,220,255,0.5);margin-bottom:3px;}
+.hud-val{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:#00dcff;}
 .hud-val.green{color:#00ff96;}
-.tabs{display:flex;gap:6px;margin-bottom:12px;}
-.tab{flex:1;padding:7px 0;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.1em;border:1px solid rgba(0,220,255,0.18);border-radius:5px;background:transparent;color:rgba(0,220,255,0.45);cursor:pointer;transition:all 0.2s;}
+.hud-sub{font-size:7px;color:rgba(0,220,255,0.3);margin-top:1px;}
+.tabs{display:flex;gap:4px;margin-bottom:12px;overflow-x:auto;}
+.tab{flex:1;min-width:52px;padding:7px 0;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.06em;border:1px solid rgba(0,220,255,0.18);border-radius:5px;background:transparent;color:rgba(0,220,255,0.45);cursor:pointer;transition:all 0.2s;white-space:nowrap;}
 .tab.active{background:rgba(0,220,255,0.1);border-color:rgba(0,220,255,0.5);color:#00dcff;}
 .panel{display:none;}
 .panel.active{display:block;}
@@ -35,19 +36,87 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 .energy-fill{height:100%;background:linear-gradient(90deg,#0066aa,#00dcff);border-radius:3px;transition:width 0.3s;}
 .sphere-wrap{display:flex;justify-content:center;align-items:center;margin:0 auto 14px;position:relative;height:160px;width:160px;}
 #sphere-canvas{cursor:pointer;border-radius:50%;display:block;}
-.tap-hint{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:8px;letter-spacing:0.2em;color:rgba(0,220,255,0.35);white-space:nowrap;}
-.float-plus{position:absolute;font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:#00dcff;pointer-events:none;animation:floatUp 0.8s ease-out forwards;text-shadow:0 0 8px #00dcff;}
+.tap-hint{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:8px;letter-spacing:0.2em;color:rgba(0,220,255,0.35);white-space:nowrap;pointer-events:none;}
+.float-plus{position:absolute;font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:#00dcff;pointer-events:none;animation:floatUp 0.8s ease-out forwards;text-shadow:0 0 8px #00dcff;}
 @keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1);}100%{opacity:0;transform:translateY(-50px) scale(1.2);}}
 .section-label{font-size:8px;letter-spacing:0.2em;color:rgba(0,220,255,0.4);margin-bottom:7px;border-bottom:1px solid rgba(0,220,255,0.08);padding-bottom:4px;}
+.mine-cards{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;}
+.mine-card{background:rgba(0,255,150,0.04);border:1px solid rgba(0,255,150,0.12);border-radius:6px;padding:10px;}
+.mine-card.blue{background:rgba(0,220,255,0.04);border-color:rgba(0,220,255,0.12);}
+.mc-label{font-size:8px;color:rgba(0,255,150,0.4);margin-bottom:4px;}
+.mine-card.blue .mc-label{color:rgba(0,220,255,0.4);}
+.mc-val{font-family:'Orbitron',monospace;font-size:18px;color:#00ff96;}
+.mine-card.blue .mc-val{color:#00dcff;}
+.mc-sub{font-size:9px;color:rgba(0,255,150,0.35);margin-top:2px;}
+.mine-card.blue .mc-sub{color:rgba(0,220,255,0.35);}
+
+/* UPGRADE SHOP */
+.upgrade-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.upgrade-row{background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.1);border-radius:8px;padding:11px 12px;}
+.upgrade-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.upgrade-icon{font-size:22px;flex-shrink:0;width:28px;text-align:center;}
+.upgrade-info{flex:1;}
+.upgrade-name{font-size:11px;font-family:'Orbitron',monospace;color:#a0c8e8;letter-spacing:0.04em;}
+.upgrade-desc{font-size:9px;color:rgba(0,220,255,0.4);margin-top:2px;}
+.upgrade-lv{font-size:9px;color:rgba(0,255,150,0.5);margin-top:2px;}
+.upgrade-bottom{display:flex;align-items:center;gap:8px;}
+.upgrade-prog-wrap{flex:1;}
+.upgrade-prog-bar{height:4px;background:rgba(0,220,255,0.08);border-radius:2px;overflow:hidden;margin-bottom:3px;}
+.upgrade-prog-fill{height:100%;background:linear-gradient(90deg,#0066aa,#00dcff);border-radius:2px;transition:width 0.5s;}
+.upgrade-prog-text{font-size:8px;color:rgba(0,220,255,0.35);}
+.upgrade-btns{display:flex;gap:6px;flex-shrink:0;}
+.upg-btn{background:rgba(0,220,255,0.07);border:1px solid rgba(0,220,255,0.22);border-radius:4px;padding:5px 9px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#00dcff;cursor:pointer;white-space:nowrap;}
+.upg-btn:disabled{opacity:0.3;cursor:not-allowed;}
+.upg-btn.ton{background:rgba(80,120,255,0.08);border-color:rgba(80,120,255,0.3);color:#8ab0ff;}
+.upg-btn.ton:disabled{opacity:0.3;}
+.upgrade-timer{font-size:9px;color:rgba(255,180,0,0.7);font-family:'Orbitron',monospace;margin-top:4px;}
+
+/* BIZ */
 .biz-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
 .biz-row{background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.1);border-radius:6px;padding:9px 11px;display:flex;align-items:center;gap:9px;}
 .biz-icon{font-size:20px;flex-shrink:0;width:26px;text-align:center;}
 .biz-info{flex:1;min-width:0;}
 .biz-name{font-size:11px;font-family:'Orbitron',monospace;color:#a0c8e8;}
 .biz-sub{font-size:9px;color:rgba(0,220,255,0.4);margin-top:2px;}
-.biz-btn{flex-shrink:0;background:rgba(0,220,255,0.07);border:1px solid rgba(0,220,255,0.22);border-radius:4px;padding:5px 9px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#00dcff;cursor:pointer;white-space:nowrap;}
+.biz-right{flex-shrink:0;text-align:right;}
+.biz-btn{background:rgba(0,220,255,0.07);border:1px solid rgba(0,220,255,0.22);border-radius:4px;padding:5px 9px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#00dcff;cursor:pointer;white-space:nowrap;display:block;margin-bottom:4px;}
 .biz-btn:disabled{opacity:0.3;cursor:not-allowed;}
 .biz-btn.active{border-color:rgba(0,255,150,0.35);color:#00ff96;}
+.biz-timer{font-size:8px;color:rgba(255,180,0,0.6);font-family:'Orbitron',monospace;}
+.biz-accel{background:rgba(80,120,255,0.08);border:1px solid rgba(80,120,255,0.25);border-radius:3px;padding:3px 7px;font-family:'Share Tech Mono',monospace;font-size:9px;color:#8ab0ff;cursor:pointer;margin-top:2px;}
+
+/* ENVANTAR */
+.inv-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.inv-item{background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.12);border-radius:8px;padding:12px;text-align:center;}
+.inv-item.has-item{border-color:rgba(0,255,150,0.25);background:rgba(0,255,150,0.04);}
+.inv-icon{font-size:28px;margin-bottom:6px;}
+.inv-name{font-size:10px;font-family:'Orbitron',monospace;color:#a0c8e8;margin-bottom:3px;}
+.inv-count{font-size:16px;font-family:'Orbitron',monospace;color:#00ff96;}
+.inv-desc{font-size:8px;color:rgba(0,220,255,0.35);margin-top:3px;}
+.use-btn{width:100%;margin-top:8px;background:rgba(0,255,150,0.08);border:1px solid rgba(0,255,150,0.25);border-radius:4px;padding:5px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#00ff96;cursor:pointer;}
+.use-btn:disabled{opacity:0.3;cursor:not-allowed;}
+
+/* GOREV */
+.quest-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.quest-card{background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.12);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;}
+.quest-card.claimed{border-color:rgba(0,255,150,0.1);opacity:0.45;}
+.quest-icon{font-size:22px;flex-shrink:0;width:28px;text-align:center;}
+.quest-info{flex:1;min-width:0;}
+.quest-name{font-size:11px;font-family:'Orbitron',monospace;color:#a0c8e8;}
+.quest-desc{font-size:9px;color:rgba(0,220,255,0.4);margin-top:2px;}
+.quest-prog-bar{height:3px;background:rgba(0,220,255,0.08);border-radius:2px;overflow:hidden;margin-top:5px;}
+.quest-prog-fill{height:100%;background:linear-gradient(90deg,#0066aa,#00dcff);border-radius:2px;}
+.quest-prog-text{font-size:8px;color:rgba(0,220,255,0.35);margin-top:2px;}
+.quest-right{flex-shrink:0;text-align:right;}
+.quest-reward{font-size:10px;color:#00ff96;font-family:'Orbitron',monospace;}
+.quest-reward-sub{font-size:8px;color:rgba(0,255,150,0.4);}
+.quest-claim-btn{margin-top:5px;background:rgba(0,255,150,0.08);border:1px solid rgba(0,255,150,0.3);border-radius:4px;padding:4px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;color:#00ff96;cursor:pointer;white-space:nowrap;}
+.quest-done-badge{font-size:8px;color:#00ff96;background:rgba(0,255,150,0.08);border:1px solid rgba(0,255,150,0.15);border-radius:3px;padding:2px 6px;margin-top:4px;display:inline-block;}
+.timer-box{background:rgba(255,150,0,0.04);border:1px solid rgba(255,150,0,0.12);border-radius:6px;padding:8px 12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
+.timer-label{font-size:9px;color:rgba(255,180,0,0.5);}
+.timer-val{font-family:'Orbitron',monospace;font-size:13px;color:rgba(255,200,0,0.8);}
+
+/* REF */
 .ref-hero{background:rgba(0,255,150,0.04);border:1px solid rgba(0,255,150,0.15);border-radius:8px;padding:14px;margin-bottom:12px;}
 .ref-link-label{font-size:8px;letter-spacing:0.15em;color:rgba(0,255,150,0.5);margin-bottom:8px;}
 .ref-link-box{display:flex;gap:6px;align-items:center;background:rgba(0,0,0,0.3);border:1px solid rgba(0,255,150,0.2);border-radius:5px;padding:8px 10px;margin-bottom:10px;}
@@ -58,7 +127,7 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 .ref-stat-label{font-size:8px;color:rgba(0,255,150,0.4);margin-bottom:4px;}
 .ref-stat-val{font-family:'Orbitron',monospace;font-size:16px;color:#00ff96;}
 .bonus-info{background:rgba(0,255,150,0.04);border:1px solid rgba(0,255,150,0.12);border-radius:6px;padding:10px 12px;margin-bottom:12px;}
-.bonus-title{font-size:9px;letter-spacing:0.15em;color:rgba(0,255,150,0.5);margin-bottom:8px;}
+.bonus-title{font-size:9px;letter-spacing:0.12em;color:rgba(0,255,150,0.5);margin-bottom:8px;}
 .bonus-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(0,255,150,0.06);}
 .bonus-row:last-child{border-bottom:none;}
 .bonus-tier{font-size:10px;color:rgba(0,220,255,0.6);}
@@ -66,29 +135,19 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 .bonus-active{font-size:8px;color:#00ff96;background:rgba(0,255,150,0.1);border:1px solid rgba(0,255,150,0.25);border-radius:3px;padding:2px 6px;}
 .friend-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
 .friend-row{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(0,220,255,0.08);border-radius:6px;padding:9px 11px;}
-.friend-avatar{width:32px;height:32px;border-radius:50%;background:rgba(0,220,255,0.1);border:1px solid rgba(0,220,255,0.2);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.friend-avatar{width:30px;height:30px;border-radius:50%;background:rgba(0,220,255,0.1);border:1px solid rgba(0,220,255,0.2);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
 .friend-info{flex:1;}
 .friend-name{font-size:11px;color:#a0c8e8;font-family:'Orbitron',monospace;}
 .friend-sub{font-size:9px;color:rgba(0,220,255,0.4);margin-top:1px;}
 .friend-earn{font-size:11px;color:#00ff96;font-family:'Orbitron',monospace;}
 .invite-btn{width:100%;padding:11px;background:rgba(0,255,150,0.08);border:1px solid rgba(0,255,150,0.3);border-radius:6px;font-family:'Orbitron',monospace;font-size:11px;letter-spacing:0.1em;color:#00ff96;cursor:pointer;margin-bottom:8px;}
-.mine-cards{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;}
-.mine-card{background:rgba(0,255,150,0.04);border:1px solid rgba(0,255,150,0.12);border-radius:6px;padding:10px;}
-.mine-card.blue{background:rgba(0,220,255,0.04);border-color:rgba(0,220,255,0.12);}
-.mc-label{font-size:8px;color:rgba(0,255,150,0.4);margin-bottom:4px;}
-.mine-card.blue .mc-label{color:rgba(0,220,255,0.4);}
-.mc-val{font-family:'Orbitron',monospace;font-size:18px;color:#00ff96;}
-.mine-card.blue .mc-val{color:#00dcff;}
-.mc-sub{font-size:9px;color:rgba(0,255,150,0.35);margin-top:2px;}
-.mine-card.blue .mc-sub{color:rgba(0,220,255,0.35);}
 .pulse-ring{position:absolute;border-radius:50%;border:1px solid rgba(0,220,255,0.18);animation:pring 2.4s ease-in-out infinite;pointer-events:none;}
-.tap-hint{pointer-events:none;}
 @keyframes pring{0%{transform:scale(0.95);opacity:0.5;}50%{transform:scale(1.05);opacity:1;}100%{transform:scale(0.95);opacity:0.5;}}
 .notif{position:fixed;top:14px;right:14px;left:14px;background:rgba(0,255,150,0.12);border:1px solid rgba(0,255,150,0.4);border-radius:6px;padding:8px 12px;font-size:11px;color:#00ff96;animation:fadeSlide 2.5s ease forwards;pointer-events:none;z-index:100;text-align:center;}
 @keyframes fadeSlide{0%{opacity:0;transform:translateY(-8px);}15%{opacity:1;transform:translateY(0);}80%{opacity:1;}100%{opacity:0;}}
 .loading{position:fixed;inset:0;background:#050810;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;z-index:200;}
-.loading-text{font-family:'Orbitron',monospace;font-size:12px;color:#00dcff;letter-spacing:0.2em;animation:pulse 1.5s ease-in-out infinite;}
-@keyframes pulse{0%,100%{opacity:0.4;}50%{opacity:1;}}
+.loading-text{font-family:'Orbitron',monospace;font-size:12px;color:#00dcff;letter-spacing:0.2em;animation:blink 1.5s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:0.4;}50%{opacity:1;}}
 </style>
 </head>
 <body>
@@ -101,29 +160,30 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 <div id="app" style="display:none">
 <div class="rel">
   <div class="cy-title">ZRo FARM</div>
-
   <div class="user-bar">
     <div class="user-avatar" id="u-avatar">👤</div>
     <div style="flex:1">
       <div class="user-name" id="u-name">PLAYER</div>
       <div class="user-id" id="u-id">ID: ---</div>
     </div>
-    <div class="save-indicator" id="save-ind">●  KAYITLI</div>
+    <div class="save-indicator" id="save-ind">● KAYITLI</div>
   </div>
-
   <div class="hud-row">
-    <div class="hud-card"><div class="hud-label">COIN</div><div class="hud-val" id="hud-coin">0</div></div>
-    <div class="hud-card"><div class="hud-label">/ SN</div><div class="hud-val" id="hud-ps">0</div></div>
-    <div class="hud-card"><div class="hud-label">REFERRAL</div><div class="hud-val green" id="hud-ref">0</div></div>
-    <div class="hud-card"><div class="hud-label">BONUS</div><div class="hud-val green" id="hud-bonus">x1.0</div></div>
+    <div class="hud-card"><div class="hud-label">ZRo COIN</div><div class="hud-val" id="hud-coin">0</div><div class="hud-sub">ZRC</div></div>
+    <div class="hud-card"><div class="hud-label">/ SN</div><div class="hud-val" id="hud-ps">0</div><div class="hud-sub">ZRC</div></div>
+    <div class="hud-card"><div class="hud-label">REFERRAL</div><div class="hud-val green" id="hud-ref">0</div><div class="hud-sub">KISI</div></div>
+    <div class="hud-card"><div class="hud-label">BONUS</div><div class="hud-val green" id="hud-bonus">x1.0</div><div class="hud-sub">FARM</div></div>
   </div>
 
   <div class="tabs">
     <button class="tab active" onclick="switchTab('mine')">MINE</button>
+    <button class="tab" onclick="switchTab('upgrade')">YUKSEL</button>
     <button class="tab" onclick="switchTab('biz')">ISLETME</button>
-    <button class="tab" onclick="switchTab('ref')">REFERRAL</button>
+    <button class="tab" onclick="switchTab('quest')">GOREV</button>
+    <button class="tab" onclick="switchTab('ref')">REF</button>
   </div>
 
+  <!-- MINE -->
   <div class="panel active" id="tab-mine">
     <div class="energy-wrap">
       <div class="energy-top"><span>ENERJI</span><span id="egy-txt">500/500</span></div>
@@ -144,22 +204,42 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
       <div class="mine-card blue">
         <div class="mc-label">TAP GUCU</div>
         <div class="mc-val" id="mine-tap">+1</div>
-        <div class="mc-sub">coin / tap</div>
+        <div class="mc-sub">ZRC / tap</div>
       </div>
     </div>
+    <div class="section-label">// ENVANTER</div>
+    <div class="inv-grid" id="inv-grid"></div>
   </div>
 
+  <!-- YUKSELME -->
+  <div class="panel" id="tab-upgrade">
+    <div class="section-label">// TAP & ENERJI YUKSELME</div>
+    <div class="upgrade-list" id="upgrade-list"></div>
+  </div>
+
+  <!-- ISLETME -->
   <div class="panel" id="tab-biz">
     <div class="section-label">// ISLETMELER</div>
     <div class="biz-list" id="biz-list"></div>
   </div>
 
+  <!-- GOREV -->
+  <div class="panel" id="tab-quest">
+    <div class="timer-box">
+      <span class="timer-label">GUNLUK RESET</span>
+      <span class="timer-val" id="quest-timer">00:00:00</span>
+    </div>
+    <div class="section-label">// GUNLUK GOREVLER</div>
+    <div class="quest-list" id="quest-list"></div>
+  </div>
+
+  <!-- REF -->
   <div class="panel" id="tab-ref">
     <div class="ref-hero">
       <div class="ref-link-label">// DAVET LINKIN</div>
       <div class="ref-link-box">
         <span class="ref-link-text" id="ref-link">yukleniyor...</span>
-        <button class="copy-btn" id="copy-btn" onclick="copyLink()">KOPYALA</button>
+        <button class="copy-btn" onclick="copyLink()">KOPYALA</button>
       </div>
       <div class="ref-stats">
         <div class="ref-stat"><div class="ref-stat-label">DAVET</div><div class="ref-stat-val" id="rs-total">0</div></div>
@@ -169,10 +249,10 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
     </div>
     <div class="bonus-info">
       <div class="bonus-title">// FARM BONUS TABLOSU</div>
-      <div class="bonus-row"><span class="bonus-tier">1-2 arkadas</span><span class="bonus-val">x 1.25</span><span class="bonus-active" id="tier0-badge" style="display:none">AKTIF</span></div>
-      <div class="bonus-row"><span class="bonus-tier">3-5 arkadas</span><span class="bonus-val">x 1.75</span><span class="bonus-active" id="tier1-badge" style="display:none">AKTIF</span></div>
-      <div class="bonus-row"><span class="bonus-tier">6-9 arkadas</span><span class="bonus-val">x 2.5</span><span class="bonus-active" id="tier2-badge" style="display:none">AKTIF</span></div>
-      <div class="bonus-row"><span class="bonus-tier">10+ arkadas</span><span class="bonus-val">x 4.0</span><span class="bonus-active" id="tier3-badge" style="display:none">AKTIF</span></div>
+      <div class="bonus-row"><span class="bonus-tier">1-2 arkadas</span><span class="bonus-val">x1.25</span><span class="bonus-active" id="tier0-badge" style="display:none">AKTIF</span></div>
+      <div class="bonus-row"><span class="bonus-tier">3-5 arkadas</span><span class="bonus-val">x1.75</span><span class="bonus-active" id="tier1-badge" style="display:none">AKTIF</span></div>
+      <div class="bonus-row"><span class="bonus-tier">6-9 arkadas</span><span class="bonus-val">x2.5</span><span class="bonus-active" id="tier2-badge" style="display:none">AKTIF</span></div>
+      <div class="bonus-row"><span class="bonus-tier">10+ arkadas</span><span class="bonus-val">x4.0</span><span class="bonus-active" id="tier3-badge" style="display:none">AKTIF</span></div>
     </div>
     <div class="section-label">// ARKADASLARIN</div>
     <div class="friend-list" id="friend-list">
@@ -184,36 +264,105 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 </div>
 
 <script>
-const API = 'https://zrofarm-backend.onrender.com';
-const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+var API = 'https://zrofarm-backend.onrender.com';
+var tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
 if(tg){ tg.ready(); tg.expand(); }
+var user = tg ? (tg.initDataUnsafe && tg.initDataUnsafe.user) : null;
+var userId = (user && user.id) ? user.id : ('guest_' + Math.random().toString(36).substr(2,9));
+var refCode = new URLSearchParams(location.search).get('ref') || '';
 
-const user = tg ? tg.initDataUnsafe && tg.initDataUnsafe.user : null;
-const userId = user ? user.id : 99999999;
-const refCode = new URLSearchParams(location.search).get('ref') || '';
+var TIERS = [{min:1,max:2,mult:1.25},{min:3,max:5,mult:1.75},{min:6,max:9,mult:2.5},{min:10,max:999,mult:4.0}];
 
-const TIERS = [
-  {min:1,max:2,mult:1.25},
-  {min:3,max:5,mult:1.75},
-  {min:6,max:9,mult:2.5},
-  {min:10,max:999,mult:4.0}
+var BUSINESSES = [
+  {id:0, name:'NODE WALLET',   icon:'💳', base:50,    bInc:0.5,  lv:0, cost:50,    inc:0, upgTime:0, upgEnd:0},
+  {id:1, name:'MINING FARM',   icon:'⛏️', base:200,   bInc:2,    lv:0, cost:200,   inc:0, upgTime:0, upgEnd:0},
+  {id:2, name:'CRYPTO DEX',    icon:'📈', base:800,   bInc:8,    lv:0, cost:800,   inc:0, upgTime:0, upgEnd:0},
+  {id:3, name:'DEFI PROTOCOL', icon:'🔗', base:3000,  bInc:30,   lv:0, cost:3000,  inc:0, upgTime:0, upgEnd:0},
+  {id:4, name:'NFT MATRIX',    icon:'🖼️', base:10000, bInc:100,  lv:0, cost:10000, inc:0, upgTime:0, upgEnd:0},
+  {id:5, name:'AI ORACLE',     icon:'🤖', base:35000, bInc:350,  lv:0, cost:35000, inc:0, upgTime:0, upgEnd:0},
+  {id:6, name:'QUANTUM VAULT', icon:'🔮', base:120000,bInc:1200, lv:0, cost:120000,inc:0, upgTime:0, upgEnd:0},
+  {id:7, name:'DARK CHAIN',    icon:'⛓️', base:400000,bInc:4000, lv:0, cost:400000,inc:0, upgTime:0, upgEnd:0},
 ];
 
-const DEFAULT_BIZ = [
-  {id:0,name:'NODE WALLET',icon:'💳',base:50,bInc:0.5,lv:0,cost:50,inc:0},
-  {id:1,name:'MINING FARM',icon:'⛏️',base:200,bInc:2,lv:0,cost:200,inc:0},
-  {id:2,name:'CRYPTO DEX',icon:'📈',base:800,bInc:8,lv:0,cost:800,inc:0},
-  {id:3,name:'DEFI PROTOCOL',icon:'🔗',base:3000,bInc:30,lv:0,cost:3000,inc:0},
-  {id:4,name:'NFT MATRIX',icon:'🖼️',base:10000,bInc:100,lv:0,cost:10000,inc:0}
+// Yukseltme sistemi — her seviyede bekleme suresi artar
+var UPGRADES = [
+  {
+    id:'tap', icon:'👆', name:'TAP GUCU', desc:'Her tap daha fazla ZRC kazandir',
+    levels:[
+      {cost:500,   waitSec:60,    bonus:'Tap +1 ZRC'},
+      {cost:2000,  waitSec:300,   bonus:'Tap +2 ZRC'},
+      {cost:8000,  waitSec:900,   bonus:'Tap +3 ZRC'},
+      {cost:25000, waitSec:3600,  bonus:'Tap +5 ZRC'},
+      {cost:80000, waitSec:7200,  bonus:'Tap +8 ZRC'},
+      {cost:250000,waitSec:14400, bonus:'Tap +12 ZRC'},
+    ],
+    lv:0, upgEnd:0
+  },
+  {
+    id:'energy', icon:'⚡', name:'ENERJI KAPASITESI', desc:'Maksimum enerji miktarini artir',
+    levels:[
+      {cost:300,   waitSec:60,    bonus:'Enerji +200'},
+      {cost:1500,  waitSec:300,   bonus:'Enerji +300'},
+      {cost:6000,  waitSec:900,   bonus:'Enerji +500'},
+      {cost:20000, waitSec:3600,  bonus:'Enerji +1000'},
+      {cost:60000, waitSec:7200,  bonus:'Enerji +2000'},
+      {cost:200000,waitSec:14400, bonus:'Enerji +5000'},
+    ],
+    lv:0, upgEnd:0
+  },
+  {
+    id:'regen', icon:'🔋', name:'ENERJI YENILEME', desc:'Enerji daha hizli yenilenir',
+    levels:[
+      {cost:1000,  waitSec:120,   bonus:'2x hizli yenileme'},
+      {cost:5000,  waitSec:600,   bonus:'3x hizli yenileme'},
+      {cost:18000, waitSec:1800,  bonus:'5x hizli yenileme'},
+      {cost:60000, waitSec:7200,  bonus:'8x hizli yenileme'},
+    ],
+    lv:0, upgEnd:0
+  },
+];
+
+// Esyalar
+var ITEMS = [
+  {id:'kristal', icon:'💠', name:'ZRC KRISTALI', desc:'Tap gucunu 1 saatligine 2x yapar', count:0},
+  {id:'reaktor', icon:'🔴', name:'ENERJI REAKTORU', desc:'Aninda enerjini doldurur', count:0},
+];
+
+var QUESTS = [
+  {id:'tap100',  icon:'👆', name:'TAP USTASI',    desc:'100 kez tap et',           type:'tap',  target:100,   reward:500,  itemReward:null},
+  {id:'tap500',  icon:'⚡', name:'ENERJI TUFANI', desc:'500 kez tap et',           type:'tap',  target:500,   reward:2000, itemReward:null},
+  {id:'earn1k',  icon:'💰', name:'ZRC KAZANCI',   desc:'1.000 ZRC kazan',          type:'earn', target:1000,  reward:300,  itemReward:null},
+  {id:'earn10k', icon:'💎', name:'ZRC ZENGINI',   desc:'10.000 ZRC kazan',         type:'earn', target:10000, reward:1500, itemReward:null},
+  {id:'biz1',    icon:'🏢', name:'GIRISIMCI',     desc:'Bir isletme satin al',     type:'biz',  target:1,     reward:800,  itemReward:'reaktor'},
+  {id:'biz3',    icon:'🏙️', name:'IMPARATOR',     desc:'3 isletme satin al',       type:'biz',  target:3,     reward:3000, itemReward:'kristal'},
+  {id:'upg1',    icon:'🔧', name:'MUHENDIS',      desc:'Bir yukseltme yap',        type:'upg',  target:1,     reward:1000, itemReward:'kristal'},
+  {id:'ref1',    icon:'👥', name:'ILK DAVET',     desc:'1 arkadas davet et',       type:'ref',  target:1,     reward:1000, itemReward:'reaktor'},
+  {id:'login',   icon:'🌅', name:'GUNLUK GIRIS',  desc:'Bugun giris yap',          type:'login',target:1,     reward:200,  itemReward:null},
 ];
 
 var S = {
-  coins:0,energy:500,maxEnergy:500,tapPower:1,
-  totalEarned:0,refCount:0,refEarned:0,
-  businesses: JSON.parse(JSON.stringify(DEFAULT_BIZ))
+  coins:0, energy:500, maxEnergy:500, tapPower:1, regenMult:1,
+  totalEarned:0, refCount:0, refEarned:0,
+  businesses: JSON.parse(JSON.stringify(BUSINESSES)),
+  upgrades: JSON.parse(JSON.stringify(UPGRADES)),
+  items: JSON.parse(JSON.stringify(ITEMS)),
+  dailyTaps:0, dailyEarned:0, dailyBizBought:0, dailyUpgDone:0,
+  questsClaimed:{}, lastReset:'',
+  activeBoosts:{}
 };
 
 var saveTimer = null;
+
+function todayStr(){ return new Date().toISOString().slice(0,10); }
+
+function checkDailyReset(){
+  var today = todayStr();
+  if(S.lastReset !== today){
+    S.lastReset = today;
+    S.dailyTaps = 0; S.dailyEarned = 0; S.dailyBizBought = 0; S.dailyUpgDone = 0;
+    S.questsClaimed = {};
+  }
+}
 
 function getBonus(){
   for(var i=TIERS.length-1;i>=0;i--){
@@ -222,119 +371,45 @@ function getBonus(){
   return 1.0;
 }
 
+function getTapPower(){
+  var base = S.tapPower;
+  if(S.activeBoosts && S.activeBoosts.kristal && Date.now() < S.activeBoosts.kristal) base *= 2;
+  return base;
+}
+
 function fmt(n){
+  if(n>=1e9)return(n/1e9).toFixed(1)+'B';
   if(n>=1e6)return(n/1e6).toFixed(1)+'M';
   if(n>=1e3)return(n/1e3).toFixed(1)+'K';
   return Math.floor(n)+'';
 }
 
-async function apiLogin(){
-  try {
-    var res = await fetch(API + '/api/login', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        user_id: userId,
-        username: user ? user.username : '',
-        first_name: user ? user.first_name : 'Player',
-        ref_code: refCode
-      })
-    });
-    var data = await res.json();
-    if(data.success && data.user){
-      var u = data.user;
-      S.coins = u.coins || 0;
-      S.energy = u.energy || 500;
-      S.tapPower = u.tap_power || 1;
-      S.refCount = u.ref_count || 0;
-      S.refEarned = u.ref_earned || 0;
-      if(u.businesses && u.businesses.length > 0){
-        S.businesses = u.businesses;
-      }
-      if(refCode) showNotif('Referral ile katildin! +500 coin bonusu!');
-    }
-  } catch(e){
-    console.log('API hatasi:', e);
-  }
-}
-
-function scheduleSave(){
-  if(saveTimer) clearTimeout(saveTimer);
-  saveTimer = setTimeout(saveGame, 5000);
-  document.getElementById('save-ind').textContent = '●  KAYDEDILIYOR...';
-  document.getElementById('save-ind').style.color = 'rgba(255,200,0,0.6)';
-}
-
-async function saveGame(){
-  try {
-    await fetch(API + '/api/save', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        user_id: userId,
-        coins: Math.floor(S.coins),
-        energy: Math.floor(S.energy),
-        tap_power: S.tapPower,
-        businesses: S.businesses,
-        ref_count: S.refCount,
-        ref_earned: S.refEarned
-      })
-    });
-    document.getElementById('save-ind').textContent = '●  KAYITLI';
-    document.getElementById('save-ind').style.color = 'rgba(0,255,150,0.5)';
-  } catch(e){
-    document.getElementById('save-ind').textContent = '●  HATA';
-    document.getElementById('save-ind').style.color = 'rgba(255,80,80,0.6)';
-  }
-}
-
-async function loadReferrals(){
-  try {
-    var res = await fetch(API + '/api/referrals/' + userId);
-    var data = await res.json();
-    if(data.success && data.referrals){
-      S.refCount = data.referrals.length;
-      renderFriends(data.referrals);
-      document.getElementById('rs-active').textContent = data.referrals.length;
-    }
-  } catch(e){}
-}
-
-function renderFriends(list){
-  var el = document.getElementById('friend-list');
-  if(!list || list.length === 0){
-    el.innerHTML = '<div style="font-size:10px;color:rgba(0,220,255,0.3);text-align:center;padding:16px;">Henuz kimse yok - davet et!</div>';
-    return;
-  }
-  el.innerHTML = '';
-  list.forEach(function(f){
-    var d = document.createElement('div');
-    d.className = 'friend-row';
-    var name = (f.first_name || f.username || 'Player').toUpperCase();
-    var earned = Math.floor((f.coins || 0) * 0.1);
-    d.innerHTML = '<div class="friend-avatar">👤</div><div class="friend-info"><div class="friend-name">'+name+'</div><div class="friend-sub">'+fmt(f.coins||0)+' coin</div></div><div class="friend-earn">+'+fmt(earned)+'</div>';
-    el.appendChild(d);
-  });
+function fmtTime(sec){
+  if(sec<=0) return 'HAZIR';
+  var h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60), s=sec%60;
+  if(h>0) return h+'s '+(m<10?'0':'')+m+'d';
+  if(m>0) return m+'d '+(s<10?'0':'')+s+'s';
+  return s+'sn';
 }
 
 function switchTab(t){
-  document.querySelectorAll('.tab').forEach(function(b,i){b.classList.toggle('active',['mine','biz','ref'][i]===t);});
+  document.querySelectorAll('.tab').forEach(function(b,i){b.classList.toggle('active',['mine','upgrade','biz','quest','ref'][i]===t);});
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
   document.getElementById('tab-'+t).classList.add('active');
   if(t==='ref') loadReferrals();
+  if(t==='quest') renderQuests();
+  if(t==='upgrade') renderUpgrades();
 }
 
 function copyLink(){
   var link = 't.me/ZRoFarmBOT?start=USR_' + userId;
   if(navigator.clipboard) navigator.clipboard.writeText(link);
-  var btn = document.getElementById('copy-btn');
-  btn.textContent = 'KOPYALANDI!';
-  setTimeout(function(){btn.textContent='KOPYALA';}, 1800);
+  showNotif('Davet linki kopyalandi!');
 }
 
 function shareLink(){
   var link = 'https://t.me/ZRoFarmBOT?start=USR_' + userId;
-  var text = 'ZRo Farm oynuyorum! Coin kaz, imparatorluk kur!';
+  var text = 'ZRo Farm oynuyorum! ZRo Coin kaz, imparatorluk kur!';
   if(tg) tg.openTelegramLink('https://t.me/share/url?url='+encodeURIComponent(link)+'&text='+encodeURIComponent(text));
   else copyLink();
 }
@@ -343,74 +418,323 @@ function showNotif(msg){
   var old = document.querySelector('.notif');
   if(old) old.remove();
   var n = document.createElement('div');
-  n.className = 'notif';
-  n.textContent = msg;
+  n.className = 'notif'; n.textContent = msg;
   document.body.appendChild(n);
-  setTimeout(function(){n.remove();}, 2600);
+  setTimeout(function(){if(n.parentNode)n.remove();}, 2600);
 }
 
 function updateBadges(){
   [0,1,2,3].forEach(function(i){
-    var t = TIERS[i];
-    var el = document.getElementById('tier'+i+'-badge');
-    var active = S.refCount>=t.min && (i===3 ? true : S.refCount<=t.max);
-    el.style.display = active ? 'inline' : 'none';
+    var t=TIERS[i], el=document.getElementById('tier'+i+'-badge');
+    el.style.display=(S.refCount>=t.min&&(i===3?true:S.refCount<=t.max))?'inline':'none';
   });
 }
 
 function renderHUD(){
-  var bonus = getBonus();
-  var ps = S.businesses.reduce(function(a,b){return a+b.inc;},0)*bonus;
-  document.getElementById('hud-coin').textContent = fmt(S.coins);
-  document.getElementById('hud-ps').textContent = fmt(ps);
-  document.getElementById('hud-ref').textContent = S.refCount;
-  document.getElementById('hud-bonus').textContent = 'x'+bonus.toFixed(2);
-  document.getElementById('mine-bonus').textContent = 'x'+bonus.toFixed(2);
-  document.getElementById('mine-bonus-sub').textContent = S.refCount+' arkadas';
-  document.getElementById('mine-tap').textContent = '+'+S.tapPower;
-  document.getElementById('rs-total').textContent = S.refCount;
-  document.getElementById('rs-earn').textContent = fmt(S.refEarned);
-  document.getElementById('ref-link').textContent = 't.me/ZRoFarmBOT?start=USR_'+userId;
+  var bonus=getBonus();
+  var ps=S.businesses.reduce(function(a,b){return a+(b.inc||0);},0)*bonus;
+  document.getElementById('hud-coin').textContent=fmt(S.coins);
+  document.getElementById('hud-ps').textContent=fmt(ps);
+  document.getElementById('hud-ref').textContent=S.refCount;
+  document.getElementById('hud-bonus').textContent='x'+bonus.toFixed(2);
+  document.getElementById('mine-bonus').textContent='x'+bonus.toFixed(2);
+  document.getElementById('mine-bonus-sub').textContent=S.refCount+' arkadas';
+  document.getElementById('mine-tap').textContent='+'+getTapPower();
+  document.getElementById('rs-total').textContent=S.refCount;
+  document.getElementById('rs-earn').textContent=fmt(S.refEarned);
+  document.getElementById('ref-link').textContent='t.me/ZRoFarmBOT?start=USR_'+userId;
 }
 
 function renderEnergy(){
-  var p = (S.energy/S.maxEnergy*100).toFixed(0);
-  document.getElementById('egy-bar').style.width = p+'%';
-  document.getElementById('egy-txt').textContent = Math.floor(S.energy)+'/'+S.maxEnergy;
+  var p=(S.energy/S.maxEnergy*100).toFixed(0);
+  document.getElementById('egy-bar').style.width=p+'%';
+  document.getElementById('egy-txt').textContent=Math.floor(S.energy)+'/'+S.maxEnergy;
 }
 
-function renderBiz(){
-  var el = document.getElementById('biz-list');
-  el.innerHTML = '';
-  var bonus = getBonus();
-  S.businesses.forEach(function(b){
-    var cost = b.lv===0 ? b.cost : Math.floor(b.base*Math.pow(1.5,b.lv));
-    var canBuy = S.coins >= cost;
-    var incB = b.lv>0 ? (b.inc*bonus) : 0;
-    var d = document.createElement('div');
-    d.className = 'biz-row';
-    d.innerHTML = '<div class="biz-icon">'+b.icon+'</div><div class="biz-info"><div class="biz-name">'+b.name+'</div><div class="biz-sub">'+(b.lv>0?'LV'+b.lv+' · +'+fmt(incB)+'/sn':'LOCKED')+'</div></div><button class="biz-btn'+(b.lv>0?' active':'')+'" '+(canBuy?'':'disabled')+' data-id="'+b.id+'">'+(b.lv===0?fmt(cost)+' C':fmt(cost)+' UP')+'</button>';
+function renderInventory(){
+  var el=document.getElementById('inv-grid');
+  el.innerHTML='';
+  S.items.forEach(function(item){
+    var def=ITEMS.find(function(x){return x.id===item.id;})||item;
+    var d=document.createElement('div');
+    d.className='inv-item'+(item.count>0?' has-item':'');
+    var boostActive=S.activeBoosts&&S.activeBoosts[item.id]&&Date.now()<S.activeBoosts[item.id];
+    d.innerHTML='<div class="inv-icon">'+def.icon+'</div>'+
+      '<div class="inv-name">'+def.name+'</div>'+
+      '<div class="inv-count">x'+item.count+'</div>'+
+      '<div class="inv-desc">'+def.desc+'</div>'+
+      (boostActive?'<div style="font-size:8px;color:#00ff96;margin-top:4px">AKTIF</div>':'')+
+      '<button class="use-btn" '+(item.count>0&&!boostActive?'':'disabled')+' data-item="'+item.id+'">KULLAN</button>';
     el.appendChild(d);
   });
-  el.querySelectorAll('[data-id]').forEach(function(btn){
+  el.querySelectorAll('[data-item]').forEach(function(btn){
     btn.addEventListener('click',function(){
-      var b = S.businesses[+btn.dataset.id];
-      var cost = b.lv===0 ? b.cost : Math.floor(b.base*Math.pow(1.5,b.lv));
-      if(S.coins<cost) return;
-      S.coins -= cost;
-      b.lv++;
-      b.inc = b.bInc * b.lv;
-      scheduleSave();
-      renderAll();
+      var iid=btn.dataset.item;
+      var item=S.items.find(function(x){return x.id===iid;});
+      if(!item||item.count<=0) return;
+      item.count--;
+      if(!S.activeBoosts) S.activeBoosts={};
+      if(iid==='kristal'){
+        S.activeBoosts.kristal=Date.now()+3600000;
+        showNotif('ZRC Kristali aktif! 1 saat boyunca tap 2x!');
+      } else if(iid==='reaktor'){
+        S.energy=S.maxEnergy;
+        showNotif('Enerji Reaktoru! Enerji tamamen doldu!');
+      }
+      scheduleSave(); renderAll();
     });
   });
 }
 
-function renderAll(){renderHUD();renderEnergy();renderBiz();updateBadges();}
+function renderUpgrades(){
+  var el=document.getElementById('upgrade-list');
+  el.innerHTML='';
+  S.upgrades.forEach(function(upg){
+    var def=UPGRADES.find(function(x){return x.id===upg.id;})||upg;
+    var maxLv=def.levels.length;
+    var isMax=upg.lv>=maxLv;
+    var now=Date.now();
+    var isUpgrading=upg.upgEnd&&upg.upgEnd>now;
+    var remSec=isUpgrading?Math.ceil((upg.upgEnd-now)/1000):0;
+    var nextLv=def.levels[upg.lv]||null;
+    var canBuy=!isMax&&!isUpgrading&&nextLv&&S.coins>=nextLv.cost;
+    var pct=isMax?100:Math.floor(upg.lv/maxLv*100);
+
+    var d=document.createElement('div');
+    d.className='upgrade-row';
+    d.innerHTML='<div class="upgrade-top">'+
+      '<div class="upgrade-icon">'+def.icon+'</div>'+
+      '<div class="upgrade-info">'+
+        '<div class="upgrade-name">'+def.name+'</div>'+
+        '<div class="upgrade-desc">'+def.desc+'</div>'+
+        '<div class="upgrade-lv">'+(isMax?'MAX SEVIYE':'Seviye '+upg.lv+' / '+maxLv)+'</div>'+
+        (nextLv?'<div class="upgrade-desc" style="color:rgba(0,255,150,0.5)">Sonraki: '+nextLv.bonus+'</div>':'')+
+      '</div>'+
+    '</div>'+
+    '<div class="upgrade-bottom">'+
+      '<div class="upgrade-prog-wrap">'+
+        '<div class="upgrade-prog-bar"><div class="upgrade-prog-fill" style="width:'+pct+'%"></div></div>'+
+        (isUpgrading?'<div class="upgrade-timer">⏳ '+fmtTime(remSec)+'</div>':'<div class="upgrade-prog-text">'+upg.lv+'/'+maxLv+'</div>')+
+      '</div>'+
+      '<div class="upgrade-btns">'+
+        (isMax?'<span style="font-size:9px;color:rgba(0,255,150,0.5)">TAMAMLANDI</span>':
+          isUpgrading?
+            '<button class="upg-btn ton" data-accel-upg="'+upg.id+'" data-secs="'+remSec+'">⚡ '+((remSec/3600)*0.1).toFixed(2)+' TON</button>'
+          :
+            (nextLv?'<button class="upg-btn" '+(canBuy?'':'disabled')+' data-buy-upg="'+upg.id+'">'+fmt(nextLv.cost)+' ZRC<br><span style="font-size:8px;opacity:0.6">'+fmtTime(nextLv.waitSec)+'</span></button>':'')+
+          ''
+        )+
+      '</div>'+
+    '</div>';
+    el.appendChild(d);
+  });
+
+  el.querySelectorAll('[data-buy-upg]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var uid=btn.dataset.buyUpg;
+      var upg=S.upgrades.find(function(x){return x.id===uid;});
+      var def=UPGRADES.find(function(x){return x.id===uid;});
+      if(!upg||!def) return;
+      var lv=def.levels[upg.lv];
+      if(!lv||S.coins<lv.cost) return;
+      S.coins-=lv.cost;
+      upg.upgEnd=Date.now()+lv.waitSec*1000;
+      S.dailyUpgDone++;
+      showNotif(def.name+' yukselme basladi! '+fmtTime(lv.waitSec)+' bekle.');
+      scheduleSave(); renderAll(); renderUpgrades();
+    });
+  });
+
+  el.querySelectorAll('[data-accel-upg]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var uid=btn.dataset.accelUpg;
+      var remSec=parseInt(btn.dataset.secs)||0;
+      var tonCost=((remSec/3600)*0.1).toFixed(2);
+      showNotif('TON entegrasyonu yakininda! ('+tonCost+' TON)');
+    });
+  });
+}
+
+function applyUpgradeEffects(){
+  var now=Date.now();
+  S.upgrades.forEach(function(upg){
+    var def=UPGRADES.find(function(x){return x.id===upg.id;});
+    if(!def) return;
+    // Bekleme suresi bitti mi?
+    if(upg.upgEnd&&upg.upgEnd<=now&&upg.lv<def.levels.length){
+      upg.lv++;
+      upg.upgEnd=0;
+      // Efektleri uygula
+      if(upg.id==='tap'){
+        var tapBonuses=[1,2,3,5,8,12];
+        S.tapPower=tapBonuses[upg.lv-1]||S.tapPower;
+      }
+      if(upg.id==='energy'){
+        var egBonuses=[200,300,500,1000,2000,5000];
+        var total=500;
+        for(var i=0;i<upg.lv;i++) total+=(egBonuses[i]||0);
+        S.maxEnergy=total;
+      }
+      if(upg.id==='regen'){
+        var rgBonuses=[2,3,5,8];
+        S.regenMult=rgBonuses[upg.lv-1]||S.regenMult;
+      }
+      showNotif(def.name+' Seviye '+upg.lv+' tamamlandi!');
+      scheduleSave();
+    }
+  });
+}
+
+function renderBiz(){
+  var el=document.getElementById('biz-list');
+  el.innerHTML='';
+  var bonus=getBonus();
+  var now=Date.now();
+  S.businesses.forEach(function(b){
+    var def=BUSINESSES.find(function(x){return x.id===b.id;})||b;
+    var cost=b.lv===0?b.cost:Math.floor(def.base*Math.pow(1.6,b.lv));
+    var canBuy=S.coins>=cost&&!b.upgEnd;
+    var isUpg=b.upgEnd&&b.upgEnd>now;
+    var remSec=isUpg?Math.ceil((b.upgEnd-now)/1000):0;
+    var upgWait=Math.floor(b.lv*b.lv*60);
+    var incB=b.lv>0?(b.inc*bonus):0;
+    var tonCost=isUpg?((remSec/3600)*0.1).toFixed(2):0;
+
+    var d=document.createElement('div');
+    d.className='biz-row';
+    d.innerHTML='<div class="biz-icon">'+def.icon+'</div>'+
+      '<div class="biz-info">'+
+        '<div class="biz-name">'+def.name+'</div>'+
+        '<div class="biz-sub">'+(b.lv>0?'LV'+b.lv+' · +'+fmt(incB)+' ZRC/sn':'LOCKED')+'</div>'+
+        (isUpg?'<div class="biz-timer">⏳ '+fmtTime(remSec)+'</div>':'')+
+      '</div>'+
+      '<div class="biz-right">'+
+        (isUpg?
+          '<button class="biz-accel" data-accel="'+b.id+'" data-secs="'+remSec+'">⚡ '+tonCost+' TON</button>'
+        :
+          '<button class="biz-btn'+(b.lv>0?' active':'')+'" '+(canBuy?'':'disabled')+' data-id="'+b.id+'">'+
+            (b.lv===0?fmt(cost)+' ZRC':fmt(cost)+' UP')+
+            (b.lv>0?'<br><span style="font-size:8px;opacity:0.5">'+fmtTime(upgWait)+'</span>':'')+
+          '</button>'
+        )+
+      '</div>';
+    el.appendChild(d);
+  });
+
+  el.querySelectorAll('[data-id]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var b=S.businesses.find(function(x){return x.id===+btn.dataset.id;});
+      var def=BUSINESSES.find(function(x){return x.id===+btn.dataset.id;});
+      if(!b||!def) return;
+      var cost=b.lv===0?b.cost:Math.floor(def.base*Math.pow(1.6,b.lv));
+      if(S.coins<cost) return;
+      S.coins-=cost;
+      var waitSec=Math.floor(b.lv*b.lv*60);
+      if(b.lv===0||waitSec===0){
+        b.lv++; b.inc=def.bInc*b.lv; b.upgEnd=0;
+      } else {
+        b.upgEnd=Date.now()+waitSec*1000;
+        showNotif(def.name+' yukselme basladi! '+fmtTime(waitSec)+' bekle.');
+      }
+      S.dailyBizBought++;
+      scheduleSave(); renderAll();
+    });
+  });
+
+  el.querySelectorAll('[data-accel]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var remSec=parseInt(btn.dataset.secs)||0;
+      var tonCost=((remSec/3600)*0.1).toFixed(2);
+      showNotif('TON ile hizlandir: '+tonCost+' TON — yakininda!');
+    });
+  });
+}
+
+function applyBizUpgrades(){
+  var now=Date.now();
+  S.businesses.forEach(function(b){
+    if(b.upgEnd&&b.upgEnd<=now&&b.upgEnd>0){
+      var def=BUSINESSES.find(function(x){return x.id===b.id;});
+      b.lv++; b.inc=(def?def.bInc:1)*b.lv; b.upgEnd=0;
+      showNotif((def?def.name:'Isletme')+' Seviye '+b.lv+' tamamlandi!');
+      scheduleSave();
+    }
+  });
+}
+
+function getQuestProg(q){
+  if(q.type==='tap')   return Math.min(S.dailyTaps,q.target);
+  if(q.type==='earn')  return Math.min(S.dailyEarned,q.target);
+  if(q.type==='biz')   return Math.min(S.dailyBizBought,q.target);
+  if(q.type==='upg')   return Math.min(S.dailyUpgDone,q.target);
+  if(q.type==='ref')   return Math.min(S.refCount,q.target);
+  if(q.type==='login') return 1;
+  return 0;
+}
+
+function renderQuests(){
+  var el=document.getElementById('quest-list');
+  el.innerHTML='';
+  QUESTS.forEach(function(q){
+    var prog=getQuestProg(q);
+    var done=prog>=q.target;
+    var claimed=!!S.questsClaimed[q.id];
+    var pct=Math.min(100,Math.floor(prog/q.target*100));
+    var d=document.createElement('div');
+    d.className='quest-card'+(claimed?' claimed':'');
+    d.innerHTML='<div class="quest-icon">'+q.icon+'</div>'+
+      '<div class="quest-info">'+
+        '<div class="quest-name">'+q.name+'</div>'+
+        '<div class="quest-desc">'+q.desc+'</div>'+
+        '<div class="quest-prog-bar"><div class="quest-prog-fill" style="width:'+pct+'%"></div></div>'+
+        '<div class="quest-prog-text">'+fmt(prog)+' / '+fmt(q.target)+'</div>'+
+        (!claimed&&done?'<button class="quest-claim-btn" data-qid="'+q.id+'">AL +'+fmt(q.reward)+' ZRC'+(q.itemReward?' + ESYA':' ')+'</button>':'')+
+      '</div>'+
+      '<div class="quest-right">'+
+        '<div class="quest-reward">+'+fmt(q.reward)+'</div>'+
+        '<div class="quest-reward-sub">ZRC</div>'+
+        (q.itemReward?'<div style="font-size:9px;color:rgba(255,200,0,0.6);margin-top:2px">+ESYA</div>':'')+
+        (claimed?'<div class="quest-done-badge">ALINDI</div>':'')+
+      '</div>';
+    el.appendChild(d);
+  });
+
+  el.querySelectorAll('[data-qid]').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var qid=btn.dataset.qid;
+      var q=QUESTS.find(function(x){return x.id===qid;});
+      if(!q||S.questsClaimed[qid]) return;
+      S.questsClaimed[qid]=true;
+      S.coins+=q.reward;
+      if(q.itemReward){
+        var item=S.items.find(function(x){return x.id===q.itemReward;});
+        if(item) item.count++;
+        var def=ITEMS.find(function(x){return x.id===q.itemReward;});
+        showNotif('Gorev tamam! +'+fmt(q.reward)+' ZRC + '+(def?def.name:'Esya')+'!');
+      } else {
+        showNotif('Gorev tamam! +'+fmt(q.reward)+' ZRC kazandin!');
+      }
+      scheduleSave(); renderAll(); renderQuests();
+    });
+  });
+}
+
+function renderAll(){renderHUD();renderEnergy();renderBiz();renderInventory();updateBadges();}
+
+// Timer guncelle
+function updateTimer(){
+  var now=new Date(), midnight=new Date(now);
+  midnight.setHours(24,0,0,0);
+  var diff=Math.floor((midnight-now)/1000);
+  var h=Math.floor(diff/3600),m=Math.floor((diff%3600)/60),s=diff%60;
+  var el=document.getElementById('quest-timer');
+  if(el) el.textContent=(h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+}
+setInterval(updateTimer,1000); updateTimer();
 
 // Sphere
-var canvas = document.getElementById('sphere-canvas');
-var ctx = canvas.getContext('2d');
+var canvas=document.getElementById('sphere-canvas');
+var ctx=canvas.getContext('2d');
 var angle=0,pulseR=0,pulseA=0;
 function drawSphere(){
   ctx.clearRect(0,0,150,150);
@@ -430,8 +754,7 @@ function drawSphere(){
   for(var i=0;i<nc;i++){var a=angle*1.5+i*(Math.PI*2/nc);var nx=cx+Math.cos(a)*r*0.72;var ny=cy+Math.sin(a)*r*0.52;ctx.beginPath();ctx.arc(nx,ny,2,0,Math.PI*2);ctx.fillStyle='hsla('+hue+',100%,70%,'+(0.4+0.4*Math.sin(angle*3+i))+')';ctx.fill();}
   if(pulseA>0){ctx.beginPath();ctx.arc(cx,cy,r+pulseR,0,Math.PI*2);ctx.strokeStyle='hsla('+hue+',100%,65%,'+pulseA+')';ctx.lineWidth=1.5;ctx.stroke();pulseR+=2.5;pulseA-=0.04;}
   ctx.beginPath();ctx.arc(cx-16,cy-18,12,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.06)';ctx.fill();
-  angle+=0.012;
-  requestAnimationFrame(drawSphere);
+  angle+=0.012; requestAnimationFrame(drawSphere);
 }
 drawSphere();
 
@@ -439,58 +762,104 @@ function handleTap(e){
   e.preventDefault();
   if(S.energy<=0) return;
   var bonus=getBonus();
-  var earned=Math.ceil(S.tapPower*bonus);
-  S.coins+=earned;S.totalEarned+=earned;S.energy=Math.max(0,S.energy-1);
-  pulseR=0;pulseA=0.85;
+  var tp=getTapPower();
+  var earned=Math.ceil(tp*bonus);
+  S.coins+=earned; S.totalEarned+=earned; S.dailyTaps++; S.dailyEarned+=earned;
+  S.energy=Math.max(0,S.energy-1);
+  pulseR=0; pulseA=0.85;
   var wrap=document.getElementById('sphere-wrap');
   var sp=document.createElement('div');
   sp.className='float-plus';
-  sp.textContent='+'+earned;
-  sp.style.cssText='left:'+(55+Math.random()*40)+'px;top:16px;';
+  sp.textContent='+'+earned+' ZRC';
+  sp.style.cssText='left:'+(40+Math.random()*50)+'px;top:16px;';
   wrap.appendChild(sp);
-  setTimeout(function(){sp.remove();},800);
-  scheduleSave();
-  renderAll();
+  setTimeout(function(){if(sp.parentNode)sp.remove();},800);
+  scheduleSave(); renderAll();
 }
 canvas.addEventListener('touchstart',handleTap,{passive:false});
-canvas.addEventListener('click',function(e){
-  if(S.energy<=0) return;
-  var bonus=getBonus();
-  var earned=Math.ceil(S.tapPower*bonus);
-  S.coins+=earned;S.totalEarned+=earned;S.energy=Math.max(0,S.energy-1);
-  pulseR=0;pulseA=0.85;
-  var wrap=document.getElementById('sphere-wrap');
-  var sp=document.createElement('div');
-  sp.className='float-plus';
-  sp.textContent='+'+earned;
-  sp.style.cssText='left:'+(55+Math.random()*40)+'px;top:16px;';
-  wrap.appendChild(sp);
-  setTimeout(function(){sp.remove();},800);
-  scheduleSave();
-  renderAll();
-});
+canvas.addEventListener('click',handleTap);
 
 setInterval(function(){
+  applyUpgradeEffects();
+  applyBizUpgrades();
   var bonus=getBonus();
-  var inc=S.businesses.reduce(function(a,b){return a+b.inc;},0)*bonus;
-  if(inc>0){S.coins+=inc;S.totalEarned+=inc;}
-  if(S.energy<S.maxEnergy) S.energy=Math.min(S.maxEnergy,S.energy+1);
+  var inc=S.businesses.reduce(function(a,b){return a+(b.inc||0);},0)*bonus;
+  if(inc>0){S.coins+=inc; S.totalEarned+=inc; S.dailyEarned+=inc;}
+  if(S.energy<S.maxEnergy) S.energy=Math.min(S.maxEnergy,S.energy+S.regenMult);
   renderAll();
 },1000);
 
-// Her 30 saniyede otomatik kaydet
-setInterval(function(){
-  saveGame();
-},30000);
+setInterval(function(){saveGame();},30000);
 
-// Baslangic
-document.getElementById('u-name').textContent = user ? (user.first_name||(user.username||'PLAYER')).toUpperCase() : 'PLAYER';
-document.getElementById('u-id').textContent = 'ID: ' + userId;
-document.getElementById('u-avatar').textContent = user && user.first_name ? user.first_name[0].toUpperCase() : '👤';
+// API
+async function apiLogin(){
+  try {
+    var res=await fetch(API+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({user_id:userId,username:user?user.username:'',first_name:user?user.first_name:'Player',ref_code:refCode})});
+    var data=await res.json();
+    if(data.success&&data.user){
+      var u=data.user;
+      S.coins=u.coins||0; S.energy=u.energy||500; S.tapPower=u.tap_power||1;
+      S.refCount=u.ref_count||0; S.refEarned=u.ref_earned||0;
+      if(u.businesses&&u.businesses.length>0) S.businesses=u.businesses;
+      if(refCode) showNotif('Referral ile katildin! +500 ZRC bonusu!');
+    }
+  } catch(e){console.log('API hatasi:',e);}
+}
+
+function scheduleSave(){
+  if(saveTimer) clearTimeout(saveTimer);
+  saveTimer=setTimeout(saveGame,5000);
+  document.getElementById('save-ind').textContent='● KAYDEDILIYOR';
+  document.getElementById('save-ind').style.color='rgba(255,200,0,0.6)';
+}
+
+async function saveGame(){
+  try {
+    await fetch(API+'/api/save',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({user_id:userId,coins:Math.floor(S.coins),energy:Math.floor(S.energy),
+        tap_power:S.tapPower,businesses:S.businesses,ref_count:S.refCount,ref_earned:S.refEarned})});
+    document.getElementById('save-ind').textContent='● KAYITLI';
+    document.getElementById('save-ind').style.color='rgba(0,255,150,0.5)';
+  } catch(e){
+    document.getElementById('save-ind').textContent='● HATA';
+    document.getElementById('save-ind').style.color='rgba(255,80,80,0.6)';
+  }
+}
+
+async function loadReferrals(){
+  try {
+    var res=await fetch(API+'/api/referrals/'+userId);
+    var data=await res.json();
+    if(data.success&&data.referrals){
+      S.refCount=data.referrals.length;
+      var el=document.getElementById('friend-list');
+      if(data.referrals.length===0){
+        el.innerHTML='<div style="font-size:10px;color:rgba(0,220,255,0.3);text-align:center;padding:16px;">Henuz kimse yok - davet et!</div>';
+      } else {
+        el.innerHTML='';
+        data.referrals.forEach(function(f){
+          var d=document.createElement('div'); d.className='friend-row';
+          var name=(f.first_name||f.username||'Player').toUpperCase();
+          var earned=Math.floor((f.coins||0)*0.1);
+          d.innerHTML='<div class="friend-avatar">👤</div><div class="friend-info"><div class="friend-name">'+name+'</div><div class="friend-sub">'+fmt(f.coins||0)+' ZRC</div></div><div class="friend-earn">+'+fmt(earned)+'</div>';
+          el.appendChild(d);
+        });
+      }
+      document.getElementById('rs-active').textContent=data.referrals.length;
+      renderHUD();
+    }
+  } catch(e){}
+}
+
+document.getElementById('u-name').textContent=user?(user.first_name||(user.username||'PLAYER')).toUpperCase():'PLAYER';
+document.getElementById('u-id').textContent='ID: '+userId;
+document.getElementById('u-avatar').textContent=user&&user.first_name?user.first_name[0].toUpperCase():'👤';
+checkDailyReset();
 
 apiLogin().then(function(){
-  document.getElementById('loading').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
+  document.getElementById('loading').style.display='none';
+  document.getElementById('app').style.display='block';
   renderAll();
 });
 </script>
