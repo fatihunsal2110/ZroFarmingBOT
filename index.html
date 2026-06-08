@@ -810,18 +810,39 @@ setInterval(function(){saveGame();},30000);
 
 // API
 async function apiLogin(){
-  try {
-    var res=await fetch(API+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({user_id:userId,username:user?user.username:'',first_name:user?user.first_name:'Player',ref_code:refCode})});
-    var data=await res.json();
-    if(data.success&&data.user){
-      var u=data.user;
-      S.coins=u.coins||0; S.energy=u.energy||500; S.tapPower=u.tap_power||1;
-      S.refCount=u.ref_count||0; S.refEarned=u.ref_earned||0;
-      if(u.businesses&&u.businesses.length>0) S.businesses=u.businesses;
-      if(refCode) showNotif('Referral ile katildin! +500 ZRC bonusu!');
+  var maxRetry = 3;
+  for(var attempt=1; attempt<=maxRetry; attempt++){
+    try {
+      var controller = new AbortController();
+      var timeout = setTimeout(function(){ controller.abort(); }, 15000);
+      var res = await fetch(API+'/api/login', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({user_id:userId, username:user?user.username:'', first_name:user?user.first_name:'Player', ref_code:refCode}),
+        signal: controller.signal
+      });
+      clearTimeout(timeout);
+      var data = await res.json();
+      if(data.success && data.user){
+        var u = data.user;
+        S.coins = u.coins||0;
+        S.energy = u.energy||500;
+        S.tapPower = u.tap_power||1;
+        S.refCount = u.ref_count||0;
+        S.refEarned = u.ref_earned||0;
+        if(u.businesses && u.businesses.length>0) S.businesses = u.businesses;
+        if(refCode) showNotif('Referral ile katildin! +500 ZRC bonusu!');
+        console.log('Login basarili, coins:', S.coins);
+        return;
+      }
+    } catch(e){
+      console.log('API denemesi '+attempt+' basarisiz:', e.message);
+      if(attempt < maxRetry){
+        await new Promise(function(r){ setTimeout(r, 3000); });
+      }
     }
-  } catch(e){console.log('API hatasi:',e);}
+  }
+  console.log('API baglanamadi, lokal mod aktif');
 }
 
 function scheduleSave(){
@@ -832,15 +853,37 @@ function scheduleSave(){
 }
 
 async function saveGame(){
+  // Once localStorage'a kaydet (anlik yedek)
   try {
-    await fetch(API+'/api/save',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({user_id:userId,coins:Math.floor(S.coins),energy:Math.floor(S.energy),
-        tap_power:S.tapPower,businesses:S.businesses,ref_count:S.refCount,ref_earned:S.refEarned})});
+    localStorage.setItem('zro_coins', Math.floor(S.coins));
+    localStorage.setItem('zro_energy', Math.floor(S.energy));
+    localStorage.setItem('zro_tappower', S.tapPower);
+    localStorage.setItem('zro_businesses', JSON.stringify(S.businesses));
+  } catch(e){}
+
+  try {
+    var controller = new AbortController();
+    var timeout = setTimeout(function(){ controller.abort(); }, 10000);
+    await fetch(API+'/api/save', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        user_id: userId,
+        coins: Math.floor(S.coins),
+        energy: Math.floor(S.energy),
+        tap_power: S.tapPower,
+        businesses: S.businesses,
+        ref_count: S.refCount,
+        ref_earned: S.refEarned
+      }),
+      signal: controller.signal
+    });
+    clearTimeout(timeout);
     document.getElementById('save-ind').textContent='● KAYITLI';
     document.getElementById('save-ind').style.color='rgba(0,255,150,0.5)';
   } catch(e){
-    document.getElementById('save-ind').textContent='● HATA';
-    document.getElementById('save-ind').style.color='rgba(255,80,80,0.6)';
+    document.getElementById('save-ind').textContent='● LOKAL';
+    document.getElementById('save-ind').style.color='rgba(255,180,0,0.6)';
   }
 }
 
