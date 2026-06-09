@@ -876,14 +876,14 @@ console.log('TG user:', user, 'userId:', userId);
 var TIERS = [{min:1,max:2,mult:1.25},{min:3,max:5,mult:1.75},{min:6,max:9,mult:2.5},{min:10,max:999,mult:4.0}];
 
 var BUSINESSES = [
-  {id:0, name:'NODE WALLET',   icon:'💳', base:50,    bInc:0.5,  lv:0, cost:50,    inc:0, upgTime:0, upgEnd:0},
-  {id:1, name:'MINING FARM',   icon:'⛏️', base:200,   bInc:2,    lv:0, cost:200,   inc:0, upgTime:0, upgEnd:0},
-  {id:2, name:'CRYPTO DEX',    icon:'📈', base:800,   bInc:8,    lv:0, cost:800,   inc:0, upgTime:0, upgEnd:0},
-  {id:3, name:'DEFI PROTOCOL', icon:'🔗', base:3000,  bInc:30,   lv:0, cost:3000,  inc:0, upgTime:0, upgEnd:0},
-  {id:4, name:'NFT MATRIX',    icon:'🖼️', base:10000, bInc:100,  lv:0, cost:10000, inc:0, upgTime:0, upgEnd:0},
-  {id:5, name:'AI ORACLE',     icon:'🤖', base:35000, bInc:350,  lv:0, cost:35000, inc:0, upgTime:0, upgEnd:0},
-  {id:6, name:'QUANTUM VAULT', icon:'🔮', base:120000,bInc:1200, lv:0, cost:120000,inc:0, upgTime:0, upgEnd:0},
-  {id:7, name:'DARK CHAIN',    icon:'⛓️', base:400000,bInc:4000, lv:0, cost:400000,inc:0, upgTime:0, upgEnd:0},
+  {id:0, name:'NODE WALLET',   icon:'💳', base:500,     bInc:0.1,  lv:0, cost:500,     inc:0, upgTime:0, upgEnd:0},
+  {id:1, name:'MINING FARM',   icon:'⛏️', base:2000,    bInc:0.5,  lv:0, cost:2000,    inc:0, upgTime:0, upgEnd:0},
+  {id:2, name:'CRYPTO DEX',    icon:'📈', base:8000,    bInc:2,    lv:0, cost:8000,    inc:0, upgTime:0, upgEnd:0},
+  {id:3, name:'DEFI PROTOCOL', icon:'🔗', base:30000,   bInc:8,    lv:0, cost:30000,   inc:0, upgTime:0, upgEnd:0},
+  {id:4, name:'NFT MATRIX',    icon:'🖼️', base:100000,  bInc:25,   lv:0, cost:100000,  inc:0, upgTime:0, upgEnd:0},
+  {id:5, name:'AI ORACLE',     icon:'🤖', base:350000,  bInc:80,   lv:0, cost:350000,  inc:0, upgTime:0, upgEnd:0},
+  {id:6, name:'QUANTUM VAULT', icon:'🔮', base:1200000, bInc:250,  lv:0, cost:1200000, inc:0, upgTime:0, upgEnd:0},
+  {id:7, name:'DARK CHAIN',    icon:'⛓️', base:4000000, bInc:800,  lv:0, cost:4000000, inc:0, upgTime:0, upgEnd:0},
 ];
 
 // Yukseltme sistemi — her seviyede bekleme suresi artar
@@ -891,34 +891,34 @@ var UPGRADES = [
   {
     id:'tap', icon:'👆', name:'TAP GUCU', desc:'Her tap daha fazla ZRC kazandir',
     levels:[
-      {cost:500,   waitSec:60,    bonus:'Tap +1 ZRC'},
-      {cost:2000,  waitSec:300,   bonus:'Tap +2 ZRC'},
-      {cost:8000,  waitSec:900,   bonus:'Tap +3 ZRC'},
-      {cost:25000, waitSec:3600,  bonus:'Tap +5 ZRC'},
-      {cost:80000, waitSec:7200,  bonus:'Tap +8 ZRC'},
-      {cost:250000,waitSec:14400, bonus:'Tap +12 ZRC'},
+      {cost:2000,   waitSec:300,   bonus:'Tap +1 ZRC'},
+      {cost:10000,  waitSec:1800,  bonus:'Tap +2 ZRC'},
+      {cost:40000,  waitSec:7200,  bonus:'Tap +3 ZRC'},
+      {cost:150000, waitSec:21600, bonus:'Tap +5 ZRC'},
+      {cost:500000, waitSec:43200, bonus:'Tap +8 ZRC'},
+      {cost:1500000,waitSec:86400, bonus:'Tap +12 ZRC'},
     ],
     lv:0, upgEnd:0
   },
   {
     id:'energy', icon:'⚡', name:'ENERJI KAPASITESI', desc:'Maksimum enerji miktarini artir',
     levels:[
-      {cost:300,   waitSec:60,    bonus:'Enerji +200'},
-      {cost:1500,  waitSec:300,   bonus:'Enerji +300'},
-      {cost:6000,  waitSec:900,   bonus:'Enerji +500'},
-      {cost:20000, waitSec:3600,  bonus:'Enerji +1000'},
-      {cost:60000, waitSec:7200,  bonus:'Enerji +2000'},
-      {cost:200000,waitSec:14400, bonus:'Enerji +5000'},
+      {cost:1500,   waitSec:300,   bonus:'Enerji +200'},
+      {cost:8000,   waitSec:1800,  bonus:'Enerji +300'},
+      {cost:30000,  waitSec:7200,  bonus:'Enerji +500'},
+      {cost:100000, waitSec:21600, bonus:'Enerji +1000'},
+      {cost:350000, waitSec:43200, bonus:'Enerji +2000'},
+      {cost:1000000,waitSec:86400, bonus:'Enerji +5000'},
     ],
     lv:0, upgEnd:0
   },
   {
     id:'regen', icon:'🔋', name:'ENERJI YENILEME', desc:'Enerji daha hizli yenilenir',
     levels:[
-      {cost:1000,  waitSec:120,   bonus:'2x hizli yenileme'},
-      {cost:5000,  waitSec:600,   bonus:'3x hizli yenileme'},
-      {cost:18000, waitSec:1800,  bonus:'5x hizli yenileme'},
-      {cost:60000, waitSec:7200,  bonus:'8x hizli yenileme'},
+      {cost:5000,   waitSec:1800,  bonus:'2x hizli yenileme'},
+      {cost:25000,  waitSec:7200,  bonus:'3x hizli yenileme'},
+      {cost:100000, waitSec:21600, bonus:'5x hizli yenileme'},
+      {cost:350000, waitSec:43200, bonus:'8x hizli yenileme'},
     ],
     lv:0, upgEnd:0
   },
