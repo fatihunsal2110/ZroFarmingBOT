@@ -1778,12 +1778,12 @@ var TON_PACKAGES = [
 var PREMIUM = {
   id:'premium', icon:'👑', ton:10,
   perks:[
-    {icon:'🚀', text:'Farm bonusu kalıcı x2'},
-    {icon:'⚡', text:'Enerji kapasitesi x2'},
-    {icon:'🎯', text:'Günlük görev ödülleri x2'},
-    {icon:'💎', text:'Özel premium rozet'},
-    {icon:'📊', text:'Gelişmiş istatistikler'},
-    {icon:'🏆', text:'Premium işletme kilidi açılır'},
+    {icon:'🚀', texts:{tr:'Farm bonusu kalıcı x2',en:'Permanent farm bonus x2',ru:'Постоянный бонус фарма x2',zh:'永久农场奖励x2',ar:'مكافأة زراعة دائمة x2',es:'Bono de farm permanente x2',hi:'स्थायी फार्म बोनस x2'}},
+    {icon:'⚡', texts:{tr:'Enerji kapasitesi x2',en:'Energy capacity x2',ru:'Ёмкость энергии x2',zh:'能量容量x2',ar:'طاقة x2',es:'Capacidad de energía x2',hi:'ऊर्जा क्षमता x2'}},
+    {icon:'🎯', texts:{tr:'Günlük görev ödülleri x2',en:'Daily quest rewards x2',ru:'Ежедневные задания x2',zh:'每日任务奖励x2',ar:'مكافآت المهام x2',es:'Recompensas diarias x2',hi:'दैनिक पुरस्कार x2'}},
+    {icon:'💎', texts:{tr:'Özel premium rozet',en:'Exclusive premium badge',ru:'Эксклюзивный значок',zh:'专属徽章',ar:'شارة مميزة',es:'Insignia premium exclusiva',hi:'विशेष बैज'}},
+    {icon:'📊', texts:{tr:'Gelişmiş istatistikler',en:'Advanced statistics',ru:'Расширенная статистика',zh:'高级统计',ar:'إحصاءات متقدمة',es:'Estadísticas avanzadas',hi:'उन्नत आँकड़े'}},
+    {icon:'🏆', texts:{tr:'Premium işletme kilidi açılır',en:'Premium business unlocked',ru:'Премиум-бизнес открыт',zh:'高级商业解锁',ar:'فتح الأعمال المميزة',es:'Negocio premium desbloqueado',hi:'प्रीमियम व्यवसाय अनलॉक'}},
   ]
 };
 
@@ -1822,7 +1822,8 @@ function renderTonBoosts(){
   // Boost paketleri
   var pkgTitle = document.createElement('div');
   pkgTitle.style.cssText = 'font-size:9px;letter-spacing:0.15em;color:rgba(0,220,255,0.4);margin-bottom:4px;';
-  pkgTitle.textContent = '// BOOST PAKETLERİ';
+  var boostTitles = {tr:'// BOOST PAKETLERİ',en:'// BOOST PACKAGES',ru:'// ПАКЕТЫ БУСТА',zh:'// 加速包',ar:'// حزم التعزيز',es:'// PAQUETES BOOST',hi:'// बूस्ट पैकेज'};
+  pkgTitle.textContent = boostTitles[currentLang]||boostTitles['en'];
   el.appendChild(pkgTitle);
 
   TON_PACKAGES.forEach(function(pkg){
@@ -1839,7 +1840,7 @@ function renderTonBoosts(){
           '<span style="font-size:8px;background:'+pkg.border+';border-radius:3px;padding:1px 5px;color:#e0eaff;opacity:0.7;">'+pkg.tier+'</span>'+
         '</div>'+
         '<div style="font-size:9px;color:rgba(200,220,255,0.5);">'+getBoostDesc(pkg)+'</div>'+
-        (active?'<div style="font-size:9px;color:#00ff96;margin-top:3px;">✓ AKTİF — '+remStr+'</div>':'')+
+        (active?'<div style="font-size:9px;color:#00ff96;margin-top:3px;">✓ '+(L.active||'ACTIVE')+' — '+remStr+'</div>':'')+ 
       '</div>'+
       '<button style="flex-shrink:0;background:rgba(80,120,255,0.15);border:1px solid '+pkg.border+';border-radius:6px;padding:7px 10px;font-family:Share Tech Mono,monospace;font-size:10px;color:#8ab0ff;cursor:pointer;white-space:nowrap;'+( active?'opacity:0.4;':'')+'" '+(active?'disabled':'')+' data-pkg="'+pkg.id+'">'+
         (active?'✓':'⬡ '+pkg.prices.ton+' TON')+
@@ -1849,17 +1850,19 @@ function renderTonBoosts(){
 
   // Premium kutu
   var premActive = S.isPremium;
+  var premSubs = {tr:'Kalıcı özel avantajlar',en:'Permanent exclusive perks',ru:'Постоянные привилегии',zh:'永久专属特权',ar:'مزايا حصرية دائمة',es:'Ventajas exclusivas permanentes',hi:'स्थायी विशेष लाभ'};
+  var premSub = premSubs[currentLang]||premSubs['en'];
   var premDiv = document.createElement('div');
   premDiv.style.cssText = 'background:linear-gradient(135deg,rgba(150,50,255,0.1),rgba(255,150,0,0.08));border:1px solid rgba(200,100,255,0.4);border-radius:10px;padding:14px;margin-top:6px;';
-  var perksHtml = PREMIUM.perks.map(function(p){ return '<div style="font-size:10px;color:rgba(200,180,255,0.7);padding:3px 0;">'+p.icon+' '+p.text+'</div>'; }).join('');
+  var perksHtml = PREMIUM.perks.map(function(p){ return '<div style="font-size:10px;color:rgba(200,180,255,0.7);padding:3px 0;">'+p.icon+' '+(p.texts[currentLang]||p.texts['en'])+'</div>'; }).join('');
   premDiv.innerHTML =
     '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'+
       '<div>'+
         '<div style="font-family:Orbitron,monospace;font-size:13px;color:#f0c0ff;letter-spacing:0.1em;">👑 PREMIUM</div>'+
-        '<div style="font-size:9px;color:rgba(200,150,255,0.5);margin-top:2px;">Kalıcı özel avantajlar</div>'+
+        '<div style="font-size:9px;color:rgba(200,150,255,0.5);margin-top:2px;">'+(premSub)+'</div>'+
       '</div>'+
       '<button style="background:linear-gradient(135deg,rgba(150,50,255,0.3),rgba(255,100,200,0.2));border:1px solid rgba(200,100,255,0.5);border-radius:6px;padding:8px 12px;font-family:Orbitron,monospace;font-size:11px;color:#f0c0ff;cursor:pointer;'+(premActive?'opacity:0.4;':'')+'" '+(premActive?'disabled':'')+' id="premium-btn">'+
-        (premActive?'👑 AKTİF':'⬡ 10 TON')+
+        (premActive?'👑 '+(L.active||'ACTIVE'):'⬡ 10 TON')+
       '</button>'+
     '</div>'+
     perksHtml;
