@@ -217,6 +217,15 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
     </div>
 
     <div class="settings-section">
+      <div class="settings-section-title" id="settings-wallet-title">// TON WALLET</div>
+      <div id="wallet-status-wrap" style="margin-bottom:10px;"></div>
+      <div style="display:flex;gap:8px;">
+        <button id="wallet-connect-btn" onclick="handleWalletConnect()" style="flex:1;padding:9px;background:rgba(80,120,255,0.1);border:1px solid rgba(80,120,255,0.3);border-radius:6px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#8ab0ff;cursor:pointer;">⬡ WALLET BAĞLA</button>
+        <button id="wallet-disconnect-btn" onclick="handleWalletDisconnect()" style="flex:1;padding:9px;background:rgba(255,80,80,0.08);border:1px solid rgba(255,80,80,0.2);border-radius:6px;font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(255,100,100,0.7);cursor:pointer;display:none;">✕ BAĞLANTIYI KES</button>
+      </div>
+    </div>
+
+    <div class="settings-section">
       <div class="settings-section-title" id="settings-app-title">// UYGULAMA</div>
       <div class="settings-info-row"><span class="settings-info-label" id="settings-version-label">Versiyon</span><span class="settings-info-val" id="settings-version">v1.0.0</span></div>
       <div class="settings-info-row"><span class="settings-info-label">Bot</span><span class="settings-info-val">@ZRoFarmBOT</span></div>
@@ -262,7 +271,6 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
     <button class="tab" onclick="switchTab('biz')">ISLETME</button>
     <button class="tab" onclick="switchTab('quest')">GOREV</button>
     <button class="tab" onclick="switchTab('ref')">REF</button>
-    <button class="tab" onclick="switchTab('leader')">TOP</button>
     <button class="tab" onclick="switchTab('ton')">TON</button>
     <button class="tab" onclick="switchTab('wheel')">🎰</button>
     <button class="tab" onclick="switchTab('ach')">🏆</button>
@@ -1430,13 +1438,12 @@ function fmtTime(sec){
 }
 
 function switchTab(t){
-  document.querySelectorAll('.tab').forEach(function(b,i){b.classList.toggle('active',['mine','upgrade','biz','quest','ref','leader','ton','wheel','ach'][i]===t);});
+  document.querySelectorAll('.tab').forEach(function(b,i){b.classList.toggle('active',['mine','upgrade','biz','quest','ref','ton','wheel','ach'][i]===t);});
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
   document.getElementById('tab-'+t).classList.add('active');
   if(t==='ref') loadReferrals();
   if(t==='quest') renderQuests();
   if(t==='upgrade') renderUpgrades();
-  if(t==='leader') loadLeaderboard();
   if(t==='ton') renderTonBoosts();
   if(t==='wheel') renderWheel();
   if(t==='ach') renderAchievements();
@@ -2384,6 +2391,62 @@ function renderTonBoosts(){
 }
 
 
+function updateWalletUI(){
+  var statusWrap = document.getElementById('wallet-status-wrap');
+  var connectBtn = document.getElementById('wallet-connect-btn');
+  var disconnectBtn = document.getElementById('wallet-disconnect-btn');
+  if(!statusWrap) return;
+
+  var walletTitles={tr:'// TON WALLET',en:'// TON WALLET',ru:'// TON КОШЕЛЁК',zh:'// TON 钱包',ar:'// محفظة TON',es:'// BILLETERA TON',hi:'// TON वॉलेट'};
+  var wt = document.getElementById('settings-wallet-title');
+  if(wt) wt.textContent = walletTitles[currentLang]||walletTitles['en'];
+
+  if(tonConnectUI && tonConnectUI.connected){
+    var wallet = tonConnectUI.wallet;
+    var addr = wallet ? wallet.account.address : '';
+    var shortAddr = addr ? addr.substring(0,6)+'...'+addr.substring(addr.length-4) : '---';
+    statusWrap.innerHTML = '<div style="background:rgba(0,255,150,0.06);border:1px solid rgba(0,255,150,0.2);border-radius:6px;padding:8px 12px;font-size:10px;color:#00ff96;">✓ '+(connectedTxts[currentLang]||connectedTxts['en'])+': '+shortAddr+'</div>';
+    if(connectBtn) connectBtn.style.display='none';
+    if(disconnectBtn) disconnectBtn.style.display='block';
+  } else {
+    var notConnTxts={tr:'Cüzdan bağlı değil',en:'No wallet connected',ru:'Кошелёк не подключён',zh:'未连接钱包',ar:'لا توجد محفظة متصلة',es:'Sin billetera conectada',hi:'कोई वॉलेट नहीं जुड़ा'};
+    statusWrap.innerHTML = '<div style="font-size:10px;color:rgba(0,220,255,0.35);">'+(notConnTxts[currentLang]||notConnTxts['en'])+'</div>';
+    if(connectBtn) connectBtn.style.display='block';
+    if(disconnectBtn) disconnectBtn.style.display='none';
+  }
+
+  // Bağla buton metni
+  var connBtnTxts={tr:'⬡ WALLET BAĞLA',en:'⬡ CONNECT WALLET',ru:'⬡ ПОДКЛЮЧИТЬ',zh:'⬡ 连接钱包',ar:'⬡ ربط المحفظة',es:'⬡ CONECTAR BILLETERA',hi:'⬡ वॉलेट जोड़ें'};
+  var discBtnTxts={tr:'✕ BAĞLANTIYI KES',en:'✕ DISCONNECT',ru:'✕ ОТКЛЮЧИТЬ',zh:'✕ 断开连接',ar:'✕ قطع الاتصال',es:'✕ DESCONECTAR',hi:'✕ डिस्कनेक्ट'};
+  if(connectBtn) connectBtn.textContent = connBtnTxts[currentLang]||connBtnTxts['en'];
+  if(disconnectBtn) disconnectBtn.textContent = discBtnTxts[currentLang]||discBtnTxts['en'];
+}
+
+var connectedTxts={tr:'Bağlı',en:'Connected',ru:'Подключено',zh:'已连接',ar:'متصل',es:'Conectado',hi:'जुड़ा हुआ'};
+
+async function handleWalletConnect(){
+  if(!tonConnectUI){
+    showNotif('TON Connect yüklenemedi!');
+    return;
+  }
+  try {
+    await tonConnectUI.openModal();
+    setTimeout(updateWalletUI, 2000);
+  } catch(e){
+    console.log('Wallet connect error:', e);
+  }
+}
+
+async function handleWalletDisconnect(){
+  if(!tonConnectUI) return;
+  try {
+    await tonConnectUI.disconnect();
+    updateWalletUI();
+    var discMsgs={tr:'Cüzdan bağlantısı kesildi.',en:'Wallet disconnected.',ru:'Кошелёк отключён.',zh:'钱包已断开。',ar:'تم قطع اتصال المحفظة.',es:'Billetera desconectada.',hi:'वॉलेट डिस्कनेक्ट हो गया।'};
+    showNotif(discMsgs[currentLang]||discMsgs['en']);
+  } catch(e){}
+}
+
 function copySettingsLink(){
   var link = 't.me/ZRoFarmBOT?start=USR_' + userId;
   if(navigator.clipboard) navigator.clipboard.writeText(link);
@@ -2425,6 +2488,13 @@ setInterval(function(){
 
 function initLangModal(){
   fillLangGrid(document.getElementById('settings-lang-grid'));
+}
+
+// TON Connect durum değişimini dinle
+if(tonConnectUI){
+  tonConnectUI.onStatusChange(function(wallet){
+    updateWalletUI();
+  });
 }
 
 apiLogin().then(function(){
