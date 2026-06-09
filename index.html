@@ -13,7 +13,7 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 #app::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,220,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,220,255,0.025) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
 .rel{position:relative;z-index:1;}
 .cy-title{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;letter-spacing:0.2em;color:#00dcff;text-align:center;margin-bottom:12px;}
-.user-bar{display:flex;align-items:center;gap:8px;background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.12);border-radius:6px;padding:8px 12px;margin-bottom:12px;}
+.user-bar{display:flex;align-items:center;gap:8px;background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.12);border-radius:6px;padding:8px 12px;margin-bottom:12px;position:relative;}
 .user-avatar{width:32px;height:32px;border-radius:50%;background:rgba(0,220,255,0.1);border:1px solid rgba(0,220,255,0.25);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
 .user-name{font-size:12px;color:#a0c8e8;font-family:'Orbitron',monospace;flex:1;}
 .user-id{font-size:9px;color:rgba(0,220,255,0.35);}
@@ -148,13 +148,30 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 .loading{position:fixed;inset:0;background:#050810;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;z-index:200;}
 .loading-text{font-family:'Orbitron',monospace;font-size:12px;color:#00dcff;letter-spacing:0.2em;animation:blink 1.5s ease-in-out infinite;}
 @keyframes blink{0%,100%{opacity:0.4;}50%{opacity:1;}}
+/* DIL MODAL */
+.lang-modal{position:fixed;inset:0;background:rgba(5,8,16,0.95);display:none;align-items:center;justify-content:center;z-index:300;flex-direction:column;gap:12px;}
+.lang-modal-title{font-family:'Orbitron',monospace;font-size:13px;letter-spacing:0.2em;color:#00dcff;margin-bottom:8px;}
+.lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:320px;padding:0 20px;}
+.lang-btn{background:rgba(0,220,255,0.05);border:1px solid rgba(0,220,255,0.15);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all 0.2s;}
+.lang-btn:hover{border-color:rgba(0,220,255,0.4);background:rgba(0,220,255,0.1);}
+.lang-btn.active{border-color:rgba(0,255,150,0.4);background:rgba(0,255,150,0.06);}
+.lang-flag{font-size:22px;}
+.lang-name{font-size:11px;font-family:'Orbitron',monospace;color:#a0c8e8;}
+.lang-trigger{position:absolute;top:0;right:0;background:rgba(0,220,255,0.06);border:none;border-left:1px solid rgba(0,220,255,0.12);border-bottom:1px solid rgba(0,220,255,0.12);border-radius:0 0 0 6px;padding:5px 8px;font-size:14px;cursor:pointer;color:rgba(0,220,255,0.5);}
+
 </style>
 </head>
 <body>
 
+
+<div class="lang-modal" id="lang-modal">
+  <div class="lang-modal-title" id="lang-select-title">DİL SEÇ</div>
+  <div class="lang-grid" id="lang-grid"></div>
+</div>
+
 <div class="loading" id="loading">
   <div style="font-size:32px">💎</div>
-  <div class="loading-text">ZRo FARM YUKLENIYOR...</div>
+  <div class="loading-text" id="loading-text">ZRo FARM YUKLENIYOR...</div>
 </div>
 
 <div id="app" style="display:none">
@@ -166,7 +183,7 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
       <div class="user-name" id="u-name">PLAYER</div>
       <div class="user-id" id="u-id">ID: ---</div>
     </div>
-    <div class="save-indicator" id="save-ind">● KAYITLI</div>
+    <div class="save-indicator" id="save-ind">● KAYITLI</div><button class="lang-trigger" onclick="showLangModal()" title="Language">🌐</button>
   </div>
   <div class="hud-row">
     <div class="hud-card"><div class="hud-label">ZRo COIN</div><div class="hud-val" id="hud-coin">0</div><div class="hud-sub">ZRC</div></div>
@@ -209,63 +226,63 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
         <div class="mc-sub">ZRC / tap</div>
       </div>
     </div>
-    <div class="section-label">// ENVANTER</div>
+    <div class="section-label" id="inv-label">// ENVANTER</div>
     <div class="inv-grid" id="inv-grid"></div>
   </div>
 
   <!-- YUKSELME -->
   <div class="panel" id="tab-upgrade">
-    <div class="section-label">// TAP & ENERJI YUKSELME</div>
+    <div class="section-label" id="upg-label">// TAP & ENERJI YUKSELME</div>
     <div class="upgrade-list" id="upgrade-list"></div>
   </div>
 
   <!-- ISLETME -->
   <div class="panel" id="tab-biz">
-    <div class="section-label">// ISLETMELER</div>
+    <div class="section-label" id="biz-label">// ISLETMELER</div>
     <div class="biz-list" id="biz-list"></div>
   </div>
 
   <!-- GOREV -->
   <div class="panel" id="tab-quest">
     <div class="timer-box">
-      <span class="timer-label">GUNLUK RESET</span>
+      <span class="timer-label" id="quest-reset-label">GUNLUK RESET</span>
       <span class="timer-val" id="quest-timer">00:00:00</span>
     </div>
-    <div class="section-label">// GUNLUK GOREVLER</div>
+    <div class="section-label" id="quest-label">// GUNLUK GOREVLER</div>
     <div class="quest-list" id="quest-list"></div>
   </div>
 
   <!-- REF -->
   <div class="panel" id="tab-ref">
     <div class="ref-hero">
-      <div class="ref-link-label">// DAVET LINKIN</div>
+      <div class="ref-link-label" id="ref-link-label">// DAVET LINKIN</div>
       <div class="ref-link-box">
         <span class="ref-link-text" id="ref-link">yukleniyor...</span>
-        <button class="copy-btn" onclick="copyLink()">KOPYALA</button>
+        <button class="copy-btn" id="copy-btn" onclick="copyLink()">KOPYALA</button>
       </div>
       <div class="ref-stats">
-        <div class="ref-stat"><div class="ref-stat-label">DAVET</div><div class="ref-stat-val" id="rs-total">0</div></div>
-        <div class="ref-stat"><div class="ref-stat-label">AKTIF</div><div class="ref-stat-val" id="rs-active">0</div></div>
-        <div class="ref-stat"><div class="ref-stat-label">KAZANC</div><div class="ref-stat-val" id="rs-earn">0</div></div>
+        <div class="ref-stat"><div class="ref-stat-label" id="ref-stat-0">DAVET</div><div class="ref-stat-val" id="rs-total">0</div></div>
+        <div class="ref-stat"><div class="ref-stat-label" id="ref-stat-1">AKTIF</div><div class="ref-stat-val" id="rs-active">0</div></div>
+        <div class="ref-stat"><div class="ref-stat-label" id="ref-stat-2">KAZANC</div><div class="ref-stat-val" id="rs-earn">0</div></div>
       </div>
     </div>
     <div class="bonus-info">
-      <div class="bonus-title">// FARM BONUS TABLOSU</div>
+      <div class="bonus-title" id="farm-bonus-title">// FARM BONUS TABLOSU</div>
       <div class="bonus-row"><span class="bonus-tier">1-2 arkadas</span><span class="bonus-val">x1.25</span><span class="bonus-active" id="tier0-badge" style="display:none">AKTIF</span></div>
       <div class="bonus-row"><span class="bonus-tier">3-5 arkadas</span><span class="bonus-val">x1.75</span><span class="bonus-active" id="tier1-badge" style="display:none">AKTIF</span></div>
       <div class="bonus-row"><span class="bonus-tier">6-9 arkadas</span><span class="bonus-val">x2.5</span><span class="bonus-active" id="tier2-badge" style="display:none">AKTIF</span></div>
       <div class="bonus-row"><span class="bonus-tier">10+ arkadas</span><span class="bonus-val">x4.0</span><span class="bonus-active" id="tier3-badge" style="display:none">AKTIF</span></div>
     </div>
-    <div class="section-label">// ARKADASLARIN</div>
+    <div class="section-label" id="friends-label">// ARKADASLARIN</div>
     <div class="friend-list" id="friend-list">
       <div style="font-size:10px;color:rgba(0,220,255,0.3);text-align:center;padding:16px;">Henuz kimse yok - davet et!</div>
     </div>
-    <button class="invite-btn" onclick="shareLink()">+ ARKADAS DAVET ET</button>
+    <button class="invite-btn" onclick="shareLink()" id="invite-btn">+ ARKADAS DAVET ET</button>
   </div>
 
   <!-- LEADERBOARD -->
   <div class="panel" id="tab-leader">
-    <div class="section-label">// TOP 50 LIDER TABLOSU</div>
+    <div class="section-label" id="leader-label">// TOP 50 LIDER TABLOSU</div>
     <div id="leader-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
       <div style="font-size:10px;color:rgba(0,220,255,0.3);text-align:center;padding:20px;">Yukleniyor...</div>
     </div>
@@ -274,16 +291,14 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
   <!-- TON BOOST -->
   <div class="panel" id="tab-ton">
     <div style="background:rgba(80,120,255,0.06);border:1px solid rgba(80,120,255,0.2);border-radius:8px;padding:14px;margin-bottom:12px;">
-      <div style="font-family:Orbitron,monospace;font-size:11px;letter-spacing:0.15em;color:#8ab0ff;margin-bottom:4px;">TON BOOST PROTOKOLU</div>
-      <div style="font-size:9px;color:rgba(120,160,255,0.5);margin-bottom:12px;">TON ile anlık güç kazan</div>
+      <div id="ton-boost-title" style="font-family:Orbitron,monospace;font-size:11px;letter-spacing:0.15em;color:#8ab0ff;margin-bottom:4px;">TON BOOST PROTOKOLU</div>
+      <div id="ton-boost-desc" style="font-size:9px;color:rgba(120,160,255,0.5);margin-bottom:12px;">TON ile anlık güç kazan</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" id="ton-boosts"></div>
     </div>
     <div style="background:rgba(255,150,0,0.04);border:1px solid rgba(255,150,0,0.12);border-radius:8px;padding:14px;">
-      <div style="font-family:Orbitron,monospace;font-size:10px;color:rgba(255,180,0,0.7);margin-bottom:8px;">YUKSELTME HIZLANDIRMA</div>
+      <div id="ton-accel-title" style="font-family:Orbitron,monospace;font-size:10px;color:rgba(255,180,0,0.7);margin-bottom:8px;">YUKSELTME HIZLANDIRMA</div>
       <div style="font-size:9px;color:rgba(255,180,0,0.4);line-height:1.6;">
-        Herhangi bir yükseltme veya işletmede bekleme süresi varken<br>
-        <b style="color:rgba(255,200,0,0.7)">0.1 TON / saat</b> ödeyerek anında tamamlayabilirsin.<br><br>
-        YUKSEL veya ISLETME sekmesinde ⚡ butonuna bas.
+        <span id="ton-accel-desc">Herhangi bir yükseltmede bekleme varken 0.1 TON/saat ile anında tamamla.</span>
       </div>
     </div>
   </div>
@@ -292,6 +307,325 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 </div>
 
 <script>
+
+// ============ DIL SISTEMI ============
+var LANGS = {
+  tr: {
+    title:'ZRo FARM', loading:'ZRo FARM YUKLENIYOR...',
+    mine:'MINE', upgrade:'YUKSEL', biz:'ISLETME', quest:'GOREV', ref:'REF', top:'TOP', ton:'TON',
+    coin:'ZRo COIN', perSec:'/ SN', referral:'REFERRAL', bonus:'BONUS',
+    energy:'ENERJI', tapToMine:'[ KAZMAK ICIN TIKlA ]',
+    refBonus:'REFERRAL BONUSU', tapPower:'TAP GUCU', perTap:'ZRC / tap',
+    locked:'KILITLI', saved:'● KAYITLI', saving:'● KAYDEDILIYOR', localSave:'● LOKAL', saveErr:'● HATA',
+    upgrades:'// TAP & ENERJI YUKSELME', businesses:'// ISLETMELER',
+    questReset:'GUNLUK RESET', quests:'// GUNLUK GOREVLER',
+    invTitle:'// ENVANTER', useBtn:'KULLAN', active:'AKTIF',
+    refLink:'// DAVET LINKIN', copy:'KOPYALA', copied:'KOPYALANDI!',
+    invited:'DAVET', activeRef:'AKTIF', earned:'KAZANC',
+    farmBonus:'// FARM BONUS TABLOSU', friends:'// ARKADASLARIN',
+    noFriends:'Henuz kimse yok - davet et!', inviteBtn:'+ ARKADAS DAVET ET',
+    leaderTitle:'// TOP 50 LIDER TABLOSU', loading2:'Yukleniyor...',
+    noData:'Henuz veri yok', connErr:'Baglanamadi', me:'(SEN)',
+    tonTitle:'TON BOOST PROTOKOLU', tonDesc:'TON ile anlik guc kazan',
+    accelTitle:'YUKSELTME HIZLANDIRMA',
+    accelDesc:'Herhangi bir yükseltmede bekleme varken 0.1 TON/saat ile anında tamamla.',
+    person:'kisi', friends2:'arkadas',
+    refJoined:'Referral ile katildin! +500 ZRC bonusu!',
+    questDone:'Gorev tamam!', questItem:'+ ESYA',
+    upgStarted:'yukselme basladi!', bekle:'bekle.',
+    bizStarted:'yukselme basladi!',
+    upgradesDone:'Seviye', completed:'tamamlandi!',
+    maxLevel:'MAX SEVIYE', nextLevel:'Sonraki:',
+    tonSoon:'TON odeme yakininda aktif! (',
+    energyFull:'Enerji doldu! (Demo)', boostActive:' aktif! (Demo)',
+    davetLink:'Davet linki kopyalandi!',
+    shareText:'ZRo Farm oynuyorum! ZRo Coin kaz, imparatorluk kur!',
+    langSelect:'DİL SEÇ',
+  },
+  en: {
+    title:'ZRo FARM', loading:'ZRo FARM LOADING...',
+    mine:'MINE', upgrade:'UPGRADE', biz:'BUSINESS', quest:'QUEST', ref:'REF', top:'TOP', ton:'TON',
+    coin:'ZRo COIN', perSec:'/ SEC', referral:'REFERRAL', bonus:'BONUS',
+    energy:'ENERGY', tapToMine:'[ TAP TO MINE ]',
+    refBonus:'REFERRAL BONUS', tapPower:'TAP POWER', perTap:'ZRC / tap',
+    locked:'LOCKED', saved:'● SAVED', saving:'● SAVING...', localSave:'● LOCAL', saveErr:'● ERROR',
+    upgrades:'// TAP & ENERGY UPGRADES', businesses:'// BUSINESSES',
+    questReset:'DAILY RESET', quests:'// DAILY QUESTS',
+    invTitle:'// INVENTORY', useBtn:'USE', active:'ACTIVE',
+    refLink:'// YOUR INVITE LINK', copy:'COPY', copied:'COPIED!',
+    invited:'INVITED', activeRef:'ACTIVE', earned:'EARNED',
+    farmBonus:'// FARM BONUS TABLE', friends:'// YOUR FRIENDS',
+    noFriends:'No one yet - invite them!', inviteBtn:'+ INVITE FRIEND',
+    leaderTitle:'// TOP 50 LEADERBOARD', loading2:'Loading...',
+    noData:'No data yet', connErr:'Connection failed', me:'(YOU)',
+    tonTitle:'TON BOOST PROTOCOL', tonDesc:'Instant power with TON',
+    accelTitle:'UPGRADE ACCELERATION',
+    accelDesc:'Pay 0.1 TON/hour to instantly complete any upgrade.',
+    person:'person', friends2:'friends',
+    refJoined:'Joined via referral! +500 ZRC bonus!',
+    questDone:'Quest done!', questItem:'+ ITEM',
+    upgStarted:'upgrade started!', bekle:'wait.',
+    bizStarted:'upgrade started!',
+    upgradesDone:'Level', completed:'completed!',
+    maxLevel:'MAX LEVEL', nextLevel:'Next:',
+    tonSoon:'TON payment coming soon! (',
+    energyFull:'Energy full! (Demo)', boostActive:' active! (Demo)',
+    davetLink:'Invite link copied!',
+    shareText:'Playing ZRo Farm! Mine ZRo Coin, build your empire!',
+    langSelect:'SELECT LANGUAGE',
+  },
+  ru: {
+    title:'ZRo FARM', loading:'ZRo FARM ЗАГРУЗКА...',
+    mine:'МАЙНИТЬ', upgrade:'УЛУЧШ.', biz:'БИЗНЕС', quest:'ЗАДАНИЯ', ref:'РЕФ', top:'ТОП', ton:'TON',
+    coin:'ZRo МОНЕТА', perSec:'/ СЕК', referral:'РЕФЕРАЛ', bonus:'БОНУС',
+    energy:'ЭНЕРГИЯ', tapToMine:'[ НАЖМИ ЧТОБЫ МАЙНИТЬ ]',
+    refBonus:'РЕФ. БОНУС', tapPower:'СИЛА ТАП', perTap:'ZRC / тап',
+    locked:'ЗАБЛОК.', saved:'● СОХРАНЕНО', saving:'● СОХР...', localSave:'● ЛОКАЛ.', saveErr:'● ОШИБКА',
+    upgrades:'// УЛУЧШЕНИЯ ТАП & ЭНЕРГИЯ', businesses:'// БИЗНЕСЫ',
+    questReset:'СБРОС ЗАДАНИЙ', quests:'// ЕЖЕДНЕВНЫЕ ЗАДАНИЯ',
+    invTitle:'// ИНВЕНТАРЬ', useBtn:'ИСПОЛЬ.', active:'АКТИВНО',
+    refLink:'// ВАШ РЕФЕРАЛЬНЫЙ ЛИНК', copy:'КОПИР.', copied:'СКОПИР.!',
+    invited:'ПРИГЛ.', activeRef:'АКТИВ.', earned:'ЗАРАБОТ.',
+    farmBonus:'// ТАБЛИЦА ФАРМ БОНУСОВ', friends:'// ВАШИ ДРУЗЬЯ',
+    noFriends:'Пока никого нет - пригласите!', inviteBtn:'+ ПРИГЛАСИТЬ ДРУГА',
+    leaderTitle:'// ТОП 50 ТАБЛИЦА ЛИДЕРОВ', loading2:'Загрузка...',
+    noData:'Данных пока нет', connErr:'Нет соединения', me:'(ВЫ)',
+    tonTitle:'TON БУСТ ПРОТОКОЛ', tonDesc:'Мгновенная сила с TON',
+    accelTitle:'УСКОРЕНИЕ УЛУЧШЕНИЙ',
+    accelDesc:'Платите 0.1 TON/час для мгновенного завершения улучшений.',
+    person:'чел.', friends2:'друзей',
+    refJoined:'Пришли по реферальной ссылке! +500 ZRC бонус!',
+    questDone:'Задание выполнено!', questItem:'+ ПРЕДМЕТ',
+    upgStarted:'улучшение начато!', bekle:'ждите.',
+    bizStarted:'улучшение начато!',
+    upgradesDone:'Уровень', completed:'завершён!',
+    maxLevel:'МАКС. УРОВЕНЬ', nextLevel:'Следующий:',
+    tonSoon:'TON оплата скоро! (',
+    energyFull:'Энергия полна! (Демо)', boostActive:' активно! (Демо)',
+    davetLink:'Реферальная ссылка скопирована!',
+    shareText:'Играю в ZRo Farm! Майни ZRo Coin, строй империю!',
+    langSelect:'ВЫБОР ЯЗЫКА',
+  },
+  zh: {
+    title:'ZRo 农场', loading:'ZRo 农场加载中...',
+    mine:'挖矿', upgrade:'升级', biz:'商业', quest:'任务', ref:'推荐', top:'排行', ton:'TON',
+    coin:'ZRo 币', perSec:'/ 秒', referral:'推荐', bonus:'奖励',
+    energy:'能量', tapToMine:'[ 点击挖矿 ]',
+    refBonus:'推荐奖励', tapPower:'点击力量', perTap:'ZRC / 点',
+    locked:'已锁定', saved:'● 已保存', saving:'● 保存中...', localSave:'● 本地', saveErr:'● 错误',
+    upgrades:'// 点击和能量升级', businesses:'// 商业',
+    questReset:'每日重置', quests:'// 每日任务',
+    invTitle:'// 背包', useBtn:'使用', active:'激活',
+    refLink:'// 你的邀请链接', copy:'复制', copied:'已复制!',
+    invited:'已邀请', activeRef:'活跃', earned:'收益',
+    farmBonus:'// 农场奖励表', friends:'// 我的朋友',
+    noFriends:'还没有朋友 - 邀请他们!', inviteBtn:'+ 邀请朋友',
+    leaderTitle:'// 前50名排行榜', loading2:'加载中...',
+    noData:'暂无数据', connErr:'连接失败', me:'(我)',
+    tonTitle:'TON 加速协议', tonDesc:'用TON获得即时力量',
+    accelTitle:'升级加速',
+    accelDesc:'支付0.1 TON/小时立即完成任何升级。',
+    person:'人', friends2:'朋友',
+    refJoined:'通过推荐加入! +500 ZRC 奖励!',
+    questDone:'任务完成!', questItem:'+ 道具',
+    upgStarted:'升级开始!', bekle:'等待.',
+    bizStarted:'升级开始!',
+    upgradesDone:'等级', completed:'完成!',
+    maxLevel:'最高等级', nextLevel:'下一个:',
+    tonSoon:'TON支付即将推出! (',
+    energyFull:'能量已满! (演示)', boostActive:' 激活! (演示)',
+    davetLink:'邀请链接已复制!',
+    shareText:'我在玩ZRo Farm! 挖ZRo币,建立帝国!',
+    langSelect:'选择语言',
+  },
+  ar: {
+    title:'ZRo فارم', loading:'جار تحميل ZRo فارم...',
+    mine:'تعدين', upgrade:'ترقية', biz:'أعمال', quest:'مهام', ref:'إحالة', top:'قمة', ton:'TON',
+    coin:'ZRo كوين', perSec:'/ ثانية', referral:'إحالة', bonus:'مكافأة',
+    energy:'طاقة', tapToMine:'[ انقر للتعدين ]',
+    refBonus:'مكافأة الإحالة', tapPower:'قوة النقر', perTap:'ZRC / نقرة',
+    locked:'مقفل', saved:'● محفوظ', saving:'● جار الحفظ...', localSave:'● محلي', saveErr:'● خطأ',
+    upgrades:'// ترقيات النقر والطاقة', businesses:'// الأعمال',
+    questReset:'إعادة تعيين يومية', quests:'// المهام اليومية',
+    invTitle:'// المخزون', useBtn:'استخدم', active:'نشط',
+    refLink:'// رابط دعوتك', copy:'نسخ', copied:'تم النسخ!',
+    invited:'مدعو', activeRef:'نشط', earned:'مكتسب',
+    farmBonus:'// جدول مكافآت الزراعة', friends:'// أصدقاؤك',
+    noFriends:'لا أحد بعد - ادعهم!', inviteBtn:'+ دعوة صديق',
+    leaderTitle:'// أفضل 50 لاعب', loading2:'جار التحميل...',
+    noData:'لا توجد بيانات بعد', connErr:'فشل الاتصال', me:'(أنت)',
+    tonTitle:'بروتوكول TON بوست', tonDesc:'قوة فورية مع TON',
+    accelTitle:'تسريع الترقية',
+    accelDesc:'ادفع 0.1 TON/ساعة لإكمال أي ترقية فورًا.',
+    person:'شخص', friends2:'أصدقاء',
+    refJoined:'انضم عبر الإحالة! +500 ZRC مكافأة!',
+    questDone:'تمت المهمة!', questItem:'+ عنصر',
+    upgStarted:'بدأت الترقية!', bekle:'انتظر.',
+    bizStarted:'بدأت الترقية!',
+    upgradesDone:'المستوى', completed:'مكتمل!',
+    maxLevel:'أقصى مستوى', nextLevel:'التالي:',
+    tonSoon:'دفع TON قريبًا! (',
+    energyFull:'الطاقة ممتلئة! (تجريبي)', boostActive:' نشط! (تجريبي)',
+    davetLink:'تم نسخ رابط الدعوة!',
+    shareText:'ألعب ZRo Farm! عدّن ZRo Coin وابنِ إمبراطوريتك!',
+    langSelect:'اختر اللغة',
+  },
+  es: {
+    title:'ZRo FARM', loading:'CARGANDO ZRo FARM...',
+    mine:'MINAR', upgrade:'MEJORAR', biz:'NEGOCIO', quest:'MISIONES', ref:'REF', top:'TOP', ton:'TON',
+    coin:'ZRo MONEDA', perSec:'/ SEG', referral:'REFERIDO', bonus:'BONO',
+    energy:'ENERGÍA', tapToMine:'[ TOCA PARA MINAR ]',
+    refBonus:'BONO REFERIDO', tapPower:'PODER TAP', perTap:'ZRC / tap',
+    locked:'BLOQUEADO', saved:'● GUARDADO', saving:'● GUARDANDO...', localSave:'● LOCAL', saveErr:'● ERROR',
+    upgrades:'// MEJORAS TAP & ENERGÍA', businesses:'// NEGOCIOS',
+    questReset:'RESET DIARIO', quests:'// MISIONES DIARIAS',
+    invTitle:'// INVENTARIO', useBtn:'USAR', active:'ACTIVO',
+    refLink:'// TU ENLACE DE INVITACIÓN', copy:'COPIAR', copied:'¡COPIADO!',
+    invited:'INVITADO', activeRef:'ACTIVO', earned:'GANADO',
+    farmBonus:'// TABLA DE BONUS FARM', friends:'// TUS AMIGOS',
+    noFriends:'Nadie aún - ¡invítalos!', inviteBtn:'+ INVITAR AMIGO',
+    leaderTitle:'// TOP 50 TABLA DE LÍDERES', loading2:'Cargando...',
+    noData:'Sin datos aún', connErr:'Sin conexión', me:'(TÚ)',
+    tonTitle:'PROTOCOLO TON BOOST', tonDesc:'Poder instantáneo con TON',
+    accelTitle:'ACELERACIÓN DE MEJORAS',
+    accelDesc:'Paga 0.1 TON/hora para completar cualquier mejora al instante.',
+    person:'persona', friends2:'amigos',
+    refJoined:'¡Unido por referido! +500 ZRC de bono!',
+    questDone:'¡Misión completada!', questItem:'+ OBJETO',
+    upgStarted:'mejora iniciada!', bekle:'espera.',
+    bizStarted:'mejora iniciada!',
+    upgradesDone:'Nivel', completed:'completado!',
+    maxLevel:'NIVEL MÁXIMO', nextLevel:'Siguiente:',
+    tonSoon:'¡Pago TON próximamente! (',
+    energyFull:'¡Energía llena! (Demo)', boostActive:' activo! (Demo)',
+    davetLink:'¡Enlace de invitación copiado!',
+    shareText:'¡Jugando ZRo Farm! Mina ZRo Coin, construye tu imperio!',
+    langSelect:'SELECCIONAR IDIOMA',
+  },
+  hi: {
+    title:'ZRo फार्म', loading:'ZRo फार्म लोड हो रहा है...',
+    mine:'माइन', upgrade:'अपग्रेड', biz:'व्यापार', quest:'कार्य', ref:'रेफर', top:'टॉप', ton:'TON',
+    coin:'ZRo कॉइन', perSec:'/ सेकंड', referral:'रेफरल', bonus:'बोनस',
+    energy:'ऊर्जा', tapToMine:'[ माइन करने के लिए टैप करें ]',
+    refBonus:'रेफरल बोनस', tapPower:'टैप शक्ति', perTap:'ZRC / टैप',
+    locked:'लॉक्ड', saved:'● सेव हुआ', saving:'● सेव हो रहा...', localSave:'● लोकल', saveErr:'● त्रुटि',
+    upgrades:'// टैप और ऊर्जा अपग्रेड', businesses:'// व्यापार',
+    questReset:'दैनिक रीसेट', quests:'// दैनिक कार्य',
+    invTitle:'// इन्वेंटरी', useBtn:'उपयोग करें', active:'सक्रिय',
+    refLink:'// आपका आमंत्रण लिंक', copy:'कॉपी', copied:'कॉपी हो गया!',
+    invited:'आमंत्रित', activeRef:'सक्रिय', earned:'अर्जित',
+    farmBonus:'// फार्म बोनस तालिका', friends:'// आपके दोस्त',
+    noFriends:'अभी कोई नहीं - आमंत्रित करें!', inviteBtn:'+ दोस्त आमंत्रित करें',
+    leaderTitle:'// टॉप 50 लीडरबोर्ड', loading2:'लोड हो रहा है...',
+    noData:'अभी कोई डेटा नहीं', connErr:'कनेक्शन विफल', me:'(आप)',
+    tonTitle:'TON बूस्ट प्रोटोकॉल', tonDesc:'TON से तत्काल शक्ति',
+    accelTitle:'अपग्रेड त्वरण',
+    accelDesc:'किसी भी अपग्रेड को तुरंत पूरा करने के लिए 0.1 TON/घंटा दें।',
+    person:'व्यक्ति', friends2:'दोस्त',
+    refJoined:'रेफरल से जुड़े! +500 ZRC बोनस!',
+    questDone:'कार्य पूर्ण!', questItem:'+ आइटम',
+    upgStarted:'अपग्रेड शुरू!', bekle:'प्रतीक्षा करें.',
+    bizStarted:'अपग्रेड शुरू!',
+    upgradesDone:'स्तर', completed:'पूर्ण!',
+    maxLevel:'अधिकतम स्तर', nextLevel:'अगला:',
+    tonSoon:'TON भुगतान जल्द आ रहा है! (',
+    energyFull:'ऊर्जा भरी! (डेमो)', boostActive:' सक्रिय! (डेमो)',
+    davetLink:'आमंत्रण लिंक कॉपी हो गया!',
+    shareText:'ZRo Farm खेल रहा हूं! ZRo Coin माइन करें, साम्राज्य बनाएं!',
+    langSelect:'भाषा चुनें',
+  }
+};
+
+var LANG_META = {
+  tr: {flag:'🇹🇷', name:'Türkçe'},
+  en: {flag:'🇬🇧', name:'English'},
+  ru: {flag:'🇷🇺', name:'Русский'},
+  zh: {flag:'🇨🇳', name:'中文'},
+  ar: {flag:'🇸🇦', name:'العربية'},
+  es: {flag:'🇪🇸', name:'Español'},
+  hi: {flag:'🇮🇳', name:'हिंदी'},
+};
+
+function detectLang(){
+  // Once localStorage'dan kontrol et
+  var saved = localStorage.getItem('zro_lang');
+  if(saved && LANGS[saved]) return saved;
+  // Telegram dili
+  if(tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code){
+    var lc = tg.initDataUnsafe.user.language_code.toLowerCase().substring(0,2);
+    if(LANGS[lc]) return lc;
+  }
+  // Tarayıcı dili
+  var bl = (navigator.language||'en').toLowerCase().substring(0,2);
+  if(LANGS[bl]) return bl;
+  return 'en';
+}
+
+var currentLang = detectLang();
+var L = LANGS[currentLang];
+
+function setLang(code){
+  currentLang = code;
+  L = LANGS[code];
+  localStorage.setItem('zro_lang', code);
+  applyLang();
+  hideLangModal();
+}
+
+function applyLang(){
+  // Baslik
+  document.querySelector('.cy-title').textContent = L.title;
+  document.getElementById('loading-text').textContent = L.loading;
+  // HUD labels
+  var labels = document.querySelectorAll('.hud-label');
+  if(labels[0]) labels[0].textContent = L.coin;
+  if(labels[1]) labels[1].textContent = L.perSec;
+  if(labels[2]) labels[2].textContent = L.referral;
+  if(labels[3]) labels[3].textContent = L.bonus;
+  // Tabs
+  var tabs = document.querySelectorAll('.tab');
+  var tabKeys = ['mine','upgrade','biz','quest','ref','top','ton'];
+  var tabLangKeys = [L.mine, L.upgrade, L.biz, L.quest, L.ref, L.top, L.ton];
+  tabs.forEach(function(t,i){ if(tabLangKeys[i]) t.textContent = tabLangKeys[i]; });
+  // Tap hint
+  var th = document.querySelector('.tap-hint');
+  if(th) th.textContent = L.tapToMine;
+  // Mine cards
+  var mcLabels = document.querySelectorAll('.mc-label');
+  if(mcLabels[0]) mcLabels[0].textContent = L.refBonus;
+  if(mcLabels[1]) mcLabels[1].textContent = L.tapPower;
+  var mcSubs = document.querySelectorAll('.mc-sub');
+  if(mcSubs[1]) mcSubs[1].textContent = L.perTap;
+  // Section labels
+  document.getElementById('inv-label').textContent = L.invTitle;
+  document.getElementById('upg-label').textContent = L.upgrades;
+  document.getElementById('biz-label').textContent = L.businesses;
+  document.getElementById('quest-label').textContent = L.quests;
+  document.getElementById('quest-reset-label').textContent = L.questReset;
+  document.getElementById('ref-link-label').textContent = L.refLink;
+  document.getElementById('ref-stat-0').textContent = L.invited;
+  document.getElementById('ref-stat-1').textContent = L.activeRef;
+  document.getElementById('ref-stat-2').textContent = L.earned;
+  document.getElementById('farm-bonus-title').textContent = L.farmBonus;
+  document.getElementById('friends-label').textContent = L.friends;
+  document.getElementById('invite-btn').textContent = L.inviteBtn;
+  document.getElementById('leader-label').textContent = L.leaderTitle;
+  document.getElementById('ton-boost-title').textContent = L.tonTitle;
+  document.getElementById('ton-boost-desc').textContent = L.tonDesc;
+  document.getElementById('ton-accel-title').textContent = L.accelTitle;
+  document.getElementById('ton-accel-desc').textContent = L.accelDesc;
+  document.getElementById('copy-btn').textContent = L.copy;
+  // RTL dil desteği
+  document.body.style.direction = (currentLang === 'ar') ? 'rtl' : 'ltr';
+}
+
+function showLangModal(){
+  document.getElementById('lang-modal').style.display = 'flex';
+}
+function hideLangModal(){
+  document.getElementById('lang-modal').style.display = 'none';
+}
+
 var API = 'https://zrofarm-backend.onrender.com';
 var tg = null;
 try { tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null; } catch(e){}
@@ -1016,9 +1350,25 @@ document.getElementById('u-id').textContent='ID: '+userId;
 document.getElementById('u-avatar').textContent=user&&user.first_name?user.first_name[0].toUpperCase():'👤';
 checkDailyReset();
 
+// Dil modal doldur
+function initLangModal(){
+  var grid = document.getElementById('lang-grid');
+  grid.innerHTML = '';
+  Object.keys(LANG_META).forEach(function(code){
+    var m = LANG_META[code];
+    var btn = document.createElement('button');
+    btn.className = 'lang-btn' + (code === currentLang ? ' active' : '');
+    btn.innerHTML = '<span class="lang-flag">' + m.flag + '</span><span class="lang-name">' + m.name + '</span>';
+    btn.addEventListener('click', function(){ setLang(code); initLangModal(); });
+    grid.appendChild(btn);
+  });
+}
+
 apiLogin().then(function(){
   document.getElementById('loading').style.display='none';
   document.getElementById('app').style.display='block';
+  applyLang();
+  initLangModal();
   renderAll();
 });
 </script>
