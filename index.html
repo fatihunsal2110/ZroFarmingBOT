@@ -25,8 +25,9 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 .hud-val{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:#00dcff;}
 .hud-val.green{color:#00ff96;}
 .hud-sub{font-size:7px;color:rgba(0,220,255,0.3);margin-top:1px;}
-.tabs{display:flex;gap:4px;margin-bottom:12px;overflow-x:auto;}
-.tab{flex:1;min-width:52px;padding:7px 0;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.06em;border:1px solid rgba(0,220,255,0.18);border-radius:5px;background:transparent;color:rgba(0,220,255,0.45);cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.tabs{display:flex;gap:4px;margin-bottom:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:0 0 auto;min-width:44px;padding:6px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.04em;border:1px solid rgba(0,220,255,0.18);border-radius:5px;background:transparent;color:rgba(0,220,255,0.45);cursor:pointer;transition:all 0.2s;white-space:nowrap;}
 .tab.active{background:rgba(0,220,255,0.1);border-color:rgba(0,220,255,0.5);color:#00dcff;}
 .panel{display:none;}
 .panel.active{display:block;}
