@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>ZRo Farm</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tonconnect/ui@2.0.5/dist/tonconnect-ui.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -966,12 +966,19 @@ var OWNER_WALLET = 'UQAFvMeyv_KhWwd1b8T73tyJJdzS_QV0xdAW5gXKiahj_Npm';
 
 // TON Connect
 var tonConnectUI = null;
-try {
-  tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-    manifestUrl: 'https://fatihunsal2110.github.io/ZroFarmingBOT/tonconnect-manifest.json',
-  });
-} catch(e){
-  console.log('TON Connect yuklenemedi:', e.message);
+function initTonConnect(){
+  try {
+    if(typeof TON_CONNECT_UI !== 'undefined' && TON_CONNECT_UI.TonConnectUI){
+      tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: 'https://fatihunsal2110.github.io/ZroFarmingBOT/tonconnect-manifest.json',
+      });
+      console.log('TON Connect hazir');
+    } else {
+      console.log('TON Connect SDK bulunamadi');
+    }
+  } catch(e){
+    console.log('TON Connect yuklenemedi:', e.message);
+  }
 }
 
 async function connectTonWallet(){
@@ -997,10 +1004,19 @@ async function connectTonWallet(){
 }
 
 async function sendTonPayment(tonAmount, comment){
+  if(!tonConnectUI){
+    initTonConnect();
+    if(!tonConnectUI){
+      var noTonMsgs={tr:'TON Connect yüklenemedi!',en:'TON Connect not available!',ru:'TON Connect недоступен!',zh:'TON Connect不可用！',ar:'TON Connect غير متاح!',es:'¡TON Connect no disponible!',hi:'TON Connect उपलब्ध नहीं!'};
+      showNotif(noTonMsgs[currentLang]||noTonMsgs['en']);
+      return null;
+    }
+  }
   try {
     var connected = await connectTonWallet();
     if(!connected){
-      showNotif('Cüzdan bağlanamadı!');
+      var noWalletMsgs={tr:'Cüzdan bağlanamadı!',en:'Wallet not connected!',ru:'Кошелёк не подключён!',zh:'钱包未连接！',ar:'المحفظة غير متصلة!',es:'¡Billetera no conectada!',hi:'वॉलेट नहीं जुड़ा!'};
+      showNotif(noWalletMsgs[currentLang]||noWalletMsgs['en']);
       return null;
     }
     var amountNano = Math.floor(tonAmount * 1e9).toString();
@@ -1009,15 +1025,19 @@ async function sendTonPayment(tonAmount, comment){
       messages: [{
         address: OWNER_WALLET,
         amount: amountNano,
-        payload: btoa(comment || 'ZRoFarm Boost'),
+        payload: btoa(unescape(encodeURIComponent(comment || 'ZRoFarm Boost'))),
       }]
     };
     var result = await tonConnectUI.sendTransaction(tx);
     return result;
   } catch(e){
-    console.log('TON odeme hatasi:', e);
-    if(e.message && e.message.includes('User rejected')){
-      showNotif('Ödeme iptal edildi.');
+    console.log('TON odeme hatasi:', e.message||e);
+    var rejMsgs={tr:'Ödeme iptal edildi.',en:'Payment cancelled.',ru:'Платёж отменён.',zh:'支付已取消。',ar:'تم إلغاء الدفع.',es:'Pago cancelado.',hi:'भुगतान रद्द।'};
+    var errMsgs={tr:'Ödeme hatası oluştu.',en:'Payment error occurred.',ru:'Ошибка оплаты.',zh:'支付出错。',ar:'حدث خطأ في الدفع.',es:'Error en el pago.',hi:'भुगतान त्रुटि।'};
+    if(e.message && (e.message.includes('reject') || e.message.includes('cancel') || e.message.includes('denied'))){
+      showNotif(rejMsgs[currentLang]||rejMsgs['en']);
+    } else {
+      showNotif(errMsgs[currentLang]||errMsgs['en']);
     }
     return null;
   }
@@ -1061,7 +1081,10 @@ if(!user && tg && tg.initData && tg.initData.length > 0){
   } catch(e){}
 }
 
-var userId = (user && user.id) ? user.id : ('guest_' + Math.random().toString(36).substr(2,9));
+// URL'den user_id parametresi (fallback)
+var urlUserId = new URLSearchParams(location.search).get('user_id');
+var userId = (user && user.id) ? user.id : (urlUserId || ('guest_' + Math.random().toString(36).substr(2,9)));
+console.log('User:', user, 'userId:', userId);
 var refCode = new URLSearchParams(location.search).get('ref') || '';
 console.log('TG user:', user, 'userId:', userId);
 
@@ -1566,7 +1589,7 @@ function renderUpgrades(){
     '<div class="upgrade-bottom">'+
       '<div class="upgrade-prog-wrap">'+
         '<div class="upgrade-prog-bar"><div class="upgrade-prog-fill" style="width:'+pct+'%"></div></div>'+
-        (isUpgrading?'<div class="upgrade-timer">⏳ '+fmtTime(remSec)+'</div>':'<div class="upgrade-prog-text">'+upg.lv+'/'+maxLv+'</div>')+
+        (isUpgrading?'<div class="upgrade-timer">⏳ '+fmtTime(remSec)+'</div>':'<div class="upgrade-prog-text">'+upg.lv+'/'+maxLv+(nextLv?' · '+fmtTime(Math.floor(nextLv.waitSec*Math.pow(1.5,upg.lv))):'')+'</div>')+
       '</div>'+
       '<div class="upgrade-btns">'+
         (isMax?'<span style="font-size:9px;color:rgba(0,255,150,0.5)">TAMAMLANDI</span>':
@@ -1590,9 +1613,12 @@ function renderUpgrades(){
       var lv=def.levels[upg.lv];
       if(!lv||S.coins<lv.cost) return;
       S.coins-=lv.cost;
-      upg.upgEnd=Date.now()+lv.waitSec*1000;
+      // Seviye arttıkça bekleme süresi büyür (her seviye %50 daha uzun)
+      var scaledWait = Math.floor(lv.waitSec * Math.pow(1.5, upg.lv));
+      var cappedWait = Math.min(scaledWait, 604800); // max 7 gün
+      upg.upgEnd=Date.now()+cappedWait*1000;
       S.dailyUpgDone++;
-      showNotif((def?def.names[currentLang]||def.names['en']:'')+' '+(L.upgStarted||'upgrade started!')+' '+fmtTime(lv.waitSec));
+      showNotif((def?def.names[currentLang]||def.names['en']:'')+' '+(L.upgStarted||'upgrade started!')+' '+fmtTime(cappedWait));
       scheduleSave(); renderAll(); renderUpgrades();
     });
   });
@@ -2496,6 +2522,9 @@ if(tonConnectUI){
     updateWalletUI();
   });
 }
+
+// TON Connect'i başlat
+initTonConnect();
 
 apiLogin().then(function(){
   document.getElementById('loading').style.display='none';
