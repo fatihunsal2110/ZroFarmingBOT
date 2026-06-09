@@ -398,6 +398,16 @@ var LANGS = {
     davetLink:'Davet linki kopyalandi!',
     shareText:'ZRo Farm oynuyorum! ZRo Coin kaz, imparatorluk kur!',
     langSelect:'DİL SEÇ',
+    accountInfo:'// HESAP BİLGİLERİ',
+    username:'Kullanıcı Adı',
+    telegramId:'Telegram ID',
+    totalCoin:'Toplam Coin',
+    langLabel:'// DİL',
+    activeLang:'Aktif Dil',
+    appInfo:'// UYGULAMA',
+    version:'Versiyon',
+    inviteLink:'// DAVET LİNKİN',
+    close:'KAPAT',
     settingsBtn:'AYARLAR / DİL',
   },
   en: {
@@ -431,6 +441,16 @@ var LANGS = {
     davetLink:'Invite link copied!',
     shareText:'Playing ZRo Farm! Mine ZRo Coin, build your empire!',
     langSelect:'SELECT LANGUAGE',
+    accountInfo:'// ACCOUNT INFO',
+    username:'Username',
+    telegramId:'Telegram ID',
+    totalCoin:'Total Coin',
+    langLabel:'// LANGUAGE',
+    activeLang:'Active Language',
+    appInfo:'// APPLICATION',
+    version:'Version',
+    inviteLink:'// YOUR INVITE LINK',
+    close:'CLOSE',
     settingsBtn:'SETTINGS / LANGUAGE',
   },
   ru: {
@@ -464,6 +484,16 @@ var LANGS = {
     davetLink:'Реферальная ссылка скопирована!',
     shareText:'Играю в ZRo Farm! Майни ZRo Coin, строй империю!',
     langSelect:'ВЫБОР ЯЗЫКА',
+    accountInfo:'// АККАУНТ',
+    username:'Имя',
+    telegramId:'Telegram ID',
+    totalCoin:'Всего монет',
+    langLabel:'// ЯЗЫК',
+    activeLang:'Активный язык',
+    appInfo:'// ПРИЛОЖЕНИЕ',
+    version:'Версия',
+    inviteLink:'// ВАШ РЕФЕРАЛЬНЫЙ ЛИНК',
+    close:'ЗАКРЫТЬ',
     settingsBtn:'НАСТРОЙКИ / ЯЗЫК',
   },
   zh: {
@@ -497,6 +527,16 @@ var LANGS = {
     davetLink:'邀请链接已复制!',
     shareText:'我在玩ZRo Farm! 挖ZRo币,建立帝国!',
     langSelect:'选择语言',
+    accountInfo:'// 账户信息',
+    username:'用户名',
+    telegramId:'Telegram ID',
+    totalCoin:'总币数',
+    langLabel:'// 语言',
+    activeLang:'当前语言',
+    appInfo:'// 应用',
+    version:'版本',
+    inviteLink:'// 邀请链接',
+    close:'关闭',
     settingsBtn:'设置 / 语言',
   },
   ar: {
@@ -530,6 +570,16 @@ var LANGS = {
     davetLink:'تم نسخ رابط الدعوة!',
     shareText:'ألعب ZRo Farm! عدّن ZRo Coin وابنِ إمبراطوريتك!',
     langSelect:'اختر اللغة',
+    accountInfo:'// معلومات الحساب',
+    username:'اسم المستخدم',
+    telegramId:'Telegram ID',
+    totalCoin:'إجمالي العملات',
+    langLabel:'// اللغة',
+    activeLang:'اللغة النشطة',
+    appInfo:'// التطبيق',
+    version:'الإصدار',
+    inviteLink:'// رابط دعوتك',
+    close:'إغلاق',
     settingsBtn:'الإعدادات / اللغة',
   },
   es: {
@@ -563,6 +613,16 @@ var LANGS = {
     davetLink:'¡Enlace de invitación copiado!',
     shareText:'¡Jugando ZRo Farm! Mina ZRo Coin, construye tu imperio!',
     langSelect:'SELECCIONAR IDIOMA',
+    accountInfo:'// INFO DE CUENTA',
+    username:'Usuario',
+    telegramId:'Telegram ID',
+    totalCoin:'Monedas totales',
+    langLabel:'// IDIOMA',
+    activeLang:'Idioma activo',
+    appInfo:'// APLICACIÓN',
+    version:'Versión',
+    inviteLink:'// TU ENLACE DE INVITACIÓN',
+    close:'CERRAR',
     settingsBtn:'AJUSTES / IDIOMA',
   },
   hi: {
@@ -596,6 +656,16 @@ var LANGS = {
     davetLink:'आमंत्रण लिंक कॉपी हो गया!',
     shareText:'ZRo Farm खेल रहा हूं! ZRo Coin माइन करें, साम्राज्य बनाएं!',
     langSelect:'भाषा चुनें',
+    accountInfo:'// खाता जानकारी',
+    username:'उपयोगकर्ता नाम',
+    telegramId:'Telegram ID',
+    totalCoin:'कुल कॉइन',
+    langLabel:'// भाषा',
+    activeLang:'सक्रिय भाषा',
+    appInfo:'// एप्लिकेशन',
+    version:'संस्करण',
+    inviteLink:'// आमंत्रण लिंक',
+    close:'बंद करें',
     settingsBtn:'सेटिंग्स / भाषा',
   }
 };
@@ -727,9 +797,27 @@ function renderSettingsInfo(){
   document.getElementById('settings-user-id').textContent = userId;
   document.getElementById('settings-user-name').textContent = user ? (user.first_name||user.username||'Player') : 'Player';
   document.getElementById('settings-coins').textContent = fmt(S.coins) + ' ZRC';
-  document.getElementById('settings-ref').textContent = S.refCount + ' kisi';
+  document.getElementById('settings-ref').textContent = S.refCount + ' ' + (L.person||'person');
   document.getElementById('settings-lang').textContent = LANG_META[currentLang].flag + ' ' + LANG_META[currentLang].name;
   document.getElementById('settings-version').textContent = 'v1.0.0';
+  // Dile göre sabit metinleri güncelle
+  var sm = {
+    'settings-acc-title': L.accountInfo||'// ACCOUNT INFO',
+    'settings-username-label': L.username||'Username',
+    'settings-tid-label': L.telegramId||'Telegram ID',
+    'settings-coins-label': L.totalCoin||'Total Coin',
+    'settings-ref-label': L.referral||'Referral',
+    'settings-lang-title': L.langLabel||'// LANGUAGE',
+    'settings-active-lang-label': L.activeLang||'Active Language',
+    'settings-app-title': L.appInfo||'// APPLICATION',
+    'settings-version-label': L.version||'Version',
+    'settings-invite-title': L.inviteLink||'// YOUR INVITE LINK',
+  };
+  Object.keys(sm).forEach(function(id){ var el=document.getElementById(id); if(el) el.textContent=sm[id]; });
+  var sc = document.querySelector('.settings-close');
+  if(sc) sc.textContent = '✕ ' + (L.close||'CLOSE');
+  var st = document.querySelector('.settings-title');
+  if(st) st.textContent = '⚙️ ' + (L.settingsBtn||'SETTINGS');
 }
 
 var API = 'https://zrofarm-backend.onrender.com';
@@ -809,9 +897,35 @@ var UPGRADES = [
 
 // Esyalar
 var ITEMS = [
-  {id:'kristal', icon:'💠', name:'ZRC KRISTALI', desc:'Tap gucunu 1 saatligine 2x yapar', count:0},
-  {id:'reaktor', icon:'🔴', name:'ENERJI REAKTORU', desc:'Aninda enerjini doldurur', count:0},
+  {id:'kristal', icon:'💠', count:0},
+  {id:'reaktor', icon:'🔴', count:0},
 ];
+
+function getItemDef(id){
+  var defs = {
+    kristal: {
+      tr:{name:'ZRC KRİSTALİ', desc:'Tap gücünü 1 saatliğine 2x yapar'},
+      en:{name:'ZRC CRYSTAL', desc:'2x tap power for 1 hour'},
+      ru:{name:'ZRC КРИСТАЛЛ', desc:'2x сила тапа на 1 час'},
+      zh:{name:'ZRC 水晶', desc:'点击力量2倍持续1小时'},
+      ar:{name:'كريستال ZRC', desc:'قوة النقر 2x لمدة ساعة'},
+      es:{name:'CRISTAL ZRC', desc:'Poder de tap 2x por 1 hora'},
+      hi:{name:'ZRC क्रिस्टल', desc:'1 घंटे के लिए टैप 2x'},
+    },
+    reaktor: {
+      tr:{name:'ENERJİ REAKTÖRÜ', desc:'Anında enerjini doldurur'},
+      en:{name:'ENERGY REACTOR', desc:'Instantly refills your energy'},
+      ru:{name:'ЭНЕРГЕТИЧЕСКИЙ РЕАКТОР', desc:'Мгновенно восстанавливает энергию'},
+      zh:{name:'能量反应堆', desc:'立即补满能量'},
+      ar:{name:'مفاعل الطاقة', desc:'يملأ طاقتك فورًا'},
+      es:{name:'REACTOR DE ENERGÍA', desc:'Recarga tu energía al instante'},
+      hi:{name:'एनर्जी रिएक्टर', desc:'तुरंत ऊर्जा भरता है'},
+    }
+  };
+  var d = defs[id];
+  if(!d) return {name:id, desc:''};
+  return d[currentLang] || d['en'];
+}
 
 var QUESTS = [
   {id:'tap100',  icon:'👆', name:'TAP USTASI',    desc:'100 kez tap et',           type:'tap',  target:100,   reward:500,  itemReward:null},
@@ -943,15 +1057,16 @@ function renderInventory(){
   el.innerHTML='';
   S.items.forEach(function(item){
     var def=ITEMS.find(function(x){return x.id===item.id;})||item;
+    var idef=getItemDef(item.id);
     var d=document.createElement('div');
     d.className='inv-item'+(item.count>0?' has-item':'');
     var boostActive=S.activeBoosts&&S.activeBoosts[item.id]&&Date.now()<S.activeBoosts[item.id];
     d.innerHTML='<div class="inv-icon">'+def.icon+'</div>'+
-      '<div class="inv-name">'+def.name+'</div>'+
+      '<div class="inv-name">'+idef.name+'</div>'+
       '<div class="inv-count">x'+item.count+'</div>'+
-      '<div class="inv-desc">'+def.desc+'</div>'+
-      (boostActive?'<div style="font-size:8px;color:#00ff96;margin-top:4px">AKTIF</div>':'')+
-      '<button class="use-btn" '+(item.count>0&&!boostActive?'':'disabled')+' data-item="'+item.id+'">KULLAN</button>';
+      '<div class="inv-desc">'+idef.desc+'</div>'+
+      (boostActive?'<div style="font-size:8px;color:#00ff96;margin-top:4px">'+(L.active||'ACTIVE')+'</div>':'')+
+      '<button class="use-btn" '+(item.count>0&&!boostActive?'':'disabled')+' data-item="'+item.id+'">'+(L.useBtn||'USE')+'</button>';
     el.appendChild(d);
   });
   el.querySelectorAll('[data-item]').forEach(function(btn){
