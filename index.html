@@ -13,7 +13,7 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 #app::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,220,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,220,255,0.025) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
 .rel{position:relative;z-index:1;}
 .cy-title{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;letter-spacing:0.2em;color:#00dcff;text-align:center;margin-bottom:12px;}
-.user-bar{display:flex;align-items:center;gap:8px;background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.12);border-radius:6px;padding:8px 12px;margin-bottom:12px;position:relative;}
+.user-bar{display:flex;align-items:center;gap:8px;background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.12);border-radius:6px;padding:8px 12px;margin-bottom:12px;}
 .user-avatar{width:32px;height:32px;border-radius:50%;background:rgba(0,220,255,0.1);border:1px solid rgba(0,220,255,0.25);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
 .user-name{font-size:12px;color:#a0c8e8;font-family:'Orbitron',monospace;flex:1;}
 .user-id{font-size:9px;color:rgba(0,220,255,0.35);}
@@ -170,7 +170,7 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 .lang-btn.active{border-color:rgba(0,255,150,0.4);background:rgba(0,255,150,0.06);}
 .lang-flag{font-size:22px;}
 .lang-name{font-size:11px;font-family:'Orbitron',monospace;color:#a0c8e8;}
-.lang-trigger{position:absolute;top:0;right:0;background:rgba(0,220,255,0.06);border:none;border-left:1px solid rgba(0,220,255,0.12);border-bottom:1px solid rgba(0,220,255,0.12);border-radius:0 0 0 6px;padding:5px 8px;font-size:14px;cursor:pointer;color:rgba(0,220,255,0.5);}
+
 
 </style>
 </head>
@@ -237,7 +237,7 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
       <div class="user-name" id="u-name">PLAYER</div>
       <div class="user-id" id="u-id">ID: ---</div>
     </div>
-    <div class="save-indicator" id="save-ind">● KAYITLI</div><button class="lang-trigger" onclick="showSettingsModal()" title="Ayarlar">⚙️</button>
+    <div class="save-indicator" id="save-ind">● KAYITLI</div>
   </div>
   <div class="hud-row">
     <div class="hud-card"><div class="hud-label">ZRo COIN</div><div class="hud-val" id="hud-coin">0</div><div class="hud-sub">ZRC</div></div>
@@ -280,7 +280,10 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
         <div class="mc-sub">ZRC / tap</div>
       </div>
     </div>
-    <div class="section-label" id="inv-label">// ENVANTER</div>
+    <button onclick="showSettingsModal()" style="width:100%;padding:10px;background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.12);border-radius:6px;font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(0,220,255,0.6);cursor:pointer;margin-bottom:12px;letter-spacing:0.1em;display:flex;align-items:center;justify-content:center;gap:8px;">
+  <span>⚙️</span> <span id="settings-btn-text">AYARLAR / DİL</span>
+</button>
+<div class="section-label" id="inv-label">// ENVANTER</div>
     <div class="inv-grid" id="inv-grid"></div>
   </div>
 
@@ -609,9 +612,7 @@ function detectLang(){
     var lc = tg.initDataUnsafe.user.language_code.toLowerCase().substring(0,2);
     if(LANGS[lc]) return lc;
   }
-  // Tarayıcı dili
-  var bl = (navigator.language||'en').toLowerCase().substring(0,2);
-  if(LANGS[bl]) return bl;
+  // Varsayılan: İngilizce
   return 'en';
 }
 
