@@ -254,6 +254,7 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
     <button class="tab" onclick="switchTab('ref')">REF</button>
     <button class="tab" onclick="switchTab('leader')">TOP</button>
     <button class="tab" onclick="switchTab('ton')">TON</button>
+    <button class="tab" onclick="switchTab('wheel')">🎰</button>
   </div>
 
   <!-- MINE -->
@@ -357,6 +358,34 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
       <div style="font-size:9px;color:rgba(255,180,0,0.4);line-height:1.6;">
         <span id="ton-accel-desc">Herhangi bir yükseltmede bekleme varken 0.1 TON/saat ile anında tamamla.</span>
       </div>
+    </div>
+  </div>
+
+
+  <!-- SANS CARKI -->
+  <div class="panel" id="tab-wheel">
+    <div style="text-align:center;margin-bottom:14px;">
+      <div style="font-family:Orbitron,monospace;font-size:13px;color:#00dcff;letter-spacing:0.15em;margin-bottom:4px;" id="wheel-title">🎰 ŞANS ÇARKI</div>
+      <div style="font-size:9px;color:rgba(0,220,255,0.4);" id="wheel-subtitle">Günde 1 kez ücretsiz çevir!</div>
+    </div>
+    <div style="display:flex;justify-content:center;margin-bottom:16px;position:relative;">
+      <canvas id="wheel-canvas" width="260" height="260" style="border-radius:50%;cursor:pointer;"></canvas>
+      <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:28px;z-index:10;">▼</div>
+    </div>
+    <div id="wheel-timer-box" style="background:rgba(255,150,0,0.05);border:1px solid rgba(255,150,0,0.15);border-radius:6px;padding:10px;text-align:center;margin-bottom:12px;display:none;">
+      <div style="font-size:9px;color:rgba(255,180,0,0.5);margin-bottom:4px;" id="wheel-next-label">Sonraki çevirme</div>
+      <div style="font-family:Orbitron,monospace;font-size:16px;color:rgba(255,200,0,0.8);" id="wheel-countdown">00:00:00</div>
+    </div>
+    <button id="wheel-spin-btn" style="width:100%;padding:13px;background:linear-gradient(135deg,rgba(0,220,255,0.1),rgba(100,100,255,0.1));border:1px solid rgba(0,220,255,0.35);border-radius:8px;font-family:Orbitron,monospace;font-size:12px;letter-spacing:0.1em;color:#00dcff;cursor:pointer;">
+      🎰 ÇEVİR!
+    </button>
+    <div id="wheel-result" style="margin-top:12px;text-align:center;display:none;">
+      <div style="font-size:32px;" id="wheel-result-icon"></div>
+      <div style="font-family:Orbitron,monospace;font-size:14px;color:#00ff96;margin-top:6px;" id="wheel-result-text"></div>
+    </div>
+    <div style="margin-top:14px;">
+      <div style="font-size:8px;letter-spacing:0.15em;color:rgba(0,220,255,0.35);margin-bottom:8px;">// ÖDÜLLER</div>
+      <div id="wheel-prizes-list" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"></div>
     </div>
   </div>
 
@@ -992,7 +1021,7 @@ function fmtTime(sec){
 }
 
 function switchTab(t){
-  document.querySelectorAll('.tab').forEach(function(b,i){b.classList.toggle('active',['mine','upgrade','biz','quest','ref','leader','ton'][i]===t);});
+  document.querySelectorAll('.tab').forEach(function(b,i){b.classList.toggle('active',['mine','upgrade','biz','quest','ref','leader','ton','wheel'][i]===t);});
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
   document.getElementById('tab-'+t).classList.add('active');
   if(t==='ref') loadReferrals();
@@ -1000,6 +1029,7 @@ function switchTab(t){
   if(t==='upgrade') renderUpgrades();
   if(t==='leader') loadLeaderboard();
   if(t==='ton') renderTonBoosts();
+  if(t==='wheel') renderWheel();
 }
 
 function copyLink(){
@@ -1497,6 +1527,181 @@ async function loadReferrals(){
   } catch(e){}
 }
 
+
+// ============ SANS CARKI ============
+var WHEEL_PRIZES = [
+  {icon:'💎', label:'500 ZRC',    color:'#1a3a6a', reward:{coins:500}},
+  {icon:'⚡', label:'Enerji',     color:'#0a4a2a', reward:{energy:true}},
+  {icon:'🎯', label:'1000 ZRC',   color:'#2a1a6a', reward:{coins:1000}},
+  {icon:'💠', label:'Kristal',    color:'#0a3a4a', reward:{item:'kristal'}},
+  {icon:'🔴', label:'Reaktör',    color:'#4a1a1a', reward:{item:'reaktor'}},
+  {icon:'🚀', label:'5000 ZRC',   color:'#3a2a0a', reward:{coins:5000}},
+  {icon:'⭐', label:'200 ZRC',    color:'#1a4a3a', reward:{coins:200}},
+  {icon:'🎁', label:'2x Boost',   color:'#3a0a4a', reward:{boost:true}},
+];
+
+var wheelAngle = 0;
+var wheelSpinning = false;
+
+function canSpin(){
+  var last = parseInt(localStorage.getItem('zro_last_spin')||'0');
+  var now = Date.now();
+  return (now - last) >= 86400000;
+}
+
+function timeUntilSpin(){
+  var last = parseInt(localStorage.getItem('zro_last_spin')||'0');
+  var next = last + 86400000;
+  return Math.max(0, Math.ceil((next - Date.now())/1000));
+}
+
+function drawWheel(angle){
+  var canvas = document.getElementById('wheel-canvas');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var cx = 130, cy = 130, r = 120;
+  var n = WHEEL_PRIZES.length;
+  var arc = Math.PI * 2 / n;
+  ctx.clearRect(0,0,260,260);
+
+  // Dış çember
+  ctx.beginPath(); ctx.arc(cx,cy,r+4,0,Math.PI*2);
+  ctx.strokeStyle='rgba(0,220,255,0.3)'; ctx.lineWidth=2; ctx.stroke();
+
+  WHEEL_PRIZES.forEach(function(p,i){
+    var start = angle + i*arc;
+    var end = start + arc;
+    // Dilim
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,start,end);
+    ctx.closePath();
+    ctx.fillStyle = p.color;
+    ctx.fill();
+    ctx.strokeStyle='rgba(0,220,255,0.15)';
+    ctx.lineWidth=1; ctx.stroke();
+    // İkon
+    ctx.save();
+    ctx.translate(cx,cy);
+    ctx.rotate(start + arc/2);
+    ctx.font='18px serif';
+    ctx.fillText(p.icon, r*0.65-10, 6);
+    ctx.font='8px Share Tech Mono';
+    ctx.fillStyle='rgba(200,220,255,0.8)';
+    ctx.fillText(p.label, r*0.35-15, 18);
+    ctx.restore();
+  });
+
+  // Merkez
+  ctx.beginPath(); ctx.arc(cx,cy,22,0,Math.PI*2);
+  ctx.fillStyle='#050810'; ctx.fill();
+  ctx.strokeStyle='rgba(0,220,255,0.4)'; ctx.lineWidth=1.5; ctx.stroke();
+  ctx.font='16px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('💎',cx,cy);
+}
+
+function spinWheel(){
+  if(wheelSpinning) return;
+  if(!canSpin()){
+    showNotif('Yarın tekrar dene!');
+    return;
+  }
+  wheelSpinning = true;
+  document.getElementById('wheel-spin-btn').disabled = true;
+
+  var targetPrize = Math.floor(Math.random() * WHEEL_PRIZES.length);
+  var n = WHEEL_PRIZES.length;
+  var arc = Math.PI * 2 / n;
+  var extraSpins = (5 + Math.floor(Math.random()*3)) * Math.PI * 2;
+  var targetAngle = extraSpins - (targetPrize * arc) - arc/2;
+  var startAngle = wheelAngle;
+  var startTime = null;
+  var duration = 4000;
+
+  function animate(ts){
+    if(!startTime) startTime = ts;
+    var elapsed = ts - startTime;
+    var progress = Math.min(elapsed/duration, 1);
+    var ease = 1 - Math.pow(1-progress, 4);
+    wheelAngle = startAngle + targetAngle * ease;
+    drawWheel(wheelAngle);
+    if(progress < 1){
+      requestAnimationFrame(animate);
+    } else {
+      wheelSpinning = false;
+      localStorage.setItem('zro_last_spin', Date.now().toString());
+      claimWheelPrize(WHEEL_PRIZES[targetPrize]);
+      renderWheel();
+    }
+  }
+  requestAnimationFrame(animate);
+}
+
+function claimWheelPrize(prize){
+  var resultDiv = document.getElementById('wheel-result');
+  var resultIcon = document.getElementById('wheel-result-icon');
+  var resultText = document.getElementById('wheel-result-text');
+  resultDiv.style.display = 'block';
+  resultIcon.textContent = prize.icon;
+
+  if(prize.reward.coins){
+    S.coins += prize.reward.coins;
+    resultText.textContent = '+' + fmt(prize.reward.coins) + ' ZRC!';
+    showNotif(prize.icon + ' ' + fmt(prize.reward.coins) + ' ZRC kazandın!');
+  } else if(prize.reward.energy){
+    S.energy = S.maxEnergy;
+    resultText.textContent = 'Enerji doldu!';
+    showNotif('⚡ Enerji tamamen doldu!');
+  } else if(prize.reward.item){
+    var item = S.items.find(function(x){return x.id===prize.reward.item;});
+    if(item) item.count++;
+    var idef = getItemDef(prize.reward.item);
+    resultText.textContent = idef.name + ' kazandın!';
+    showNotif(prize.icon + ' ' + idef.name + ' kazandın!');
+  } else if(prize.reward.boost){
+    if(!S.activeBoosts) S.activeBoosts = {};
+    S.activeBoosts['boost_1h'] = Date.now() + 3600000;
+    resultText.textContent = '2x Boost - 1 Saat!';
+    showNotif('🚀 1 Saatlik 2x Boost aktif!');
+  }
+  scheduleSave(); renderAll();
+}
+
+function renderWheel(){
+  drawWheel(wheelAngle);
+  var spinBtn = document.getElementById('wheel-spin-btn');
+  var timerBox = document.getElementById('wheel-timer-box');
+  var resultDiv = document.getElementById('wheel-result');
+
+  if(canSpin()){
+    if(spinBtn){ spinBtn.disabled=false; spinBtn.textContent='🎰 ÇEVİR!'; spinBtn.style.opacity='1'; }
+    if(timerBox) timerBox.style.display='none';
+  } else {
+    if(spinBtn){ spinBtn.disabled=true; spinBtn.textContent='⏳ BEKLE'; spinBtn.style.opacity='0.5'; }
+    if(timerBox) timerBox.style.display='block';
+  }
+
+  // Ödül listesi
+  var prizeList = document.getElementById('wheel-prizes-list');
+  if(prizeList){
+    prizeList.innerHTML = '';
+    WHEEL_PRIZES.forEach(function(p){
+      var d = document.createElement('div');
+      d.style.cssText = 'background:'+p.color+';border:1px solid rgba(0,220,255,0.1);border-radius:6px;padding:7px 10px;display:flex;align-items:center;gap:6px;';
+      d.innerHTML = '<span style="font-size:16px;">'+p.icon+'</span><span style="font-size:10px;color:rgba(200,220,255,0.7);">'+p.label+'</span>';
+      prizeList.appendChild(d);
+    });
+  }
+
+  // Geri sayım
+  if(!canSpin()){
+    var rem = timeUntilSpin();
+    var h=Math.floor(rem/3600), m=Math.floor((rem%3600)/60), s=rem%60;
+    var cd = document.getElementById('wheel-countdown');
+    if(cd) cd.textContent = (h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  }
+}
+
 async function loadLeaderboard(){
   var el = document.getElementById('leader-list');
   el.innerHTML = '<div style="font-size:10px;color:rgba(0,220,255,0.3);text-align:center;padding:20px;">Yukleniyor...</div>';
@@ -1527,51 +1732,166 @@ async function loadLeaderboard(){
   }
 }
 
-var TON_BOOSTS = [
-  {id:'tap2x',  name:'TAP 2X',      desc:'1 saat tap gucu 2 kat', ton:0.1, icon:'👆'},
-  {id:'farm3x', name:'FARM 3X',     desc:'1 saat pasif gelir 3 kat', ton:0.3, icon:'⛏️'},
-  {id:'energy', name:'ENERJI DOLU', desc:'Aninda enerji doldur', ton:0.05, icon:'⚡'},
-  {id:'ref2x',  name:'REF BONUS 2X',desc:'24 saat referral bonusu 2 kat', ton:0.5, icon:'👥'},
+// TON Boost paketi
+var TON_PACKAGES = [
+  {
+    id:'boost_1h', icon:'⚡', tier:'BASIC',
+    dur:3600000, label:'1H',
+    prices:{ton:0.1},
+    effects:{tap:2, farm:2},
+    color:'rgba(0,220,255,0.15)', border:'rgba(0,220,255,0.35)',
+  },
+  {
+    id:'boost_daily', icon:'📅', tier:'DAILY',
+    dur:86400000, label:'24H',
+    prices:{ton:0.5},
+    effects:{tap:2, farm:2},
+    color:'rgba(0,200,100,0.1)', border:'rgba(0,200,100,0.3)',
+  },
+  {
+    id:'boost_weekly', icon:'📆', tier:'WEEKLY',
+    dur:604800000, label:'7 GUN',
+    prices:{ton:2},
+    effects:{tap:3, farm:3},
+    color:'rgba(100,100,255,0.1)', border:'rgba(100,100,255,0.3)',
+  },
+  {
+    id:'boost_monthly', icon:'🗓️', tier:'MONTHLY',
+    dur:2592000000, label:'30 GUN',
+    prices:{ton:6},
+    effects:{tap:5, farm:5},
+    color:'rgba(150,50,255,0.1)', border:'rgba(150,50,255,0.3)',
+  },
+  {
+    id:'energy_fill', icon:'🔋', tier:'INSTANT',
+    dur:0, label:'ANLIK',
+    prices:{ton:0.05},
+    effects:{energy:true},
+    color:'rgba(255,150,0,0.1)', border:'rgba(255,150,0,0.3)',
+  },
 ];
+
+var PREMIUM = {
+  id:'premium', icon:'👑', ton:10,
+  perks:[
+    {icon:'🚀', text:'Farm bonusu kalıcı x2'},
+    {icon:'⚡', text:'Enerji kapasitesi x2'},
+    {icon:'🎯', text:'Günlük görev ödülleri x2'},
+    {icon:'💎', text:'Özel premium rozet'},
+    {icon:'📊', text:'Gelişmiş istatistikler'},
+    {icon:'🏆', text:'Premium işletme kilidi açılır'},
+  ]
+};
+
+function getBoostLabel(pkg){
+  var labels = {
+    'boost_1h':   {tr:'1 Saat',   en:'1 Hour',   ru:'1 Час',   zh:'1小时',  ar:'ساعة',    es:'1 Hora',    hi:'1 घंटा'},
+    'boost_daily':{tr:'24 Saat',  en:'24 Hours', ru:'24 Часа', zh:'24小时', ar:'24 ساعة', es:'24 Horas',  hi:'24 घंटे'},
+    'boost_weekly':{tr:'7 Gün',   en:'7 Days',   ru:'7 Дней',  zh:'7天',    ar:'7 أيام',  es:'7 Días',    hi:'7 दिन'},
+    'boost_monthly':{tr:'30 Gün', en:'30 Days',  ru:'30 Дней', zh:'30天',   ar:'30 يوم',  es:'30 Días',   hi:'30 दिन'},
+    'energy_fill':{tr:'Anlık',    en:'Instant',  ru:'Мгновенно',zh:'即刻',  ar:'فوري',    es:'Instantáneo',hi:'तुरंत'},
+  };
+  var l = labels[pkg.id];
+  if(!l) return pkg.label;
+  return l[currentLang] || l['en'];
+}
+
+function getBoostDesc(pkg){
+  var descs = {
+    'boost_1h':   {tr:'Tap+Farm 2x - 1 Saat',   en:'Tap+Farm 2x - 1 Hour',   ru:'Тап+Ферм 2x - 1 Час',   zh:'点击+农场2x-1小时',  es:'Tap+Farm 2x - 1 Hora',   hi:'टैप+फार्म 2x - 1 घंटा'},
+    'boost_daily':{tr:'Tap+Farm 2x - 24 Saat',  en:'Tap+Farm 2x - 24 Hours', ru:'Тап+Ферм 2x - 24 Часа', zh:'点击+农场2x-24小时', es:'Tap+Farm 2x - 24 Horas', hi:'टैप+फार्म 2x - 24 घंटे'},
+    'boost_weekly':{tr:'Tap+Farm 3x - 7 Gün',   en:'Tap+Farm 3x - 7 Days',   ru:'Тап+Ферм 3x - 7 Дней',  zh:'点击+农场3x-7天',    es:'Tap+Farm 3x - 7 Días',   hi:'टैप+फार्म 3x - 7 दिन'},
+    'boost_monthly':{tr:'Tap+Farm 5x - 30 Gün', en:'Tap+Farm 5x - 30 Days',  ru:'Тап+Ферм 5x - 30 Дней', zh:'点击+农场5x-30天',   es:'Tap+Farm 5x - 30 Días',  hi:'टैप+फार्म 5x - 30 दिन'},
+    'energy_fill':{tr:'Enerjiyi anında doldur',  en:'Instantly fill energy',  ru:'Мгновенно заполнить',   zh:'立即充满能量',        es:'Llenar energía al instante',hi:'तुरंत ऊर्जा भरें'},
+  };
+  var d = descs[pkg.id];
+  if(!d) return '';
+  return d[currentLang] || d['en'];
+}
 
 function renderTonBoosts(){
   var el = document.getElementById('ton-boosts');
   if(!el) return;
   el.innerHTML = '';
-  TON_BOOSTS.forEach(function(b){
-    var active = S.activeBoosts && S.activeBoosts[b.id] && Date.now() < S.activeBoosts[b.id];
+  el.style.cssText = 'display:flex;flex-direction:column;gap:10px;';
+
+  // Boost paketleri
+  var pkgTitle = document.createElement('div');
+  pkgTitle.style.cssText = 'font-size:9px;letter-spacing:0.15em;color:rgba(0,220,255,0.4);margin-bottom:4px;';
+  pkgTitle.textContent = '// BOOST PAKETLERİ';
+  el.appendChild(pkgTitle);
+
+  TON_PACKAGES.forEach(function(pkg){
+    var active = S.activeBoosts && S.activeBoosts[pkg.id] && Date.now() < S.activeBoosts[pkg.id];
+    var remMs = active ? S.activeBoosts[pkg.id] - Date.now() : 0;
+    var remStr = active ? fmtTime(Math.ceil(remMs/1000)) : '';
     var d = document.createElement('div');
-    d.style.cssText = 'background:rgba(80,120,255,0.06);border:1px solid rgba(80,120,255,0.15);border-radius:6px;padding:10px;';
+    d.style.cssText = 'background:'+pkg.color+';border:1px solid '+pkg.border+';border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;';
     d.innerHTML =
-      '<div style="font-size:20px;margin-bottom:4px;">' + b.icon + '</div>' +
-      '<div style="font-size:10px;font-family:Orbitron,monospace;color:#8ab0ff;margin-bottom:2px;">' + b.name + '</div>' +
-      '<div style="font-size:8px;color:rgba(120,160,255,0.45);margin-bottom:7px;">' + b.desc + '</div>' +
-      '<button style="width:100%;background:rgba(80,120,255,0.1);border:1px solid rgba(80,120,255,0.3);border-radius:4px;padding:5px;font-family:Share Tech Mono,monospace;font-size:10px;color:' + (active?'#00ff96':'#8ab0ff') + ';cursor:pointer;" ' + (active?'disabled':'') + ' data-tonbid="' + b.id + '">' +
-        (active ? 'AKTIF ✓' : '⬡ ' + b.ton + ' TON') +
+      '<div style="font-size:26px;flex-shrink:0;">'+pkg.icon+'</div>'+
+      '<div style="flex:1;">'+
+        '<div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">'+
+          '<span style="font-family:Orbitron,monospace;font-size:11px;color:#e0eaff;">'+getBoostLabel(pkg)+'</span>'+
+          '<span style="font-size:8px;background:'+pkg.border+';border-radius:3px;padding:1px 5px;color:#e0eaff;opacity:0.7;">'+pkg.tier+'</span>'+
+        '</div>'+
+        '<div style="font-size:9px;color:rgba(200,220,255,0.5);">'+getBoostDesc(pkg)+'</div>'+
+        (active?'<div style="font-size:9px;color:#00ff96;margin-top:3px;">✓ AKTİF — '+remStr+'</div>':'')+
+      '</div>'+
+      '<button style="flex-shrink:0;background:rgba(80,120,255,0.15);border:1px solid '+pkg.border+';border-radius:6px;padding:7px 10px;font-family:Share Tech Mono,monospace;font-size:10px;color:#8ab0ff;cursor:pointer;white-space:nowrap;'+( active?'opacity:0.4;':'')+'" '+(active?'disabled':'')+' data-pkg="'+pkg.id+'">'+
+        (active?'✓':'⬡ '+pkg.prices.ton+' TON')+
       '</button>';
     el.appendChild(d);
   });
-  el.querySelectorAll('[data-tonbid]').forEach(function(btn){
+
+  // Premium kutu
+  var premActive = S.isPremium;
+  var premDiv = document.createElement('div');
+  premDiv.style.cssText = 'background:linear-gradient(135deg,rgba(150,50,255,0.1),rgba(255,150,0,0.08));border:1px solid rgba(200,100,255,0.4);border-radius:10px;padding:14px;margin-top:6px;';
+  var perksHtml = PREMIUM.perks.map(function(p){ return '<div style="font-size:10px;color:rgba(200,180,255,0.7);padding:3px 0;">'+p.icon+' '+p.text+'</div>'; }).join('');
+  premDiv.innerHTML =
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'+
+      '<div>'+
+        '<div style="font-family:Orbitron,monospace;font-size:13px;color:#f0c0ff;letter-spacing:0.1em;">👑 PREMIUM</div>'+
+        '<div style="font-size:9px;color:rgba(200,150,255,0.5);margin-top:2px;">Kalıcı özel avantajlar</div>'+
+      '</div>'+
+      '<button style="background:linear-gradient(135deg,rgba(150,50,255,0.3),rgba(255,100,200,0.2));border:1px solid rgba(200,100,255,0.5);border-radius:6px;padding:8px 12px;font-family:Orbitron,monospace;font-size:11px;color:#f0c0ff;cursor:pointer;'+(premActive?'opacity:0.4;':'')+'" '+(premActive?'disabled':'')+' id="premium-btn">'+
+        (premActive?'👑 AKTİF':'⬡ 10 TON')+
+      '</button>'+
+    '</div>'+
+    perksHtml;
+  el.appendChild(premDiv);
+
+  // Event listener'lar
+  el.querySelectorAll('[data-pkg]').forEach(function(btn){
     btn.addEventListener('click', function(){
-      var bid = btn.dataset.tonbid;
-      var boost = TON_BOOSTS.find(function(x){return x.id===bid;});
-      // Gercek TON entegrasyonu icin placeholder
-      showNotif('TON odeme yakinda aktif edilecek! (' + boost.ton + ' TON)');
-      // Simdi demo modunda aktif et
+      var pid = btn.dataset.pkg;
+      var pkg = TON_PACKAGES.find(function(x){return x.id===pid;});
+      if(!pkg) return;
+      // Demo mod - gercek TON entegrasyonu sonra
       if(!S.activeBoosts) S.activeBoosts = {};
-      if(bid==='energy'){ S.energy = S.maxEnergy; showNotif('Enerji doldu! (Demo)'); }
-      else { S.activeBoosts[bid] = Date.now() + (bid==='ref2x'?86400000:3600000); showNotif(boost.name + ' aktif! (Demo)'); }
+      if(pkg.effects.energy){
+        S.energy = S.maxEnergy;
+        showNotif((L.energyFull||'Energy full!') + ' (' + pkg.prices.ton + ' TON)');
+      } else {
+        S.activeBoosts[pkg.id] = Date.now() + pkg.dur;
+        showNotif(getBoostLabel(pkg) + ' ' + (L.boostActive||' active!') + ' (' + pkg.prices.ton + ' TON)');
+      }
       renderTonBoosts(); renderAll();
     });
   });
+
+  var premBtn = document.getElementById('premium-btn');
+  if(premBtn && !S.isPremium){
+    premBtn.addEventListener('click', function(){
+      S.isPremium = true;
+      S.maxEnergy = Math.floor(S.maxEnergy * 2);
+      showNotif('👑 PREMIUM aktif! Tüm avantajlar açıldı!');
+      renderTonBoosts(); renderAll();
+    });
+  }
 }
 
-document.getElementById('u-name').textContent=user?(user.first_name||(user.username||'PLAYER')).toUpperCase():'PLAYER';
-document.getElementById('u-id').textContent='ID: '+userId;
-document.getElementById('u-avatar').textContent=user&&user.first_name?user.first_name[0].toUpperCase():'👤';
-checkDailyReset();
 
-// Dil modal doldur
 function copySettingsLink(){
   var link = 't.me/ZRoFarmBOT?start=USR_' + userId;
   if(navigator.clipboard) navigator.clipboard.writeText(link);
@@ -1594,6 +1914,22 @@ function fillLangGrid(gridEl){
     gridEl.appendChild(btn);
   });
 }
+
+// Wheel spin butonu
+document.addEventListener('click', function(e){
+  if(e.target && e.target.id === 'wheel-spin-btn') spinWheel();
+});
+
+// Wheel geri sayım timer
+setInterval(function(){
+  var cd = document.getElementById('wheel-countdown');
+  if(cd && cd.closest('.panel.active')){
+    var rem = timeUntilSpin();
+    var h=Math.floor(rem/3600), m=Math.floor((rem%3600)/60), s=rem%60;
+    cd.textContent = (h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+    if(rem<=0) renderWheel();
+  }
+}, 1000);
 
 function initLangModal(){
   fillLangGrid(document.getElementById('settings-lang-grid'));
