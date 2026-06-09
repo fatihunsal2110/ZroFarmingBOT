@@ -1736,6 +1736,18 @@ function handleTap(e){
   var earned=Math.ceil(tp*bonus);
   S.coins+=earned; S.totalEarned+=earned; S.dailyTaps++; S.dailyEarned+=earned;
   S.totalTaps=(S.totalTaps||0)+1;
+  // Enerji düşükse bildirim planla
+  if(S.energy <= 5 && !S._notifyScheduled){
+    S._notifyScheduled = true;
+    var regenTime = S.maxEnergy / (S.regenMult||1); // saniye
+    var notifyAt = Date.now() + regenTime * 1000;
+    fetch(API + '/api/notify/energy', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({user_id: userId, lang: currentLang, energy_time: notifyAt})
+    }).catch(function(){});
+  }
+  if(S.energy > 10) S._notifyScheduled = false;
   S.energy=Math.max(0,S.energy-1);
   pulseR=0; pulseA=0.85;
   var wrap=document.getElementById('sphere-wrap');
@@ -1772,7 +1784,7 @@ async function apiLogin(){
       var res = await fetch(API+'/api/login', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({user_id:userId, username:user?user.username:'', first_name:user?user.first_name:'Player', ref_code:refCode}),
+        body: JSON.stringify({user_id:userId, username:user?user.username:'', first_name:user?user.first_name:'Player', ref_code:refCode, init_data: tg?tg.initData:''}),
         signal: controller.signal
       });
       clearTimeout(timeout);
@@ -1837,6 +1849,14 @@ async function saveGame(){
       signal: controller.signal
     });
     clearTimeout(timeout);
+    var saveResult = await res.json();
+    if(saveResult.success === false && saveResult.coins !== undefined){
+      // Hile tespit edildi - server'daki değere dön
+      console.log('Hile tespit, duzeltiliyor:', saveResult.coins);
+      S.coins = saveResult.coins;
+      showNotif('⚠️ Sync error - coins corrected');
+      renderAll();
+    }
     document.getElementById('save-ind').textContent=L.saved||'● SAVED';
     document.getElementById('save-ind').style.color='rgba(0,255,150,0.5)';
   } catch(e){
