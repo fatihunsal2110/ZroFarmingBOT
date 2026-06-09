@@ -190,31 +190,31 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
     </div>
 
     <div class="settings-section">
-      <div class="settings-section-title">// HESAP BİLGİLERİ</div>
-      <div class="settings-info-row"><span class="settings-info-label">Kullanıcı Adı</span><span class="settings-info-val" id="settings-user-name">-</span></div>
-      <div class="settings-info-row"><span class="settings-info-label">Telegram ID</span><span class="settings-info-val" id="settings-user-id">-</span></div>
-      <div class="settings-info-row"><span class="settings-info-label">Toplam Coin</span><span class="settings-info-val" id="settings-coins">-</span></div>
-      <div class="settings-info-row"><span class="settings-info-label">Referral</span><span class="settings-info-val" id="settings-ref">-</span></div>
+      <div class="settings-section-title" id="settings-acc-title">// HESAP BİLGİLERİ</div>
+      <div class="settings-info-row"><span class="settings-info-label" id="settings-username-label">Kullanıcı Adı</span><span class="settings-info-val" id="settings-user-name">-</span></div>
+      <div class="settings-info-row"><span class="settings-info-label" id="settings-tid-label">Telegram ID</span><span class="settings-info-val" id="settings-user-id">-</span></div>
+      <div class="settings-info-row"><span class="settings-info-label" id="settings-coins-label">Toplam Coin</span><span class="settings-info-val" id="settings-coins">-</span></div>
+      <div class="settings-info-row"><span class="settings-info-label" id="settings-ref-label">Referral</span><span class="settings-info-val" id="settings-ref">-</span></div>
     </div>
 
     <div class="settings-section">
-      <div class="settings-section-title">// DİL / LANGUAGE</div>
+      <div class="settings-section-title" id="settings-lang-title">// DİL / LANGUAGE</div>
       <div class="settings-info-row">
-        <span class="settings-info-label">Aktif Dil</span>
+        <span class="settings-info-label" id="settings-active-lang-label">Aktif Dil</span>
         <span class="settings-info-val" id="settings-lang">🇹🇷 Türkçe</span>
       </div>
       <div class="lang-grid" id="settings-lang-grid" style="margin-top:10px;padding:0;"></div>
     </div>
 
     <div class="settings-section">
-      <div class="settings-section-title">// UYGULAMA</div>
-      <div class="settings-info-row"><span class="settings-info-label">Versiyon</span><span class="settings-info-val" id="settings-version">v1.0.0</span></div>
+      <div class="settings-section-title" id="settings-app-title">// UYGULAMA</div>
+      <div class="settings-info-row"><span class="settings-info-label" id="settings-version-label">Versiyon</span><span class="settings-info-val" id="settings-version">v1.0.0</span></div>
       <div class="settings-info-row"><span class="settings-info-label">Bot</span><span class="settings-info-val">@ZRoFarmBOT</span></div>
       <div class="settings-info-row"><span class="settings-info-label">Network</span><span class="settings-info-val">TON Blockchain</span></div>
     </div>
 
     <div class="settings-section">
-      <div class="settings-section-title">// DAVET LİNKİN</div>
+      <div class="settings-section-title" id="settings-invite-title">// DAVET LİNKİN</div>
       <div style="background:rgba(0,0,0,0.3);border:1px solid rgba(0,255,150,0.2);border-radius:5px;padding:10px;display:flex;gap:8px;align-items:center;">
         <span style="flex:1;font-size:10px;color:#00ff96;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="settings-ref-link">-</span>
         <button onclick="copySettingsLink()" style="flex-shrink:0;background:rgba(0,255,150,0.1);border:1px solid rgba(0,255,150,0.3);border-radius:4px;padding:4px 9px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#00ff96;cursor:pointer;">KOPYALA</button>
@@ -679,12 +679,34 @@ function applyLang(){
   document.getElementById('copy-btn').textContent = L.copy;
   // RTL dil desteği
   document.body.style.direction = (currentLang === 'ar') ? 'rtl' : 'ltr';
+  // Save indicator
+  var saveEl = document.getElementById('save-ind');
+  if(saveEl && saveEl.textContent.indexOf('●') > -1){
+    if(saveEl.textContent.indexOf('KAYITLI') > -1 || saveEl.textContent.indexOf('SAVED') > -1 || saveEl.textContent.indexOf('СОХРАНЕНО') > -1 || saveEl.textContent.indexOf('已保存') > -1 || saveEl.textContent.indexOf('محفوظ') > -1 || saveEl.textContent.indexOf('GUARDADO') > -1 || saveEl.textContent.indexOf('सेव') > -1){
+      saveEl.textContent = L.saved || '● SAVED';
+    }
+  }
   // Ayarlar butonu
   var sBtn = document.getElementById('settings-btn-text');
   if(sBtn) sBtn.textContent = L.settingsBtn || 'SETTINGS / LANGUAGE';
-  // Ayarlar modal başlığı
+  // Ayarlar modal metinleri
   var sTitle = document.querySelector('.settings-title');
   if(sTitle) sTitle.textContent = '⚙️ ' + (L.settingsBtn || 'SETTINGS');
+  var sClose = document.querySelector('.settings-close');
+  if(sClose) sClose.textContent = '✕ ' + (L.close || 'CLOSE');
+  var els = {
+    'settings-acc-title': L.accountInfo || '// ACCOUNT INFO',
+    'settings-username-label': L.username || 'Username',
+    'settings-tid-label': L.telegramId || 'Telegram ID',
+    'settings-coins-label': L.totalCoin || 'Total Coin',
+    'settings-ref-label': L.referral || 'Referral',
+    'settings-lang-title': L.langLabel || '// LANGUAGE',
+    'settings-active-lang-label': L.activeLang || 'Active Language',
+    'settings-app-title': L.appInfo || '// APPLICATION',
+    'settings-version-label': L.version || 'Version',
+    'settings-invite-title': L.inviteLink || '// YOUR INVITE LINK',
+  };
+  Object.keys(els).forEach(function(id){ var el=document.getElementById(id); if(el) el.textContent=els[id]; });
 }
 
 function showSettingsModal(){
@@ -1296,7 +1318,7 @@ async function apiLogin(){
 function scheduleSave(){
   if(saveTimer) clearTimeout(saveTimer);
   saveTimer=setTimeout(saveGame,5000);
-  document.getElementById('save-ind').textContent='● KAYDEDILIYOR';
+  document.getElementById('save-ind').textContent=L.saving||'● SAVING...';
   document.getElementById('save-ind').style.color='rgba(255,200,0,0.6)';
 }
 
@@ -1327,10 +1349,10 @@ async function saveGame(){
       signal: controller.signal
     });
     clearTimeout(timeout);
-    document.getElementById('save-ind').textContent='● KAYITLI';
+    document.getElementById('save-ind').textContent=L.saved||'● SAVED';
     document.getElementById('save-ind').style.color='rgba(0,255,150,0.5)';
   } catch(e){
-    document.getElementById('save-ind').textContent='● LOKAL';
+    document.getElementById('save-ind').textContent=L.localSave||'● LOCAL';
     document.getElementById('save-ind').style.color='rgba(255,180,0,0.6)';
   }
 }
