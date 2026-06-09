@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>ZRo Farm</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -953,6 +954,86 @@ function renderSettingsInfo(){
 }
 
 var API = 'https://zrofarm-backend.onrender.com';
+var OWNER_WALLET = 'UQAFvMeyv_KhWwd1b8T73tyJJdzS_QV0xdAW5gXKiahj_Npm';
+
+// TON Connect
+var tonConnectUI = null;
+try {
+  tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+    manifestUrl: 'https://fatihunsal2110.github.io/ZroFarmingBOT/tonconnect-manifest.json',
+  });
+} catch(e){
+  console.log('TON Connect yuklenemedi:', e.message);
+}
+
+async function connectTonWallet(){
+  if(!tonConnectUI) return false;
+  try {
+    if(!tonConnectUI.connected){
+      await tonConnectUI.openModal();
+      return new Promise(function(resolve){
+        var unsub = tonConnectUI.onStatusChange(function(wallet){
+          if(wallet){
+            unsub();
+            resolve(true);
+          }
+        });
+        setTimeout(function(){ unsub(); resolve(false); }, 60000);
+      });
+    }
+    return true;
+  } catch(e){
+    console.log('Wallet connect hatasi:', e);
+    return false;
+  }
+}
+
+async function sendTonPayment(tonAmount, comment){
+  try {
+    var connected = await connectTonWallet();
+    if(!connected){
+      showNotif('Cüzdan bağlanamadı!');
+      return null;
+    }
+    var amountNano = Math.floor(tonAmount * 1e9).toString();
+    var tx = {
+      validUntil: Math.floor(Date.now()/1000) + 600,
+      messages: [{
+        address: OWNER_WALLET,
+        amount: amountNano,
+        payload: btoa(comment || 'ZRoFarm Boost'),
+      }]
+    };
+    var result = await tonConnectUI.sendTransaction(tx);
+    return result;
+  } catch(e){
+    console.log('TON odeme hatasi:', e);
+    if(e.message && e.message.includes('User rejected')){
+      showNotif('Ödeme iptal edildi.');
+    }
+    return null;
+  }
+}
+
+async function verifyAndActivateBoost(pkgId, tonAmount, txResult){
+  try {
+    var res = await fetch(API + '/api/ton/verify', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        user_id: userId,
+        pkg_id: pkgId,
+        ton_amount: tonAmount,
+        boc: txResult.boc,
+      })
+    });
+    var data = await res.json();
+    return data.success;
+  } catch(e){
+    console.log('Dogrulama hatasi:', e);
+    return false;
+  }
+}
 var tg = null;
 try { tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null; } catch(e){}
 if(tg){ try{ tg.ready(); tg.expand(); }catch(e){} }
@@ -2234,30 +2315,70 @@ function renderTonBoosts(){
 
   // Event listener'lar
   el.querySelectorAll('[data-pkg]').forEach(function(btn){
-    btn.addEventListener('click', function(){
+    btn.addEventListener('click', async function(){
       var pid = btn.dataset.pkg;
       var pkg = TON_PACKAGES.find(function(x){return x.id===pid;});
       if(!pkg) return;
-      // Demo mod - gercek TON entegrasyonu sonra
-      if(!S.activeBoosts) S.activeBoosts = {};
-      if(pkg.effects.energy){
-        S.energy = S.maxEnergy;
-        showNotif((L.energyFull||'Energy full!') + ' (' + pkg.prices.ton + ' TON)');
-      } else {
-        S.activeBoosts[pkg.id] = Date.now() + pkg.dur;
-        showNotif(getBoostLabel(pkg) + ' ' + (L.boostActive||' active!') + ' (' + pkg.prices.ton + ' TON)');
+
+      btn.disabled = true;
+      btn.textContent = '⏳';
+
+      var loadMsgs = {tr:'Ödeme işleniyor...',en:'Processing payment...',ru:'Обработка платежа...',zh:'处理支付...',ar:'معالجة الدفع...',es:'Procesando pago...',hi:'भुगतान हो रहा है...'};
+      showNotif(loadMsgs[currentLang]||loadMsgs['en']);
+
+      try {
+        var comment = 'ZRoFarm:'+pid+':'+userId;
+        var txResult = await sendTonPayment(pkg.prices.ton, comment);
+
+        if(!txResult){
+          btn.disabled = false;
+          renderTonBoosts();
+          return;
+        }
+
+        // Backend'de doğrula
+        var verified = await verifyAndActivateBoost(pid, pkg.prices.ton, txResult);
+
+        if(!S.activeBoosts) S.activeBoosts = {};
+
+        if(pkg.effects.energy){
+          S.energy = S.maxEnergy;
+          var egMsg={tr:'Enerji doldu!',en:'Energy refilled!',ru:'Энергия заполнена!',zh:'能量已充满！',ar:'الطاقة ممتلئة!',es:'¡Energía recargada!',hi:'ऊर्जा भर गई!'};
+          showNotif('⚡ ' + (egMsg[currentLang]||egMsg['en']));
+        } else {
+          S.activeBoosts[pid] = Date.now() + pkg.dur;
+          var okMsg={tr:'aktif!',en:'active!',ru:'активно!',zh:'已激活！',ar:'نشط!',es:'¡activo!',hi:'सक्रिय!'};
+          showNotif('✅ ' + getBoostLabel(pkg) + ' ' + (okMsg[currentLang]||okMsg['en']));
+        }
+
+        scheduleSave();
+        renderTonBoosts();
+        renderAll();
+      } catch(e){
+        console.log('Boost hatasi:', e);
+        btn.disabled = false;
+        renderTonBoosts();
       }
-      renderTonBoosts(); renderAll();
     });
   });
 
   var premBtn = document.getElementById('premium-btn');
   if(premBtn && !S.isPremium){
-    premBtn.addEventListener('click', function(){
-      S.isPremium = true;
-      S.maxEnergy = Math.floor(S.maxEnergy * 2);
-      showNotif('👑 PREMIUM aktif! Tüm avantajlar açıldı!');
-      renderTonBoosts(); renderAll();
+    premBtn.addEventListener('click', async function(){
+      premBtn.disabled = true;
+      premBtn.textContent = '⏳';
+      var txResult = await sendTonPayment(10, 'ZRoFarm:premium:'+userId);
+      if(txResult){
+        S.isPremium = true;
+        S.maxEnergy = Math.floor(S.maxEnergy * 2);
+        var premMsgs={tr:'👑 PREMIUM aktif! Tüm avantajlar açıldı!',en:'👑 PREMIUM active! All perks unlocked!',ru:'👑 ПРЕМИУМ активен!',zh:'👑 高级会员已激活！',ar:'👑 بريميوم نشط!',es:'👑 ¡PREMIUM activo!',hi:'👑 प्रीमियम सक्रिय!'};
+        showNotif(premMsgs[currentLang]||premMsgs['en']);
+        scheduleSave();
+        renderTonBoosts(); renderAll();
+      } else {
+        premBtn.disabled = false;
+        renderTonBoosts();
+      }
     });
   }
 }
