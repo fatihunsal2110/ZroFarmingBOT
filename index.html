@@ -327,10 +327,10 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
     </div>
     <div class="bonus-info">
       <div class="bonus-title" id="farm-bonus-title">// FARM BONUS TABLOSU</div>
-      <div class="bonus-row"><span class="bonus-tier">1-2 arkadas</span><span class="bonus-val">x1.25</span><span class="bonus-active" id="tier0-badge" style="display:none">AKTIF</span></div>
-      <div class="bonus-row"><span class="bonus-tier">3-5 arkadas</span><span class="bonus-val">x1.75</span><span class="bonus-active" id="tier1-badge" style="display:none">AKTIF</span></div>
-      <div class="bonus-row"><span class="bonus-tier">6-9 arkadas</span><span class="bonus-val">x2.5</span><span class="bonus-active" id="tier2-badge" style="display:none">AKTIF</span></div>
-      <div class="bonus-row"><span class="bonus-tier">10+ arkadas</span><span class="bonus-val">x4.0</span><span class="bonus-active" id="tier3-badge" style="display:none">AKTIF</span></div>
+      <div class="bonus-row"><span class="bonus-tier" id="ref-tier-0">1-2 friends</span><span class="bonus-val">x1.25</span><span class="bonus-active" id="tier0-badge" style="display:none">AKTIF</span></div>
+      <div class="bonus-row"><span class="bonus-tier" id="ref-tier-1">3-5 friends</span><span class="bonus-val">x1.75</span><span class="bonus-active" id="tier1-badge" style="display:none">AKTIF</span></div>
+      <div class="bonus-row"><span class="bonus-tier" id="ref-tier-2">6-9 friends</span><span class="bonus-val">x2.5</span><span class="bonus-active" id="tier2-badge" style="display:none">AKTIF</span></div>
+      <div class="bonus-row"><span class="bonus-tier" id="ref-tier-3">10+ friends</span><span class="bonus-val">x4.0</span><span class="bonus-active" id="tier3-badge" style="display:none">AKTIF</span></div>
     </div>
     <div class="section-label" id="friends-label">// ARKADASLARIN</div>
     <div class="friend-list" id="friend-list">
@@ -447,6 +447,7 @@ var LANGS = {
     version:'Versiyon',
     inviteLink:'// DAVET LİNKİN',
     close:'KAPAT',
+    questDoneBadge:'ALINDI',
     settingsBtn:'AYARLAR / DİL',
   },
   en: {
@@ -490,6 +491,7 @@ var LANGS = {
     version:'Version',
     inviteLink:'// YOUR INVITE LINK',
     close:'CLOSE',
+    questDoneBadge:'CLAIMED',
     settingsBtn:'SETTINGS / LANGUAGE',
   },
   ru: {
@@ -533,6 +535,7 @@ var LANGS = {
     version:'Версия',
     inviteLink:'// ВАШ РЕФЕРАЛЬНЫЙ ЛИНК',
     close:'ЗАКРЫТЬ',
+    questDoneBadge:'ПОЛУЧЕНО',
     settingsBtn:'НАСТРОЙКИ / ЯЗЫК',
   },
   zh: {
@@ -576,6 +579,7 @@ var LANGS = {
     version:'版本',
     inviteLink:'// 邀请链接',
     close:'关闭',
+    questDoneBadge:'已领取',
     settingsBtn:'设置 / 语言',
   },
   ar: {
@@ -619,6 +623,7 @@ var LANGS = {
     version:'الإصدار',
     inviteLink:'// رابط دعوتك',
     close:'إغلاق',
+    questDoneBadge:'تم الاستلام',
     settingsBtn:'الإعدادات / اللغة',
   },
   es: {
@@ -662,6 +667,7 @@ var LANGS = {
     version:'Versión',
     inviteLink:'// TU ENLACE DE INVITACIÓN',
     close:'CERRAR',
+    questDoneBadge:'RECLAMADO',
     settingsBtn:'AJUSTES / IDIOMA',
   },
   hi: {
@@ -705,6 +711,7 @@ var LANGS = {
     version:'संस्करण',
     inviteLink:'// आमंत्रण लिंक',
     close:'बंद करें',
+    questDoneBadge:'प्राप्त',
     settingsBtn:'सेटिंग्स / भाषा',
   }
 };
@@ -788,6 +795,34 @@ function applyLang(){
   document.getElementById('copy-btn').textContent = L.copy;
   // RTL dil desteği
   document.body.style.direction = (currentLang === 'ar') ? 'rtl' : 'ltr';
+  // Referral tier etiketleri
+  var tierWords = {tr:'arkadaş',en:'friends',ru:'друзей',zh:'朋友',ar:'أصدقاء',es:'amigos',hi:'दोस्त'};
+  var tw = tierWords[currentLang]||'friends';
+  var t0=document.getElementById('ref-tier-0'); if(t0) t0.textContent='1-2 '+tw;
+  var t1=document.getElementById('ref-tier-1'); if(t1) t1.textContent='3-5 '+tw;
+  var t2=document.getElementById('ref-tier-2'); if(t2) t2.textContent='6-9 '+tw;
+  var t3=document.getElementById('ref-tier-3'); if(t3) t3.textContent='10+ '+tw;
+  // Başarımlar başlığı
+  var achT = document.querySelector('#tab-ach > div > div:first-child');
+  var achTitles = {tr:'🏆 BAŞARIMLAR',en:'🏆 ACHIEVEMENTS',ru:'🏆 ДОСТИЖЕНИЯ',zh:'🏆 成就',ar:'🏆 الإنجازات',es:'🏆 LOGROS',hi:'🏆 उपलब्धियाँ'};
+  if(achT) achT.textContent = achTitles[currentLang]||achTitles['en'];
+  // Şans çarkı başlığı
+  var wT=document.getElementById('wheel-title');
+  var wTitles={tr:'🎰 ŞANS ÇARKI',en:'🎰 LUCKY WHEEL',ru:'🎰 КОЛЕСО УДАЧИ',zh:'🎰 幸运转盘',ar:'🎰 عجلة الحظ',es:'🎰 RULETA DE SUERTE',hi:'🎰 भाग्य चक्र'};
+  if(wT) wT.textContent = wTitles[currentLang]||wTitles['en'];
+  var wS=document.getElementById('wheel-subtitle');
+  var wSubs={tr:'Günde 1 kez ücretsiz çevir!',en:'Spin once per day for free!',ru:'Крути раз в день бесплатно!',zh:'每天免费旋转一次！',ar:'أدر مرة يومياً مجاناً!',es:'¡Gira una vez al día gratis!',hi:'दिन में एक बार मुफ्त घुमाएं!'};
+  if(wS) wS.textContent = wSubs[currentLang]||wSubs['en'];
+  var wBtn=document.getElementById('wheel-spin-btn');
+  var wBtns={tr:'🎰 ÇEVİR!',en:'🎰 SPIN!',ru:'🎰 КРУТИ!',zh:'🎰 旋转！',ar:'🎰 أدر!',es:'🎰 ¡GIRAR!',hi:'🎰 घुमाएं!'};
+  if(wBtn&&!wBtn.disabled) wBtn.textContent = wBtns[currentLang]||wBtns['en'];
+  var wNL=document.getElementById('wheel-next-label');
+  var wNLs={tr:'Sonraki çevirme',en:'Next spin',ru:'Следующий спин',zh:'下次旋转',ar:'الدورة التالية',es:'Próximo giro',hi:'अगली बार'};
+  if(wNL) wNL.textContent = wNLs[currentLang]||wNLs['en'];
+  // Şans çarkı ödüller başlığı güncelle
+  var wPL = document.querySelector('#tab-wheel > div:last-child > div:first-child');
+  var wPLs={tr:'// ÖDÜLLER',en:'// PRIZES',ru:'// ПРИЗЫ',zh:'// 奖品',ar:'// الجوائز',es:'// PREMIOS',hi:'// पुरस्कार'};
+  if(wPL) wPL.textContent = wPLs[currentLang]||wPLs['en'];
   // Save indicator
   var saveEl = document.getElementById('save-ind');
   if(saveEl && saveEl.textContent.indexOf('●') > -1){
@@ -899,36 +934,42 @@ var BUSINESSES = [
 // Yukseltme sistemi — her seviyede bekleme suresi artar
 var UPGRADES = [
   {
-    id:'tap', icon:'👆', name:'TAP GUCU', desc:'Her tap daha fazla ZRC kazandir',
+    id:'tap', icon:'👆',
+    names:{tr:'TAP GÜCÜ',en:'TAP POWER',ru:'СИЛА ТАПА',zh:'点击力量',ar:'قوة النقر',es:'PODER TAP',hi:'टैप शक्ति'},
+    descs:{tr:'Her tap daha fazla ZRC kazandır',en:'Earn more ZRC per tap',ru:'Больше ZRC за тап',zh:'每次点击赚更多ZRC',ar:'اكسب ZRC أكثر لكل نقرة',es:'Gana más ZRC por tap',hi:'प्रति टैप अधिक ZRC कमाएं'},
     levels:[
-      {cost:2000,   waitSec:300,   bonus:'Tap +1 ZRC'},
-      {cost:10000,  waitSec:1800,  bonus:'Tap +2 ZRC'},
-      {cost:40000,  waitSec:7200,  bonus:'Tap +3 ZRC'},
-      {cost:150000, waitSec:21600, bonus:'Tap +5 ZRC'},
-      {cost:500000, waitSec:43200, bonus:'Tap +8 ZRC'},
-      {cost:1500000,waitSec:86400, bonus:'Tap +12 ZRC'},
+      {cost:2000,   waitSec:300,   bonuses:{tr:'Tap +1 ZRC',en:'Tap +1 ZRC',ru:'Тап +1 ZRC',zh:'点击+1 ZRC',ar:'نقرة +1 ZRC',es:'Tap +1 ZRC',hi:'टैप +1 ZRC'}},
+      {cost:10000,  waitSec:1800,  bonuses:{tr:'Tap +2 ZRC',en:'Tap +2 ZRC',ru:'Тап +2 ZRC',zh:'点击+2 ZRC',ar:'نقرة +2 ZRC',es:'Tap +2 ZRC',hi:'टैप +2 ZRC'}},
+      {cost:40000,  waitSec:7200,  bonuses:{tr:'Tap +3 ZRC',en:'Tap +3 ZRC',ru:'Тап +3 ZRC',zh:'点击+3 ZRC',ar:'نقرة +3 ZRC',es:'Tap +3 ZRC',hi:'टैप +3 ZRC'}},
+      {cost:150000, waitSec:21600, bonuses:{tr:'Tap +5 ZRC',en:'Tap +5 ZRC',ru:'Тап +5 ZRC',zh:'点击+5 ZRC',ar:'نقرة +5 ZRC',es:'Tap +5 ZRC',hi:'टैप +5 ZRC'}},
+      {cost:500000, waitSec:43200, bonuses:{tr:'Tap +8 ZRC',en:'Tap +8 ZRC',ru:'Тап +8 ZRC',zh:'点击+8 ZRC',ar:'نقرة +8 ZRC',es:'Tap +8 ZRC',hi:'टैप +8 ZRC'}},
+      {cost:1500000,waitSec:86400, bonuses:{tr:'Tap +12 ZRC',en:'Tap +12 ZRC',ru:'Тап +12 ZRC',zh:'点击+12 ZRC',ar:'نقرة +12 ZRC',es:'Tap +12 ZRC',hi:'टैप +12 ZRC'}},
     ],
     lv:0, upgEnd:0
   },
   {
-    id:'energy', icon:'⚡', name:'ENERJI KAPASITESI', desc:'Maksimum enerji miktarini artir',
+    id:'energy', icon:'⚡',
+    names:{tr:'ENERJİ KAPASİTESİ',en:'ENERGY CAPACITY',ru:'ЁМКОСТЬ ЭНЕРГИИ',zh:'能量容量',ar:'طاقة القصوى',es:'CAPACIDAD DE ENERGÍA',hi:'ऊर्जा क्षमता'},
+    descs:{tr:'Maksimum enerji miktarını artır',en:'Increase max energy',ru:'Увеличь максимальную энергию',zh:'增加最大能量',ar:'زد الطاقة القصوى',es:'Aumenta la energía máxima',hi:'अधिकतम ऊर्जा बढ़ाएं'},
     levels:[
-      {cost:1500,   waitSec:300,   bonus:'Enerji +200'},
-      {cost:8000,   waitSec:1800,  bonus:'Enerji +300'},
-      {cost:30000,  waitSec:7200,  bonus:'Enerji +500'},
-      {cost:100000, waitSec:21600, bonus:'Enerji +1000'},
-      {cost:350000, waitSec:43200, bonus:'Enerji +2000'},
-      {cost:1000000,waitSec:86400, bonus:'Enerji +5000'},
+      {cost:1500,   waitSec:300,   bonuses:{tr:'Enerji +200',en:'Energy +200',ru:'Энергия +200',zh:'能量+200',ar:'طاقة +200',es:'Energía +200',hi:'ऊर्जा +200'}},
+      {cost:8000,   waitSec:1800,  bonuses:{tr:'Enerji +300',en:'Energy +300',ru:'Энергия +300',zh:'能量+300',ar:'طاقة +300',es:'Energía +300',hi:'ऊर्जा +300'}},
+      {cost:30000,  waitSec:7200,  bonuses:{tr:'Enerji +500',en:'Energy +500',ru:'Энергия +500',zh:'能量+500',ar:'طاقة +500',es:'Energía +500',hi:'ऊर्जा +500'}},
+      {cost:100000, waitSec:21600, bonuses:{tr:'Enerji +1000',en:'Energy +1000',ru:'Энергия +1000',zh:'能量+1000',ar:'طاقة +1000',es:'Energía +1000',hi:'ऊर्जा +1000'}},
+      {cost:350000, waitSec:43200, bonuses:{tr:'Enerji +2000',en:'Energy +2000',ru:'Энергия +2000',zh:'能量+2000',ar:'طاقة +2000',es:'Energía +2000',hi:'ऊर्जा +2000'}},
+      {cost:1000000,waitSec:86400, bonuses:{tr:'Enerji +5000',en:'Energy +5000',ru:'Энергия +5000',zh:'能量+5000',ar:'طاقة +5000',es:'Energía +5000',hi:'ऊर्जा +5000'}},
     ],
     lv:0, upgEnd:0
   },
   {
-    id:'regen', icon:'🔋', name:'ENERJI YENILEME', desc:'Enerji daha hizli yenilenir',
+    id:'regen', icon:'🔋',
+    names:{tr:'ENERJİ YENİLEME',en:'ENERGY REGEN',ru:'РЕГЕНЕРАЦИЯ ЭНЕРГИИ',zh:'能量再生',ar:'تجديد الطاقة',es:'REGENERACIÓN DE ENERGÍA',hi:'ऊर्जा पुनर्जनन'},
+    descs:{tr:'Enerji daha hızlı yenilenir',en:'Energy regenerates faster',ru:'Энергия восстанавливается быстрее',zh:'能量恢复更快',ar:'الطاقة تتجدد أسرع',es:'La energía se regenera más rápido',hi:'ऊर्जा तेज़ी से पुनर्जीवित होती है'},
     levels:[
-      {cost:5000,   waitSec:1800,  bonus:'2x hizli yenileme'},
-      {cost:25000,  waitSec:7200,  bonus:'3x hizli yenileme'},
-      {cost:100000, waitSec:21600, bonus:'5x hizli yenileme'},
-      {cost:350000, waitSec:43200, bonus:'8x hizli yenileme'},
+      {cost:5000,   waitSec:1800,  bonuses:{tr:'2x hızlı yenileme',en:'2x faster regen',ru:'2x быстрее',zh:'2x速度恢复',ar:'تجديد 2x أسرع',es:'Regen 2x más rápido',hi:'2x तेज़ पुनर्जनन'}},
+      {cost:25000,  waitSec:7200,  bonuses:{tr:'3x hızlı yenileme',en:'3x faster regen',ru:'3x быстрее',zh:'3x速度恢复',ar:'تجديد 3x أسرع',es:'Regen 3x más rápido',hi:'3x तेज़ पुनर्जनन'}},
+      {cost:100000, waitSec:21600, bonuses:{tr:'5x hızlı yenileme',en:'5x faster regen',ru:'5x быстрее',zh:'5x速度恢复',ar:'تجديد 5x أسرع',es:'Regen 5x más rápido',hi:'5x तेज़ पुनर्जनन'}},
+      {cost:350000, waitSec:43200, bonuses:{tr:'8x hızlı yenileme',en:'8x faster regen',ru:'8x быстрее',zh:'8x速度恢复',ar:'تجديد 8x أسرع',es:'Regen 8x más rápido',hi:'8x तेज़ पुनर्जनन'}},
     ],
     lv:0, upgEnd:0
   },
@@ -1159,15 +1200,42 @@ function renderAchievements(){
 }
 
 var QUESTS = [
-  {id:'tap100',  icon:'👆', name:'TAP USTASI',    desc:'100 kez tap et',           type:'tap',  target:100,   reward:500,  itemReward:null},
-  {id:'tap500',  icon:'⚡', name:'ENERJI TUFANI', desc:'500 kez tap et',           type:'tap',  target:500,   reward:2000, itemReward:null},
-  {id:'earn1k',  icon:'💰', name:'ZRC KAZANCI',   desc:'1.000 ZRC kazan',          type:'earn', target:1000,  reward:300,  itemReward:null},
-  {id:'earn10k', icon:'💎', name:'ZRC ZENGINI',   desc:'10.000 ZRC kazan',         type:'earn', target:10000, reward:1500, itemReward:null},
-  {id:'biz1',    icon:'🏢', name:'GIRISIMCI',     desc:'Bir isletme satin al',     type:'biz',  target:1,     reward:800,  itemReward:'reaktor'},
-  {id:'biz3',    icon:'🏙️', name:'IMPARATOR',     desc:'3 isletme satin al',       type:'biz',  target:3,     reward:3000, itemReward:'kristal'},
-  {id:'upg1',    icon:'🔧', name:'MUHENDIS',      desc:'Bir yukseltme yap',        type:'upg',  target:1,     reward:1000, itemReward:'kristal'},
-  {id:'ref1',    icon:'👥', name:'ILK DAVET',     desc:'1 arkadas davet et',       type:'ref',  target:1,     reward:1000, itemReward:'reaktor'},
-  {id:'login',   icon:'🌅', name:'GUNLUK GIRIS',  desc:'Bugun giris yap',          type:'login',target:1,     reward:200,  itemReward:null},
+  {id:'tap100',  icon:'👆',
+   names:{tr:'TAP USTASI',en:'TAP MASTER',ru:'МАСТЕР ТАПА',zh:'点击大师',ar:'سيد النقر',es:'MAESTRO TAP',hi:'टैप मास्टर'},
+   descs:{tr:'100 kez tap et',en:'Tap 100 times',ru:'100 тапов',zh:'点击100次',ar:'انقر 100 مرة',es:'Toca 100 veces',hi:'100 बार टैप करें'},
+   type:'tap',  target:100,   reward:500,  itemReward:null},
+  {id:'tap500',  icon:'⚡',
+   names:{tr:'ENERJİ TUFANI',en:'ENERGY STORM',ru:'ЭНЕРГЕТИЧЕСКИЙ ШТОРМ',zh:'能量风暴',ar:'عاصفة الطاقة',es:'TORMENTA DE ENERGÍA',hi:'ऊर्जा तूफान'},
+   descs:{tr:'500 kez tap et',en:'Tap 500 times',ru:'500 тапов',zh:'点击500次',ar:'انقر 500 مرة',es:'Toca 500 veces',hi:'500 बार टैप करें'},
+   type:'tap',  target:500,   reward:2000, itemReward:null},
+  {id:'earn1k',  icon:'💰',
+   names:{tr:'ZRC KAZANCI',en:'ZRC EARNER',ru:'ЗАРАБОТОК ZRC',zh:'ZRC收益者',ar:'كاسب ZRC',es:'GANADOR ZRC',hi:'ZRC कमाई'},
+   descs:{tr:'1.000 ZRC kazan',en:'Earn 1,000 ZRC',ru:'Заработай 1.000 ZRC',zh:'赚取1000 ZRC',ar:'اكسب 1000 ZRC',es:'Gana 1.000 ZRC',hi:'1,000 ZRC कमाएं'},
+   type:'earn', target:1000,  reward:300,  itemReward:null},
+  {id:'earn10k', icon:'💎',
+   names:{tr:'ZRC ZENGİNİ',en:'ZRC RICH',ru:'БОГАЧ ZRC',zh:'ZRC富豪',ar:'ثري ZRC',es:'RICO ZRC',hi:'ZRC अमीर'},
+   descs:{tr:'10.000 ZRC kazan',en:'Earn 10,000 ZRC',ru:'10.000 ZRC',zh:'赚取10000 ZRC',ar:'اكسب 10000 ZRC',es:'Gana 10.000 ZRC',hi:'10,000 ZRC कमाएं'},
+   type:'earn', target:10000, reward:1500, itemReward:null},
+  {id:'biz1',    icon:'🏢',
+   names:{tr:'GİRİŞİMCİ',en:'ENTREPRENEUR',ru:'ПРЕДПРИНИМАТЕЛЬ',zh:'创业者',ar:'رائد أعمال',es:'EMPRESARIO',hi:'उद्यमी'},
+   descs:{tr:'Bir işletme satın al',en:'Buy one business',ru:'Купи один бизнес',zh:'购买一个商业',ar:'اشتر عملاً',es:'Compra un negocio',hi:'एक व्यवसाय खरीदें'},
+   type:'biz',  target:1,     reward:800,  itemReward:'reaktor'},
+  {id:'biz3',    icon:'🏙️',
+   names:{tr:'İMPARATOR',en:'EMPEROR',ru:'ИМПЕРАТОР',zh:'帝王',ar:'إمبراطور',es:'EMPERADOR',hi:'सम्राट'},
+   descs:{tr:'3 işletme satın al',en:'Buy 3 businesses',ru:'3 бизнеса',zh:'购买3个商业',ar:'اشتر 3 أعمال',es:'Compra 3 negocios',hi:'3 व्यवसाय खरीदें'},
+   type:'biz',  target:3,     reward:3000, itemReward:'kristal'},
+  {id:'upg1',    icon:'🔧',
+   names:{tr:'MÜHENDİS',en:'ENGINEER',ru:'ИНЖЕНЕР',zh:'工程师',ar:'مهندس',es:'INGENIERO',hi:'इंजीनियर'},
+   descs:{tr:'Bir yükseltme yap',en:'Complete one upgrade',ru:'Одно улучшение',zh:'完成一次升级',ar:'أكمل ترقية',es:'Completa una mejora',hi:'एक अपग्रेड करें'},
+   type:'upg',  target:1,     reward:1000, itemReward:'kristal'},
+  {id:'ref1',    icon:'👥',
+   names:{tr:'İLK DAVET',en:'FIRST INVITE',ru:'ПЕРВОЕ ПРИГЛАШЕНИЕ',zh:'第一次邀请',ar:'أول دعوة',es:'PRIMERA INVITACIÓN',hi:'पहला आमंत्रण'},
+   descs:{tr:'1 arkadaş davet et',en:'Invite 1 friend',ru:'Пригласи друга',zh:'邀请1位朋友',ar:'ادعُ صديقاً',es:'Invita a 1 amigo',hi:'1 दोस्त को आमंत्रित करें'},
+   type:'ref',  target:1,     reward:1000, itemReward:'reaktor'},
+  {id:'login',   icon:'🌅',
+   names:{tr:'GÜNLÜK GİRİŞ',en:'DAILY LOGIN',ru:'ЕЖЕДНЕВНЫЙ ВХОД',zh:'每日登录',ar:'تسجيل يومي',es:'INICIO DIARIO',hi:'दैनिक लॉगिन'},
+   descs:{tr:'Bugün giriş yap',en:'Login today',ru:'Войди сегодня',zh:'今天登录',ar:'سجل الدخول اليوم',es:'Inicia sesión hoy',hi:'आज लॉगिन करें'},
+   type:'login',target:1,     reward:200,  itemReward:null},
 ];
 
 var S = {
@@ -1333,6 +1401,9 @@ function renderUpgrades(){
     var remSec=isUpgrading?Math.ceil((upg.upgEnd-now)/1000):0;
     var nextLv=def.levels[upg.lv]||null;
     var canBuy=!isMax&&!isUpgrading&&nextLv&&S.coins>=nextLv.cost;
+    var upgName = def.names ? (def.names[currentLang]||def.names['en']) : def.name;
+    var upgDesc = def.descs ? (def.descs[currentLang]||def.descs['en']) : def.desc;
+    var nextBonus = nextLv ? (nextLv.bonuses ? (nextLv.bonuses[currentLang]||nextLv.bonuses['en']) : nextLv.bonus) : '';
     var pct=isMax?100:Math.floor(upg.lv/maxLv*100);
 
     var d=document.createElement('div');
@@ -1340,10 +1411,10 @@ function renderUpgrades(){
     d.innerHTML='<div class="upgrade-top">'+
       '<div class="upgrade-icon">'+def.icon+'</div>'+
       '<div class="upgrade-info">'+
-        '<div class="upgrade-name">'+def.name+'</div>'+
-        '<div class="upgrade-desc">'+def.desc+'</div>'+
+        '<div class="upgrade-name">'+upgName+'</div>'+
+        '<div class="upgrade-desc">'+upgDesc+'</div>'+
         '<div class="upgrade-lv">'+(isMax?'MAX SEVIYE':'Seviye '+upg.lv+' / '+maxLv)+'</div>'+
-        (nextLv?'<div class="upgrade-desc" style="color:rgba(0,255,150,0.5)">Sonraki: '+nextLv.bonus+'</div>':'')+
+        (nextLv?'<div class="upgrade-desc" style="color:rgba(0,255,150,0.5)">'+(L.nextLevel||'Next:')+' '+nextBonus+'</div>':'')+
       '</div>'+
     '</div>'+
     '<div class="upgrade-bottom">'+
@@ -1375,7 +1446,7 @@ function renderUpgrades(){
       S.coins-=lv.cost;
       upg.upgEnd=Date.now()+lv.waitSec*1000;
       S.dailyUpgDone++;
-      showNotif(def.name+' yukselme basladi! '+fmtTime(lv.waitSec)+' bekle.');
+      showNotif((def?def.names[currentLang]||def.names['en']:'')+' '+(L.upgStarted||'upgrade started!')+' '+fmtTime(lv.waitSec));
       scheduleSave(); renderAll(); renderUpgrades();
     });
   });
@@ -1414,7 +1485,7 @@ function applyUpgradeEffects(){
         var rgBonuses=[2,3,5,8];
         S.regenMult=rgBonuses[upg.lv-1]||S.regenMult;
       }
-      showNotif(def.name+' Seviye '+upg.lv+' tamamlandi!');
+      showNotif((def?def.names[currentLang]||def.names['en']:'')+' '+(L.upgradesDone||'Level')+' '+upg.lv+' '+(L.completed||'completed!'));
       scheduleSave();
     }
   });
@@ -1473,7 +1544,7 @@ function renderBiz(){
         b.lv++; b.inc=def.bInc*b.lv; b.upgEnd=0;
       } else {
         b.upgEnd=Date.now()+waitSec*1000;
-        showNotif(def.name+' yukselme basladi! '+fmtTime(waitSec)+' bekle.');
+        showNotif(def.name+' '+(L.bizStarted||'upgrade started!')+' '+fmtTime(waitSec));
       }
       S.dailyBizBought++;
       scheduleSave(); renderAll();
@@ -1495,7 +1566,7 @@ function applyBizUpgrades(){
     if(b.upgEnd&&b.upgEnd<=now&&b.upgEnd>0){
       var def=BUSINESSES.find(function(x){return x.id===b.id;});
       b.lv++; b.inc=(def?def.bInc:1)*b.lv; b.upgEnd=0;
-      showNotif((def?def.name:'Isletme')+' Seviye '+b.lv+' tamamlandi!');
+      showNotif((def?def.name:'Business')+' '+(L.upgradesDone||'Level')+' '+b.lv+' '+(L.completed||'completed!'));
       scheduleSave();
     }
   });
@@ -1521,19 +1592,21 @@ function renderQuests(){
     var pct=Math.min(100,Math.floor(prog/q.target*100));
     var d=document.createElement('div');
     d.className='quest-card'+(claimed?' claimed':'');
+    var qname = q.names ? (q.names[currentLang]||q.names['en']) : q.name;
+    var qdesc = q.descs ? (q.descs[currentLang]||q.descs['en']) : q.desc;
     d.innerHTML='<div class="quest-icon">'+q.icon+'</div>'+
       '<div class="quest-info">'+
-        '<div class="quest-name">'+q.name+'</div>'+
-        '<div class="quest-desc">'+q.desc+'</div>'+
+        '<div class="quest-name">'+qname+'</div>'+
+        '<div class="quest-desc">'+qdesc+'</div>'+
         '<div class="quest-prog-bar"><div class="quest-prog-fill" style="width:'+pct+'%"></div></div>'+
         '<div class="quest-prog-text">'+fmt(prog)+' / '+fmt(q.target)+'</div>'+
-        (!claimed&&done?'<button class="quest-claim-btn" data-qid="'+q.id+'">AL +'+fmt(q.reward)+' ZRC'+(q.itemReward?' + ESYA':' ')+'</button>':'')+
+        (!claimed&&done?'<button class="quest-claim-btn" data-qid="'+q.id+'">'+((L&&L.questDone)||'CLAIM')+' +'+fmt(q.reward)+' ZRC'+(q.itemReward?' + '+(L&&L.questItem||'ITEM'):'')+'</button>':'')+
       '</div>'+
       '<div class="quest-right">'+
         '<div class="quest-reward">+'+fmt(q.reward)+'</div>'+
         '<div class="quest-reward-sub">ZRC</div>'+
         (q.itemReward?'<div style="font-size:9px;color:rgba(255,200,0,0.6);margin-top:2px">+ESYA</div>':'')+
-        (claimed?'<div class="quest-done-badge">ALINDI</div>':'')+
+        (claimed?'<div class="quest-done-badge">'+(L&&L.questDoneBadge||'CLAIMED')+'</div>':'')+
       '</div>';
     el.appendChild(d);
   });
@@ -1742,14 +1815,14 @@ async function loadReferrals(){
 
 // ============ SANS CARKI ============
 var WHEEL_PRIZES = [
-  {icon:'💎', label:'500 ZRC',    color:'#1a3a6a', reward:{coins:500}},
-  {icon:'⚡', label:'Enerji',     color:'#0a4a2a', reward:{energy:true}},
-  {icon:'🎯', label:'1000 ZRC',   color:'#2a1a6a', reward:{coins:1000}},
-  {icon:'💠', label:'Kristal',    color:'#0a3a4a', reward:{item:'kristal'}},
-  {icon:'🔴', label:'Reaktör',    color:'#4a1a1a', reward:{item:'reaktor'}},
-  {icon:'🚀', label:'5000 ZRC',   color:'#3a2a0a', reward:{coins:5000}},
-  {icon:'⭐', label:'200 ZRC',    color:'#1a4a3a', reward:{coins:200}},
-  {icon:'🎁', label:'2x Boost',   color:'#3a0a4a', reward:{boost:true}},
+  {icon:'💎', labels:{tr:'500 ZRC',en:'500 ZRC',ru:'500 ZRC',zh:'500 ZRC',ar:'500 ZRC',es:'500 ZRC',hi:'500 ZRC'}, color:'#1a3a6a', reward:{coins:500}},
+  {icon:'⚡', labels:{tr:'Enerji',en:'Energy',ru:'Энергия',zh:'能量',ar:'طاقة',es:'Energía',hi:'ऊर्जा'}, color:'#0a4a2a', reward:{energy:true}},
+  {icon:'🎯', labels:{tr:'1000 ZRC',en:'1000 ZRC',ru:'1000 ZRC',zh:'1000 ZRC',ar:'1000 ZRC',es:'1000 ZRC',hi:'1000 ZRC'}, color:'#2a1a6a', reward:{coins:1000}},
+  {icon:'💠', labels:{tr:'Kristal',en:'Crystal',ru:'Кристалл',zh:'水晶',ar:'كريستال',es:'Cristal',hi:'क्रिस्टल'}, color:'#0a3a4a', reward:{item:'kristal'}},
+  {icon:'🔴', labels:{tr:'Reaktör',en:'Reactor',ru:'Реактор',zh:'反应堆',ar:'مفاعل',es:'Reactor',hi:'रिएक्टर'}, color:'#4a1a1a', reward:{item:'reaktor'}},
+  {icon:'🚀', labels:{tr:'5000 ZRC',en:'5000 ZRC',ru:'5000 ZRC',zh:'5000 ZRC',ar:'5000 ZRC',es:'5000 ZRC',hi:'5000 ZRC'}, color:'#3a2a0a', reward:{coins:5000}},
+  {icon:'⭐', labels:{tr:'200 ZRC',en:'200 ZRC',ru:'200 ZRC',zh:'200 ZRC',ar:'200 ZRC',es:'200 ZRC',hi:'200 ZRC'}, color:'#1a4a3a', reward:{coins:200}},
+  {icon:'🎁', labels:{tr:'2x Boost',en:'2x Boost',ru:'2x Буст',zh:'2倍加速',ar:'تعزيز 2x',es:'Boost 2x',hi:'2x बूस्ट'}, color:'#3a0a4a', reward:{boost:true}},
 ];
 
 var wheelAngle = 0;
@@ -1860,11 +1933,13 @@ function claimWheelPrize(prize){
   if(prize.reward.coins){
     S.coins += prize.reward.coins;
     resultText.textContent = '+' + fmt(prize.reward.coins) + ' ZRC!';
-    showNotif(prize.icon + ' ' + fmt(prize.reward.coins) + ' ZRC kazandın!');
+    var wonTxts={tr:'ZRC kazandın!',en:'ZRC won!',ru:'ZRC выиграно!',zh:'ZRC赢得！',ar:'ZRC فزت!',es:'¡ZRC ganado!',hi:'ZRC जीता!'};
+    showNotif(prize.icon + ' ' + fmt(prize.reward.coins) + ' ' + (wonTxts[currentLang]||wonTxts['en']));
   } else if(prize.reward.energy){
     S.energy = S.maxEnergy;
     resultText.textContent = 'Enerji doldu!';
-    showNotif('⚡ Enerji tamamen doldu!');
+    var egTxts={tr:'Enerji tamamen doldu!',en:'Energy fully refilled!',ru:'Энергия полностью восстановлена!',zh:'能量已完全补满！',ar:'الطاقة ممتلئة!',es:'¡Energía completamente recargada!',hi:'ऊर्जा पूरी तरह भर गई!'};
+    showNotif('⚡ ' + (egTxts[currentLang]||egTxts['en']));
   } else if(prize.reward.item){
     var item = S.items.find(function(x){return x.id===prize.reward.item;});
     if(item) item.count++;
@@ -1887,10 +1962,12 @@ function renderWheel(){
   var resultDiv = document.getElementById('wheel-result');
 
   if(canSpin()){
-    if(spinBtn){ spinBtn.disabled=false; spinBtn.textContent='🎰 ÇEVİR!'; spinBtn.style.opacity='1'; }
+    var spinTxts={tr:'🎰 ÇEVİR!',en:'🎰 SPIN!',ru:'🎰 КРУТИ!',zh:'🎰 旋转！',ar:'🎰 أدر!',es:'🎰 ¡GIRAR!',hi:'🎰 घुमाएं!'};
+    if(spinBtn){ spinBtn.disabled=false; spinBtn.textContent=spinTxts[currentLang]||spinTxts['en']; spinBtn.style.opacity='1'; }
     if(timerBox) timerBox.style.display='none';
   } else {
-    if(spinBtn){ spinBtn.disabled=true; spinBtn.textContent='⏳ BEKLE'; spinBtn.style.opacity='0.5'; }
+    var waitTxts={tr:'⏳ BEKLE',en:'⏳ WAIT',ru:'⏳ ЖДАТЬ',zh:'⏳ 等待',ar:'⏳ انتظر',es:'⏳ ESPERAR',hi:'⏳ प्रतीक्षा'};
+    if(spinBtn){ spinBtn.disabled=true; spinBtn.textContent=waitTxts[currentLang]||waitTxts['en']; spinBtn.style.opacity='0.5'; }
     if(timerBox) timerBox.style.display='block';
   }
 
@@ -1901,7 +1978,7 @@ function renderWheel(){
     WHEEL_PRIZES.forEach(function(p){
       var d = document.createElement('div');
       d.style.cssText = 'background:'+p.color+';border:1px solid rgba(0,220,255,0.1);border-radius:6px;padding:7px 10px;display:flex;align-items:center;gap:6px;';
-      d.innerHTML = '<span style="font-size:16px;">'+p.icon+'</span><span style="font-size:10px;color:rgba(200,220,255,0.7);">'+p.label+'</span>';
+      d.innerHTML = '<span style="font-size:16px;">'+p.icon+'</span><span style="font-size:10px;color:rgba(200,220,255,0.7);">'+((p.labels&&(p.labels[currentLang]||p.labels['en']))||p.label||'')+'</span>';
       prizeList.appendChild(d);
     });
   }
