@@ -876,14 +876,14 @@ console.log('TG user:', user, 'userId:', userId);
 var TIERS = [{min:1,max:2,mult:1.25},{min:3,max:5,mult:1.75},{min:6,max:9,mult:2.5},{min:10,max:999,mult:4.0}];
 
 var BUSINESSES = [
-  {id:0, name:'NODE WALLET',   icon:'💳', base:500,     bInc:0.1,  lv:0, cost:500,     inc:0, upgTime:0, upgEnd:0},
-  {id:1, name:'MINING FARM',   icon:'⛏️', base:2000,    bInc:0.5,  lv:0, cost:2000,    inc:0, upgTime:0, upgEnd:0},
-  {id:2, name:'CRYPTO DEX',    icon:'📈', base:8000,    bInc:2,    lv:0, cost:8000,    inc:0, upgTime:0, upgEnd:0},
-  {id:3, name:'DEFI PROTOCOL', icon:'🔗', base:30000,   bInc:8,    lv:0, cost:30000,   inc:0, upgTime:0, upgEnd:0},
-  {id:4, name:'NFT MATRIX',    icon:'🖼️', base:100000,  bInc:25,   lv:0, cost:100000,  inc:0, upgTime:0, upgEnd:0},
-  {id:5, name:'AI ORACLE',     icon:'🤖', base:350000,  bInc:80,   lv:0, cost:350000,  inc:0, upgTime:0, upgEnd:0},
-  {id:6, name:'QUANTUM VAULT', icon:'🔮', base:1200000, bInc:250,  lv:0, cost:1200000, inc:0, upgTime:0, upgEnd:0},
-  {id:7, name:'DARK CHAIN',    icon:'⛓️', base:4000000, bInc:800,  lv:0, cost:4000000, inc:0, upgTime:0, upgEnd:0},
+  {id:0, name:'NODE WALLET',   icon:'💳', base:500,     bInc:0.1,  lv:0, cost:500,     inc:0, upgTime:0, upgEnd:0, baseWait:60},
+  {id:1, name:'MINING FARM',   icon:'⛏️', base:2000,    bInc:0.5,  lv:0, cost:2000,    inc:0, upgTime:0, upgEnd:0, baseWait:180},
+  {id:2, name:'CRYPTO DEX',    icon:'📈', base:8000,    bInc:2,    lv:0, cost:8000,    inc:0, upgTime:0, upgEnd:0, baseWait:600},
+  {id:3, name:'DEFI PROTOCOL', icon:'🔗', base:30000,   bInc:8,    lv:0, cost:30000,   inc:0, upgTime:0, upgEnd:0, baseWait:1800},
+  {id:4, name:'NFT MATRIX',    icon:'🖼️', base:100000,  bInc:25,   lv:0, cost:100000,  inc:0, upgTime:0, upgEnd:0, baseWait:7200},
+  {id:5, name:'AI ORACLE',     icon:'🤖', base:350000,  bInc:80,   lv:0, cost:350000,  inc:0, upgTime:0, upgEnd:0, baseWait:21600},
+  {id:6, name:'QUANTUM VAULT', icon:'🔮', base:1200000, bInc:250,  lv:0, cost:1200000, inc:0, upgTime:0, upgEnd:0, baseWait:43200},
+  {id:7, name:'DARK CHAIN',    icon:'⛓️', base:4000000, bInc:800,  lv:0, cost:4000000, inc:0, upgTime:0, upgEnd:0, baseWait:86400},
 ];
 
 // Yukseltme sistemi — her seviyede bekleme suresi artar
@@ -1228,7 +1228,9 @@ function renderBiz(){
     var canBuy=S.coins>=cost&&!b.upgEnd;
     var isUpg=b.upgEnd&&b.upgEnd>now;
     var remSec=isUpg?Math.ceil((b.upgEnd-now)/1000):0;
-    var upgWait=Math.floor(b.lv*b.lv*60);
+    // Bekleme: baseWait * lv^1.5, max 7 gun
+    var bw2 = def.baseWait || 60;
+    var upgWait=b.lv===0?0:Math.min(Math.floor(bw2*Math.pow(b.lv,1.5)), 604800);
     var incB=b.lv>0?(b.inc*bonus):0;
     var tonCost=isUpg?((remSec/3600)*0.1).toFixed(2):0;
 
@@ -1261,8 +1263,10 @@ function renderBiz(){
       var cost=b.lv===0?b.cost:Math.floor(def.base*Math.pow(1.6,b.lv));
       if(S.coins<cost) return;
       S.coins-=cost;
-      var waitSec=Math.floor(b.lv*b.lv*60);
-      if(b.lv===0||waitSec===0){
+      // Bekleme suresi: baseWait * lv^1.5, max 7 gun
+      var bw = def.baseWait || 60;
+      var waitSec=b.lv===0?0:Math.min(Math.floor(bw*Math.pow(b.lv,1.5)), 604800);
+      if(waitSec===0){
         b.lv++; b.inc=def.bInc*b.lv; b.upgEnd=0;
       } else {
         b.upgEnd=Date.now()+waitSec*1000;
