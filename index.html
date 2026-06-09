@@ -225,7 +225,7 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 
 <div class="loading" id="loading">
   <div style="font-size:32px">💎</div>
-  <div class="loading-text" id="loading-text">ZRo FARM YUKLENIYOR...</div>
+  <div class="loading-text" id="loading-text">ZRo FARM LOADING...</div>
 </div>
 
 <div id="app" style="display:none">
@@ -255,6 +255,7 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
     <button class="tab" onclick="switchTab('leader')">TOP</button>
     <button class="tab" onclick="switchTab('ton')">TON</button>
     <button class="tab" onclick="switchTab('wheel')">🎰</button>
+    <button class="tab" onclick="switchTab('ach')">🏆</button>
   </div>
 
   <!-- MINE -->
@@ -361,6 +362,15 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
     </div>
   </div>
 
+
+  <!-- BASARIMLAR -->
+  <div class="panel" id="tab-ach">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div style="font-family:Orbitron,monospace;font-size:13px;color:#00dcff;letter-spacing:0.15em;">🏆 BAŞARIMLAR</div>
+      <div id="ach-badges" style="font-size:11px;"></div>
+    </div>
+    <div id="ach-list"></div>
+  </div>
 
   <!-- SANS CARKI -->
   <div class="panel" id="tab-wheel">
@@ -956,6 +966,198 @@ function getItemDef(id){
   return d[currentLang] || d['en'];
 }
 
+
+// ============ BASARIM SISTEMI ============
+var ACHIEVEMENTS = [
+  // MADENCI
+  {id:'tap_100',    cat:'miner',  icon:'⛏️',  badge:'⛏️ Çaylak Madenci',
+   names:{tr:'İlk Kazım',en:'First Mine',ru:'Первая добыча',zh:'第一次挖矿',ar:'أول تعدين',es:'Primera mina',hi:'पहली खुदाई'},
+   descs:{tr:'100 kez tap et',en:'Tap 100 times',ru:'100 тапов',zh:'点击100次',ar:'انقر 100 مرة',es:'Toca 100 veces',hi:'100 बार टैप'},
+   type:'tap', target:100,   reward:{coins:1000, badge:'⛏️ Çaylak'}},
+  {id:'tap_1k',     cat:'miner',  icon:'⛏️',  badge:'⚒️ Usta Madenci',
+   names:{tr:'Bin Kazım',en:'Thousand Taps',ru:'Тысяча тапов',zh:'千次点击',ar:'ألف نقرة',es:'Mil taps',hi:'हज़ार टैप'},
+   descs:{tr:'1.000 kez tap et',en:'Tap 1,000 times',ru:'1.000 тапов',zh:'点击1000次',ar:'انقر 1000 مرة',es:'Toca 1.000 veces',hi:'1,000 बार टैप'},
+   type:'tap', target:1000,  reward:{coins:5000, badge:'⚒️ Usta'}},
+  {id:'tap_10k',    cat:'miner',  icon:'💎',  badge:'💎 Elmas Madenci',
+   names:{tr:'On Bin Kazım',en:'Ten Thousand Taps',ru:'10К тапов',zh:'万次点击',ar:'10 آلاف نقرة',es:'Diez mil taps',hi:'दस हज़ार टैप'},
+   descs:{tr:'10.000 kez tap et',en:'Tap 10,000 times',ru:'10.000 тапов',zh:'点击10000次',ar:'انقر 10000 مرة',es:'Toca 10.000 veces',hi:'10,000 बार टैप'},
+   type:'tap', target:10000, reward:{coins:25000, tapBonus:1, badge:'💎 Elmas'}},
+  {id:'tap_100k',   cat:'miner',  icon:'👑',  badge:'👑 Efsane Madenci',
+   names:{tr:'Yüz Bin Kazım',en:'100K Taps',ru:'100К тапов',zh:'十万次点击',ar:'100 ألف نقرة',es:'100K taps',hi:'एक लाख टैप'},
+   descs:{tr:'100.000 kez tap et',en:'Tap 100,000 times',ru:'100.000 тапов',zh:'点击100000次',ar:'انقر 100000 مرة',es:'Toca 100.000 veces',hi:'एक लाख बार टैप'},
+   type:'tap', target:100000,reward:{coins:100000, tapBonus:2, badge:'👑 Efsane'}},
+
+  // ZENGİN
+  {id:'earn_10k',   cat:'rich',   icon:'💰',
+   names:{tr:'İlk Servet',en:'First Fortune',ru:'Первое состояние',zh:'第一笔财富',ar:'أول ثروة',es:'Primera fortuna',hi:'पहली संपदा'},
+   descs:{tr:'10.000 ZRC kazan',en:'Earn 10,000 ZRC',ru:'Заработай 10К ZRC',zh:'赚取10000 ZRC',ar:'اكسب 10000 ZRC',es:'Gana 10.000 ZRC',hi:'10,000 ZRC कमाएं'},
+   type:'totalEarned', target:10000,  reward:{coins:2000, item:'kristal'}},
+  {id:'earn_100k',  cat:'rich',   icon:'💎',
+   names:{tr:'Kripto Zengin',en:'Crypto Rich',ru:'Крипто-богач',zh:'加密富豪',ar:'ثري التشفير',es:'Rico cripto',hi:'क्रिप्टो अमीर'},
+   descs:{tr:'100.000 ZRC kazan',en:'Earn 100,000 ZRC',ru:'100К ZRC',zh:'赚取10万 ZRC',ar:'اكسب 100000 ZRC',es:'Gana 100.000 ZRC',hi:'एक लाख ZRC कमाएं'},
+   type:'totalEarned', target:100000, reward:{coins:10000, item:'reaktor', badge:'💎 Kripto Zengin'}},
+  {id:'earn_1m',    cat:'rich',   icon:'🏆',
+   names:{tr:'Milyoner',en:'Millionaire',ru:'Миллионер',zh:'百万富翁',ar:'مليونير',es:'Millonario',hi:'करोड़पति'},
+   descs:{tr:'1.000.000 ZRC kazan',en:'Earn 1,000,000 ZRC',ru:'1М ZRC',zh:'赚取百万 ZRC',ar:'اكسب مليون ZRC',es:'Gana 1.000.000 ZRC',hi:'दस लाख ZRC कमाएं'},
+   type:'totalEarned', target:1000000,reward:{coins:50000, energyBonus:500, badge:'🏆 ZRC Milyoner'}},
+
+  // İMPARATOR
+  {id:'biz_1',      cat:'empire', icon:'🏢',
+   names:{tr:'Girişimci',en:'Entrepreneur',ru:'Предприниматель',zh:'创业者',ar:'رائد أعمال',es:'Empresario',hi:'उद्यमी'},
+   descs:{tr:'İlk işletmeni satın al',en:'Buy your first business',ru:'Купи первый бизнес',zh:'购买第一个商业',ar:'اشتر أول عمل',es:'Compra tu primer negocio',hi:'पहला व्यवसाय खरीदें'},
+   type:'bizOwned', target:1, reward:{coins:3000}},
+  {id:'biz_5',      cat:'empire', icon:'🏙️',
+   names:{tr:'İş Dünyası',en:'Business World',ru:'Деловой мир',zh:'商业世界',ar:'عالم الأعمال',es:'Mundo empresarial',hi:'व्यापार जगत'},
+   descs:{tr:'5 işletmeye sahip ol',en:'Own 5 businesses',ru:'Владей 5 бизнесами',zh:'拥有5个商业',ar:'امتلك 5 أعمال',es:'Ten 5 negocios',hi:'5 व्यवसाय रखें'},
+   type:'bizOwned', target:5, reward:{coins:15000, item:'kristal', badge:'🏙️ İş Dünyası'}},
+  {id:'biz_all',    cat:'empire', icon:'👑',
+   names:{tr:'İmparator',en:'Emperor',ru:'Император',zh:'皇帝',ar:'إمبراطور',es:'Emperador',hi:'सम्राट'},
+   descs:{tr:'Tüm işletmelere sahip ol',en:'Own all businesses',ru:'Владей всеми бизнесами',zh:'拥有所有商业',ar:'امتلك جميع الأعمال',es:'Ten todos los negocios',hi:'सभी व्यवसाय रखें'},
+   type:'bizOwned', target:8, reward:{coins:100000, tapBonus:1, energyBonus:1000, badge:'👑 İmparator'}},
+
+  // SOSYAL
+  {id:'ref_1',      cat:'social', icon:'👥',
+   names:{tr:'İlk Davet',en:'First Invite',ru:'Первое приглашение',zh:'第一次邀请',ar:'أول دعوة',es:'Primera invitación',hi:'पहला आमंत्रण'},
+   descs:{tr:'1 arkadaş davet et',en:'Invite 1 friend',ru:'Пригласи 1 друга',zh:'邀请1位朋友',ar:'ادعُ صديقاً',es:'Invita a 1 amigo',hi:'1 दोस्त को आमंत्रित करें'},
+   type:'refCount', target:1,  reward:{coins:5000, item:'reaktor'}},
+  {id:'ref_10',     cat:'social', icon:'🌟',
+   names:{tr:'Influencer',en:'Influencer',ru:'Инфлюенсер',zh:'网红',ar:'مؤثر',es:'Influencer',hi:'इन्फ्लुएंसर'},
+   descs:{tr:'10 arkadaş davet et',en:'Invite 10 friends',ru:'Пригласи 10 друзей',zh:'邀请10位朋友',ar:'ادعُ 10 أصدقاء',es:'Invita a 10 amigos',hi:'10 दोस्तों को आमंत्रित करें'},
+   type:'refCount', target:10, reward:{coins:30000, energyBonus:500, badge:'🌟 Influencer'}},
+  {id:'ref_50',     cat:'social', icon:'🚀',
+   names:{tr:'Topluluk Lideri',en:'Community Leader',ru:'Лидер сообщества',zh:'社区领袖',ar:'قائد المجتمع',es:'Líder comunitario',hi:'समुदाय नेता'},
+   descs:{tr:'50 arkadaş davet et',en:'Invite 50 friends',ru:'50 друзей',zh:'邀请50位朋友',ar:'ادعُ 50 صديقاً',es:'Invita a 50 amigos',hi:'50 दोस्तों को आमंत्रित करें'},
+   type:'refCount', target:50, reward:{coins:200000, tapBonus:3, badge:'🚀 Topluluk Lideri'}},
+
+  // ŞANSLI
+  {id:'wheel_1',    cat:'lucky',  icon:'🎰',
+   names:{tr:'Şans Kapısı',en:'Lucky Door',ru:'Удачная дверь',zh:'幸运之门',ar:'باب الحظ',es:'Puerta de la suerte',hi:'भाग्य का द्वार'},
+   descs:{tr:'Çarkı ilk kez çevir',en:'Spin the wheel first time',ru:'Первый спин',zh:'第一次旋转',ar:'أدر العجلة أول مرة',es:'Gira la ruleta por primera vez',hi:'पहली बार चक्र घुमाएं'},
+   type:'wheelSpins', target:1,  reward:{coins:500, item:'kristal'}},
+  {id:'wheel_30',   cat:'lucky',  icon:'🍀',
+   names:{tr:'Şanslı Adam',en:'Lucky One',ru:'Счастливчик',zh:'幸运儿',ar:'المحظوظ',es:'El afortunado',hi:'भाग्यशाली'},
+   descs:{tr:'30 kez çark çevir',en:'Spin 30 times',ru:'30 спинов',zh:'旋转30次',ar:'أدر 30 مرة',es:'Gira 30 veces',hi:'30 बार घुमाएं'},
+   type:'wheelSpins', target:30, reward:{coins:10000, badge:'🍀 Şanslı'}},
+
+  // SADIK
+  {id:'login_7',    cat:'loyal',  icon:'📅',
+   names:{tr:'Haftalık Sadakat',en:'Weekly Loyalty',ru:'Недельная верность',zh:'每周忠诚',ar:'الولاء الأسبوعي',es:'Lealtad semanal',hi:'साप्ताहिक निष्ठा'},
+   descs:{tr:'7 gün üst üste gir',en:'Login 7 days in a row',ru:'7 дней подряд',zh:'连续7天登录',ar:'سجل 7 أيام متتالية',es:'Entra 7 días seguidos',hi:'7 दिन लगातार लॉगिन'},
+   type:'loginStreak', target:7,  reward:{coins:5000, item:'reaktor'}},
+  {id:'login_30',   cat:'loyal',  icon:'🗓️',
+   names:{tr:'Aylık Sadakat',en:'Monthly Loyalty',ru:'Месячная верность',zh:'每月忠诚',ar:'الولاء الشهري',es:'Lealtad mensual',hi:'मासिक निष्ठा'},
+   descs:{tr:'30 gün üst üste gir',en:'Login 30 days in a row',ru:'30 дней подряд',zh:'连续30天登录',ar:'سجل 30 يوماً متتالياً',es:'Entra 30 días seguidos',hi:'30 दिन लगातार लॉगिन'},
+   type:'loginStreak', target:30, reward:{coins:50000, tapBonus:1, energyBonus:1000, badge:'🗓️ Efsane Sadakat'}},
+];
+
+// Başarım kategorileri
+var ACH_CATS = {
+  miner: {tr:'⛏️ Madenci',en:'⛏️ Miner',ru:'⛏️ Шахтёр',zh:'⛏️ 矿工',ar:'⛏️ عامل المناجم',es:'⛏️ Minero',hi:'⛏️ खनिक'},
+  rich:  {tr:'💰 Zengin',en:'💰 Rich',ru:'💰 Богач',zh:'💰 富豪',ar:'💰 الثروة',es:'💰 Rico',hi:'💰 अमीर'},
+  empire:{tr:'🏢 İmparator',en:'🏢 Emperor',ru:'🏢 Император',zh:'🏢 帝王',ar:'🏢 الإمبراطور',es:'🏢 Emperador',hi:'🏢 सम्राट'},
+  social:{tr:'👥 Sosyal',en:'👥 Social',ru:'👥 Социальный',zh:'👥 社交',ar:'👥 اجتماعي',es:'👥 Social',hi:'👥 सामाजिक'},
+  lucky: {tr:'🎰 Şanslı',en:'🎰 Lucky',ru:'🎰 Удача',zh:'🎰 幸运',ar:'🎰 محظوظ',es:'🎰 Suerte',hi:'🎰 भाग्यशाली'},
+  loyal: {tr:'📅 Sadık',en:'📅 Loyal',ru:'📅 Верный',zh:'📅 忠诚',ar:'📅 مخلص',es:'📅 Leal',hi:'📅 वफादार'},
+};
+
+function getAchProgress(ach){
+  if(ach.type==='tap')         return S.totalTaps||0;
+  if(ach.type==='totalEarned') return S.totalEarned||0;
+  if(ach.type==='bizOwned')    return S.businesses.filter(function(b){return b.lv>0;}).length;
+  if(ach.type==='refCount')    return S.refCount||0;
+  if(ach.type==='wheelSpins')  return S.wheelSpins||0;
+  if(ach.type==='loginStreak') return S.loginStreak||0;
+  return 0;
+}
+
+function checkAchievements(){
+  if(!S.achievementsClaimed) S.achievementsClaimed = {};
+  var newOnes = [];
+  ACHIEVEMENTS.forEach(function(ach){
+    if(S.achievementsClaimed[ach.id]) return;
+    if(getAchProgress(ach) >= ach.target){
+      S.achievementsClaimed[ach.id] = true;
+      // Ödülleri ver
+      if(ach.reward.coins)       S.coins += ach.reward.coins;
+      if(ach.reward.item){
+        var item = S.items.find(function(x){return x.id===ach.reward.item;});
+        if(item) item.count++;
+      }
+      if(ach.reward.tapBonus){
+        S.tapPower = (S.tapPower||1) + ach.reward.tapBonus;
+      }
+      if(ach.reward.energyBonus){
+        S.maxEnergy = (S.maxEnergy||500) + ach.reward.energyBonus;
+      }
+      if(ach.reward.badge){
+        if(!S.badges) S.badges = [];
+        S.badges.push(ach.reward.badge);
+      }
+      newOnes.push(ach);
+    }
+  });
+  if(newOnes.length > 0){
+    newOnes.forEach(function(ach, i){
+      setTimeout(function(){
+        var name = ach.names[currentLang]||ach.names['en'];
+        showNotif('🏆 ' + name + '! +' + fmt(ach.reward.coins||0) + ' ZRC');
+      }, i * 1500);
+    });
+    scheduleSave();
+  }
+}
+
+function renderAchievements(){
+  var el = document.getElementById('ach-list');
+  if(!el) return;
+  el.innerHTML = '';
+  if(!S.achievementsClaimed) S.achievementsClaimed = {};
+
+  var cats = Object.keys(ACH_CATS);
+  cats.forEach(function(cat){
+    var catAchs = ACHIEVEMENTS.filter(function(a){return a.cat===cat;});
+    var catLabel = ACH_CATS[cat][currentLang]||ACH_CATS[cat]['en'];
+
+    var catDiv = document.createElement('div');
+    catDiv.style.cssText = 'margin-bottom:14px;';
+    catDiv.innerHTML = '<div style="font-size:8px;letter-spacing:0.15em;color:rgba(0,220,255,0.35);margin-bottom:7px;border-bottom:1px solid rgba(0,220,255,0.08);padding-bottom:4px;">'+catLabel+'</div>';
+
+    catAchs.forEach(function(ach){
+      var prog = getAchProgress(ach);
+      var claimed = !!S.achievementsClaimed[ach.id];
+      var done = prog >= ach.target;
+      var pct = Math.min(100, Math.floor(prog/ach.target*100));
+      var name = ach.names[currentLang]||ach.names['en'];
+      var desc = ach.descs[currentLang]||ach.descs['en'];
+
+      var d = document.createElement('div');
+      d.style.cssText = 'background:'+(claimed?'rgba(0,255,150,0.03)':'rgba(0,220,255,0.03)')+';border:1px solid '+(claimed?'rgba(0,255,150,0.15)':'rgba(0,220,255,0.08)')+';border-radius:7px;padding:10px;margin-bottom:6px;display:flex;align-items:center;gap:10px;'+(claimed?'opacity:0.6;':'');
+
+      var rewardHtml = '';
+      if(ach.reward.coins)      rewardHtml += '<span style="font-size:9px;color:#00dcff;">+'+fmt(ach.reward.coins)+' ZRC</span> ';
+      if(ach.reward.tapBonus)   rewardHtml += '<span style="font-size:9px;color:#00ff96;">+'+ach.reward.tapBonus+' TAP</span> ';
+      if(ach.reward.energyBonus)rewardHtml += '<span style="font-size:9px;color:#00ff96;">+'+ach.reward.energyBonus+' ENR</span> ';
+      if(ach.reward.item)       rewardHtml += '<span style="font-size:9px;color:rgba(255,200,0,0.7);">+EŞYA</span> ';
+      if(ach.reward.badge)      rewardHtml += '<span style="font-size:9px;color:rgba(200,150,255,0.8);">'+ach.reward.badge+'</span>';
+
+      d.innerHTML =
+        '<div style="font-size:24px;flex-shrink:0;">'+ach.icon+'</div>'+
+        '<div style="flex:1;min-width:0;">'+
+          '<div style="font-size:11px;font-family:Orbitron,monospace;color:'+(claimed?'rgba(0,255,150,0.7)':'#a0c8e8')+';margin-bottom:2px;">'+name+(claimed?' ✓':'')+'</div>'+
+          '<div style="font-size:9px;color:rgba(0,220,255,0.35);margin-bottom:4px;">'+desc+'</div>'+
+          '<div style="height:3px;background:rgba(0,220,255,0.08);border-radius:2px;overflow:hidden;margin-bottom:3px;">'+
+            '<div style="height:100%;width:'+pct+'%;background:'+(done?'#00ff96':'linear-gradient(90deg,#0066aa,#00dcff)')+';border-radius:2px;"></div>'+
+          '</div>'+
+          '<div style="font-size:8px;color:rgba(0,220,255,0.3);">'+fmt(Math.min(prog,ach.target))+' / '+fmt(ach.target)+'</div>'+
+        '</div>'+
+        '<div style="flex-shrink:0;text-align:right;">'+rewardHtml+'</div>';
+
+      catDiv.appendChild(d);
+    });
+    el.appendChild(catDiv);
+  });
+}
+
 var QUESTS = [
   {id:'tap100',  icon:'👆', name:'TAP USTASI',    desc:'100 kez tap et',           type:'tap',  target:100,   reward:500,  itemReward:null},
   {id:'tap500',  icon:'⚡', name:'ENERJI TUFANI', desc:'500 kez tap et',           type:'tap',  target:500,   reward:2000, itemReward:null},
@@ -1021,7 +1223,7 @@ function fmtTime(sec){
 }
 
 function switchTab(t){
-  document.querySelectorAll('.tab').forEach(function(b,i){b.classList.toggle('active',['mine','upgrade','biz','quest','ref','leader','ton','wheel'][i]===t);});
+  document.querySelectorAll('.tab').forEach(function(b,i){b.classList.toggle('active',['mine','upgrade','biz','quest','ref','leader','ton','wheel','ach'][i]===t);});
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
   document.getElementById('tab-'+t).classList.add('active');
   if(t==='ref') loadReferrals();
@@ -1030,6 +1232,7 @@ function switchTab(t){
   if(t==='leader') loadLeaderboard();
   if(t==='ton') renderTonBoosts();
   if(t==='wheel') renderWheel();
+  if(t==='ach') renderAchievements();
 }
 
 function copyLink(){
@@ -1355,7 +1558,7 @@ function renderQuests(){
   });
 }
 
-function renderAll(){renderHUD();renderEnergy();renderBiz();renderInventory();updateBadges();}
+function renderAll(){renderHUD();renderEnergy();renderBiz();renderInventory();updateBadges();checkAchievements();}
 
 // Timer guncelle
 function updateTimer(){
@@ -1401,6 +1604,7 @@ function handleTap(e){
   var tp=getTapPower();
   var earned=Math.ceil(tp*bonus);
   S.coins+=earned; S.totalEarned+=earned; S.dailyTaps++; S.dailyEarned+=earned;
+  S.totalTaps=(S.totalTaps||0)+1;
   S.energy=Math.max(0,S.energy-1);
   pulseR=0; pulseA=0.85;
   var wrap=document.getElementById('sphere-wrap');
@@ -1478,6 +1682,10 @@ async function saveGame(){
     localStorage.setItem('zro_energy', Math.floor(S.energy));
     localStorage.setItem('zro_tappower', S.tapPower);
     localStorage.setItem('zro_businesses', JSON.stringify(S.businesses));
+    localStorage.setItem('zro_achievements_'+userId, JSON.stringify(S.achievementsClaimed||{}));
+    localStorage.setItem('zro_badges_'+userId, JSON.stringify(S.badges||[]));
+    localStorage.setItem('zro_total_taps_'+userId, S.totalTaps||0);
+    localStorage.setItem('zro_wheel_spins_'+userId, S.wheelSpins||0);
   } catch(e){}
 
   try {
@@ -1642,6 +1850,7 @@ function spinWheel(){
 }
 
 function claimWheelPrize(prize){
+  S.wheelSpins=(S.wheelSpins||0)+1;
   var resultDiv = document.getElementById('wheel-result');
   var resultIcon = document.getElementById('wheel-result-icon');
   var resultText = document.getElementById('wheel-result-text');
