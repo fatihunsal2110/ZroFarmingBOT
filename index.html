@@ -398,6 +398,7 @@ var LANGS = {
     davetLink:'Davet linki kopyalandi!',
     shareText:'ZRo Farm oynuyorum! ZRo Coin kaz, imparatorluk kur!',
     langSelect:'DİL SEÇ',
+    settingsBtn:'AYARLAR / DİL',
   },
   en: {
     title:'ZRo FARM', loading:'ZRo FARM LOADING...',
@@ -430,6 +431,7 @@ var LANGS = {
     davetLink:'Invite link copied!',
     shareText:'Playing ZRo Farm! Mine ZRo Coin, build your empire!',
     langSelect:'SELECT LANGUAGE',
+    settingsBtn:'SETTINGS / LANGUAGE',
   },
   ru: {
     title:'ZRo FARM', loading:'ZRo FARM ЗАГРУЗКА...',
@@ -462,6 +464,7 @@ var LANGS = {
     davetLink:'Реферальная ссылка скопирована!',
     shareText:'Играю в ZRo Farm! Майни ZRo Coin, строй империю!',
     langSelect:'ВЫБОР ЯЗЫКА',
+    settingsBtn:'НАСТРОЙКИ / ЯЗЫК',
   },
   zh: {
     title:'ZRo 农场', loading:'ZRo 农场加载中...',
@@ -494,6 +497,7 @@ var LANGS = {
     davetLink:'邀请链接已复制!',
     shareText:'我在玩ZRo Farm! 挖ZRo币,建立帝国!',
     langSelect:'选择语言',
+    settingsBtn:'设置 / 语言',
   },
   ar: {
     title:'ZRo فارم', loading:'جار تحميل ZRo فارم...',
@@ -526,6 +530,7 @@ var LANGS = {
     davetLink:'تم نسخ رابط الدعوة!',
     shareText:'ألعب ZRo Farm! عدّن ZRo Coin وابنِ إمبراطوريتك!',
     langSelect:'اختر اللغة',
+    settingsBtn:'الإعدادات / اللغة',
   },
   es: {
     title:'ZRo FARM', loading:'CARGANDO ZRo FARM...',
@@ -558,6 +563,7 @@ var LANGS = {
     davetLink:'¡Enlace de invitación copiado!',
     shareText:'¡Jugando ZRo Farm! Mina ZRo Coin, construye tu imperio!',
     langSelect:'SELECCIONAR IDIOMA',
+    settingsBtn:'AJUSTES / IDIOMA',
   },
   hi: {
     title:'ZRo फार्म', loading:'ZRo फार्म लोड हो रहा है...',
@@ -590,6 +596,7 @@ var LANGS = {
     davetLink:'आमंत्रण लिंक कॉपी हो गया!',
     shareText:'ZRo Farm खेल रहा हूं! ZRo Coin माइन करें, साम्राज्य बनाएं!',
     langSelect:'भाषा चुनें',
+    settingsBtn:'सेटिंग्स / भाषा',
   }
 };
 
@@ -672,6 +679,12 @@ function applyLang(){
   document.getElementById('copy-btn').textContent = L.copy;
   // RTL dil desteği
   document.body.style.direction = (currentLang === 'ar') ? 'rtl' : 'ltr';
+  // Ayarlar butonu
+  var sBtn = document.getElementById('settings-btn-text');
+  if(sBtn) sBtn.textContent = L.settingsBtn || 'SETTINGS / LANGUAGE';
+  // Ayarlar modal başlığı
+  var sTitle = document.querySelector('.settings-title');
+  if(sTitle) sTitle.textContent = '⚙️ ' + (L.settingsBtn || 'SETTINGS');
 }
 
 function showSettingsModal(){
