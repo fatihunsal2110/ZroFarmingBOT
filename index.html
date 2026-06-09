@@ -969,8 +969,10 @@ var tonConnectUI = null;
 function initTonConnect(){
   try {
     if(typeof TON_CONNECT_UI !== 'undefined' && TON_CONNECT_UI.TonConnectUI){
+      var manifestUrl = 'https://fatihunsal2110.github.io/ZroFarmingBOT/tonconnect-manifest.json';
       tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
-        manifestUrl: 'https://fatihunsal2110.github.io/ZroFarmingBOT/tonconnect-manifest.json',
+        manifestUrl: manifestUrl,
+        buttonRootId: null,
       });
       console.log('TON Connect hazir');
     } else {
