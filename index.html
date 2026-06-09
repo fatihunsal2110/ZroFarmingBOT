@@ -207,6 +207,15 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
     </div>
 
     <div class="settings-section">
+      <div class="settings-section-title" id="settings-stats-title">// KİŞİSEL İSTATİSTİKLER</div>
+      <div id="settings-stats-grid"></div>
+      <div style="margin-top:10px;">
+        <div style="font-size:8px;color:rgba(200,100,255,0.4);letter-spacing:0.1em;margin-bottom:6px;" id="badges-label">ROZETLER</div>
+        <div id="settings-badges-wrap" style="display:flex;flex-wrap:wrap;gap:5px;"></div>
+      </div>
+    </div>
+
+    <div class="settings-section">
       <div class="settings-section-title" id="settings-app-title">// UYGULAMA</div>
       <div class="settings-info-row"><span class="settings-info-label" id="settings-version-label">Versiyon</span><span class="settings-info-val" id="settings-version">v1.0.0</span></div>
       <div class="settings-info-row"><span class="settings-info-label">Bot</span><span class="settings-info-val">@ZRoFarmBOT</span></div>
@@ -820,6 +829,11 @@ function applyLang(){
   var wNLs={tr:'Sonraki çevirme',en:'Next spin',ru:'Следующий спин',zh:'下次旋转',ar:'الدورة التالية',es:'Próximo giro',hi:'अगली बार'};
   if(wNL) wNL.textContent = wNLs[currentLang]||wNLs['en'];
   // Şans çarkı ödüller başlığı güncelle
+  // Rozetler etiketi
+  var blEl = document.getElementById('badges-label');
+  var blTexts={tr:'ROZETLER',en:'BADGES',ru:'ЗНАЧКИ',zh:'徽章',ar:'الشارات',es:'INSIGNIAS',hi:'बैज'};
+  if(blEl) blEl.textContent = blTexts[currentLang]||blTexts['en'];
+
   var wPL = document.querySelector('#tab-wheel > div:last-child > div:first-child');
   var wPLs={tr:'// ÖDÜLLER',en:'// PRIZES',ru:'// ПРИЗЫ',zh:'// 奖品',ar:'// الجوائز',es:'// PREMIOS',hi:'// पुरस्कार'};
   if(wPL) wPL.textContent = wPLs[currentLang]||wPLs['en'];
@@ -892,6 +906,50 @@ function renderSettingsInfo(){
   if(sc) sc.textContent = '✕ ' + (L.close||'CLOSE');
   var st = document.querySelector('.settings-title');
   if(st) st.textContent = '⚙️ ' + (L.settingsBtn||'SETTINGS');
+
+  // İstatistikler
+  var statTitles={tr:'// KİŞİSEL İSTATİSTİKLER',en:'// PERSONAL STATS',ru:'// ЛИЧНАЯ СТАТИСТИКА',zh:'// 个人统计',ar:'// الإحصاءات الشخصية',es:'// ESTADÍSTICAS PERSONALES',hi:'// व्यक्तिगत आँकड़े'};
+  var stEl=document.getElementById('settings-stats-title');
+  if(stEl) stEl.textContent=statTitles[currentLang]||statTitles['en'];
+
+  var stats = [
+    {id:'stat-total-taps',    label:{tr:'Toplam Tap',en:'Total Taps',ru:'Всего тапов',zh:'总点击',ar:'إجمالي النقرات',es:'Taps totales',hi:'कुल टैप'},        val: fmt(S.totalTaps||0)},
+    {id:'stat-total-earned',  label:{tr:'Toplam Kazanılan',en:'Total Earned',ru:'Всего заработано',zh:'总收益',ar:'إجمالي المكاسب',es:'Total ganado',hi:'कुल कमाई'},    val: fmt(S.totalEarned||0)+' ZRC'},
+    {id:'stat-tap-power',     label:{tr:'Tap Gücü',en:'Tap Power',ru:'Сила тапа',zh:'点击力量',ar:'قوة النقر',es:'Poder de tap',hi:'टैप शक्ति'},              val: '+'+S.tapPower+' ZRC'},
+    {id:'stat-max-energy',    label:{tr:'Max Enerji',en:'Max Energy',ru:'Макс. энергия',zh:'最大能量',ar:'أقصى طاقة',es:'Energía máxima',hi:'अधिकतम ऊर्जा'},    val: S.maxEnergy},
+    {id:'stat-biz-owned',     label:{tr:'İşletme Sayısı',en:'Businesses Owned',ru:'Бизнесов',zh:'商业数量',ar:'الأعمال المملوكة',es:'Negocios poseídos',hi:'व्यवसाय संख्या'}, val: S.businesses.filter(function(b){return b.lv>0;}).length+' / 8'},
+    {id:'stat-wheel-spins',   label:{tr:'Çark Çevirme',en:'Wheel Spins',ru:'Кол-во спинов',zh:'转盘次数',ar:'دورات العجلة',es:'Giros de ruleta',hi:'चक्र घुमाना'},   val: fmt(S.wheelSpins||0)},
+    {id:'stat-ref-count',     label:{tr:'Referral Sayısı',en:'Referrals',ru:'Рефералов',zh:'推荐人数',ar:'عدد الإحالات',es:'Referidos',hi:'रेफरल संख्या'},          val: S.refCount||0},
+    {id:'stat-achievements',  label:{tr:'Başarım',en:'Achievements',ru:'Достижений',zh:'成就',ar:'الإنجازات',es:'Logros',hi:'उपलब्धियाँ'},                    val: Object.keys(S.achievementsClaimed||{}).length+' / '+16},
+    {id:'stat-badges',        label:{tr:'Rozetler',en:'Badges',ru:'Значки',zh:'徽章',ar:'الشارات',es:'Insignias',hi:'बैज'},                                  val: (S.badges||[]).length},
+    {id:'stat-premium',       label:{tr:'Premium',en:'Premium',ru:'Премиум',zh:'高级',ar:'مميز',es:'Premium',hi:'प्रीमियम'},                                  val: S.isPremium?'👑 AKTİF':'—'},
+  ];
+
+  var statsEl = document.getElementById('settings-stats-grid');
+  if(statsEl){
+    statsEl.innerHTML='';
+    stats.forEach(function(s){
+      var lb = s.label[currentLang]||s.label['en'];
+      var d = document.createElement('div');
+      d.className='settings-info-row';
+      d.innerHTML='<span class="settings-info-label">'+lb+'</span><span class="settings-info-val">'+s.val+'</span>';
+      statsEl.appendChild(d);
+    });
+  }
+
+  // Rozetler
+  var badgesEl = document.getElementById('settings-badges-wrap');
+  if(badgesEl){
+    var badges = S.badges||[];
+    if(badges.length>0){
+      badgesEl.innerHTML = badges.map(function(b){
+        return '<span style="font-size:10px;background:rgba(200,100,255,0.1);border:1px solid rgba(200,100,255,0.25);border-radius:4px;padding:3px 8px;color:rgba(200,150,255,0.8);">'+b+'</span>';
+      }).join('');
+    } else {
+      var noBadge={tr:'Henüz rozet yok',en:'No badges yet',ru:'Значков пока нет',zh:'暂无徽章',ar:'لا توجد شارات بعد',es:'Sin insignias aún',hi:'अभी कोई बैज नहीं'};
+      badgesEl.innerHTML='<span style="font-size:10px;color:rgba(0,220,255,0.3);">'+(noBadge[currentLang]||noBadge['en'])+'</span>';
+    }
+  }
 }
 
 var API = 'https://zrofarm-backend.onrender.com';
