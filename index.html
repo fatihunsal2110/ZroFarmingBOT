@@ -2531,6 +2531,11 @@ initTonConnect();
 apiLogin().then(function(){
   document.getElementById('loading').style.display='none';
   document.getElementById('app').style.display='block';
+  // Kullanıcı adı ve ID'yi set et
+  var displayName = user ? (user.first_name || user.username || 'PLAYER') : 'PLAYER';
+  document.getElementById('u-name').textContent = displayName.toUpperCase();
+  document.getElementById('u-id').textContent = userId ? 'ID: ' + userId : '';
+  document.getElementById('u-avatar').textContent = user && user.first_name ? user.first_name[0].toUpperCase() : '👤';
   applyLang();
   initLangModal();
   renderAll();
