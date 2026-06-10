@@ -6,66 +6,67 @@
 <title>ZRo Farm</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tonconnect/ui@2.0.5/dist/tonconnect-ui.min.js"></script>
+<script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;overflow-x:hidden;}
+body{background:#080d1a;font-family:'Share Tech Mono',monospace;color:#e0eaff;overflow-x:hidden;}
 #app{max-width:480px;margin:0 auto;padding:14px;position:relative;min-height:100vh;}
-#app::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,220,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,220,255,0.025) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
+#app::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,220,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,220,255,0.04) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
 .rel{position:relative;z-index:1;}
 .cy-title{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;letter-spacing:0.2em;color:#00dcff;text-align:center;margin-bottom:12px;}
-.user-bar{display:flex;align-items:center;gap:8px;background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.12);border-radius:6px;padding:8px 12px;margin-bottom:12px;}
+.user-bar{display:flex;align-items:center;gap:8px;background:rgba(0,220,255,0.07);border:1px solid rgba(0,220,255,0.22);border-radius:6px;padding:8px 12px;margin-bottom:12px;}
 .user-avatar{width:32px;height:32px;border-radius:50%;background:rgba(0,220,255,0.1);border:1px solid rgba(0,220,255,0.25);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
 .user-name{font-size:12px;color:#a0c8e8;font-family:'Orbitron',monospace;flex:1;}
-.user-id{font-size:9px;color:rgba(0,220,255,0.35);}
+.user-id{font-size:9px;color:rgba(0,220,255,0.55);}
 .save-indicator{font-size:9px;color:rgba(0,255,150,0.5);}
 .hud-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:12px;}
-.hud-card{background:rgba(0,220,255,0.05);border:1px solid rgba(0,220,255,0.18);border-radius:6px;padding:8px 6px;text-align:center;position:relative;overflow:hidden;}
+.hud-card{background:rgba(0,220,255,0.09);border:1px solid rgba(0,220,255,0.28);border-radius:6px;padding:8px 6px;text-align:center;position:relative;overflow:hidden;}
 .hud-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,220,255,0.6),transparent);}
-.hud-label{font-size:7px;letter-spacing:0.1em;color:rgba(0,220,255,0.5);margin-bottom:3px;}
+.hud-label{font-size:7px;letter-spacing:0.1em;color:rgba(0,220,255,0.7);margin-bottom:3px;}
 .hud-val{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:#00dcff;}
 .hud-val.green{color:#00ff96;}
 .hud-sub{font-size:7px;color:rgba(0,220,255,0.3);margin-top:1px;}
 .tabs{display:flex;gap:4px;margin-bottom:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .tabs::-webkit-scrollbar{display:none;}
-.tab{flex:0 0 auto;min-width:44px;padding:6px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.04em;border:1px solid rgba(0,220,255,0.18);border-radius:5px;background:transparent;color:rgba(0,220,255,0.45);cursor:pointer;transition:all 0.2s;white-space:nowrap;}
-.tab.active{background:rgba(0,220,255,0.1);border-color:rgba(0,220,255,0.5);color:#00dcff;}
+.tab{flex:0 0 auto;min-width:44px;padding:6px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.04em;border:1px solid rgba(0,220,255,0.28);border-radius:5px;background:transparent;color:rgba(0,220,255,0.65);cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.tab.active{background:rgba(0,220,255,0.1);border-color:rgba(0,220,255,0.7);color:#00dcff;}
 .panel{display:none;}
 .panel.active{display:block;}
 .energy-wrap{margin-bottom:12px;}
-.energy-top{display:flex;justify-content:space-between;font-size:9px;color:rgba(0,220,255,0.45);margin-bottom:4px;}
-.energy-track{height:5px;background:rgba(0,220,255,0.08);border-radius:3px;overflow:hidden;border:1px solid rgba(0,220,255,0.1);}
+.energy-top{display:flex;justify-content:space-between;font-size:9px;color:rgba(0,220,255,0.65);margin-bottom:4px;}
+.energy-track{height:5px;background:rgba(0,220,255,0.08);border-radius:3px;overflow:hidden;border:1px solid rgba(0,220,255,0.2);}
 .energy-fill{height:100%;background:linear-gradient(90deg,#0066aa,#00dcff);border-radius:3px;transition:width 0.3s;}
 .sphere-wrap{display:flex;justify-content:center;align-items:center;margin:0 auto 14px;position:relative;height:160px;width:160px;}
 #sphere-canvas{cursor:pointer;border-radius:50%;display:block;}
-.tap-hint{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:8px;letter-spacing:0.2em;color:rgba(0,220,255,0.35);white-space:nowrap;pointer-events:none;}
+.tap-hint{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:8px;letter-spacing:0.2em;color:rgba(0,220,255,0.55);white-space:nowrap;pointer-events:none;}
 .float-plus{position:absolute;font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:#00dcff;pointer-events:none;animation:floatUp 0.8s ease-out forwards;text-shadow:0 0 8px #00dcff;}
 @keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1);}100%{opacity:0;transform:translateY(-50px) scale(1.2);}}
-.section-label{font-size:8px;letter-spacing:0.2em;color:rgba(0,220,255,0.4);margin-bottom:7px;border-bottom:1px solid rgba(0,220,255,0.08);padding-bottom:4px;}
+.section-label{font-size:8px;letter-spacing:0.2em;color:rgba(0,220,255,0.6);margin-bottom:7px;border-bottom:1px solid rgba(0,220,255,0.08);padding-bottom:4px;}
 .mine-cards{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px;}
 .mine-card{background:rgba(0,255,150,0.04);border:1px solid rgba(0,255,150,0.12);border-radius:6px;padding:10px;}
-.mine-card.blue{background:rgba(0,220,255,0.04);border-color:rgba(0,220,255,0.12);}
+.mine-card.blue{background:rgba(0,220,255,0.07);border-color:rgba(0,220,255,0.12);}
 .mc-label{font-size:8px;color:rgba(0,255,150,0.4);margin-bottom:4px;}
-.mine-card.blue .mc-label{color:rgba(0,220,255,0.4);}
+.mine-card.blue .mc-label{color:rgba(0,220,255,0.6);}
 .mc-val{font-family:'Orbitron',monospace;font-size:18px;color:#00ff96;}
 .mine-card.blue .mc-val{color:#00dcff;}
 .mc-sub{font-size:9px;color:rgba(0,255,150,0.35);margin-top:2px;}
-.mine-card.blue .mc-sub{color:rgba(0,220,255,0.35);}
+.mine-card.blue .mc-sub{color:rgba(0,220,255,0.55);}
 
 /* UPGRADE SHOP */
 .upgrade-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
-.upgrade-row{background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.1);border-radius:8px;padding:11px 12px;}
+.upgrade-row{background:rgba(0,220,255,0.07);border:1px solid rgba(0,220,255,0.2);border-radius:8px;padding:11px 12px;}
 .upgrade-top{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
 .upgrade-icon{font-size:22px;flex-shrink:0;width:28px;text-align:center;}
 .upgrade-info{flex:1;}
 .upgrade-name{font-size:11px;font-family:'Orbitron',monospace;color:#a0c8e8;letter-spacing:0.04em;}
-.upgrade-desc{font-size:9px;color:rgba(0,220,255,0.4);margin-top:2px;}
+.upgrade-desc{font-size:9px;color:rgba(0,220,255,0.6);margin-top:2px;}
 .upgrade-lv{font-size:9px;color:rgba(0,255,150,0.5);margin-top:2px;}
 .upgrade-bottom{display:flex;align-items:center;gap:8px;}
 .upgrade-prog-wrap{flex:1;}
 .upgrade-prog-bar{height:4px;background:rgba(0,220,255,0.08);border-radius:2px;overflow:hidden;margin-bottom:3px;}
 .upgrade-prog-fill{height:100%;background:linear-gradient(90deg,#0066aa,#00dcff);border-radius:2px;transition:width 0.5s;}
-.upgrade-prog-text{font-size:8px;color:rgba(0,220,255,0.35);}
+.upgrade-prog-text{font-size:8px;color:rgba(0,220,255,0.55);}
 .upgrade-btns{display:flex;gap:6px;flex-shrink:0;}
 .upg-btn{background:rgba(0,220,255,0.07);border:1px solid rgba(0,220,255,0.22);border-radius:4px;padding:5px 9px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#00dcff;cursor:pointer;white-space:nowrap;}
 .upg-btn:disabled{opacity:0.3;cursor:not-allowed;}
@@ -75,11 +76,11 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 
 /* BIZ */
 .biz-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
-.biz-row{background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.1);border-radius:6px;padding:9px 11px;display:flex;align-items:center;gap:9px;}
+.biz-row{background:rgba(0,220,255,0.07);border:1px solid rgba(0,220,255,0.2);border-radius:6px;padding:9px 11px;display:flex;align-items:center;gap:9px;}
 .biz-icon{font-size:20px;flex-shrink:0;width:26px;text-align:center;}
 .biz-info{flex:1;min-width:0;}
 .biz-name{font-size:11px;font-family:'Orbitron',monospace;color:#a0c8e8;}
-.biz-sub{font-size:9px;color:rgba(0,220,255,0.4);margin-top:2px;}
+.biz-sub{font-size:9px;color:rgba(0,220,255,0.6);margin-top:2px;}
 .biz-right{flex-shrink:0;text-align:right;}
 .biz-btn{background:rgba(0,220,255,0.07);border:1px solid rgba(0,220,255,0.22);border-radius:4px;padding:5px 9px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#00dcff;cursor:pointer;white-space:nowrap;display:block;margin-bottom:4px;}
 .biz-btn:disabled{opacity:0.3;cursor:not-allowed;}
@@ -89,26 +90,26 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 
 /* ENVANTAR */
 .inv-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
-.inv-item{background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.12);border-radius:8px;padding:12px;text-align:center;}
+.inv-item{background:rgba(0,220,255,0.07);border:1px solid rgba(0,220,255,0.22);border-radius:8px;padding:12px;text-align:center;}
 .inv-item.has-item{border-color:rgba(0,255,150,0.25);background:rgba(0,255,150,0.04);}
 .inv-icon{font-size:28px;margin-bottom:6px;}
 .inv-name{font-size:10px;font-family:'Orbitron',monospace;color:#a0c8e8;margin-bottom:3px;}
 .inv-count{font-size:16px;font-family:'Orbitron',monospace;color:#00ff96;}
-.inv-desc{font-size:8px;color:rgba(0,220,255,0.35);margin-top:3px;}
+.inv-desc{font-size:8px;color:rgba(0,220,255,0.55);margin-top:3px;}
 .use-btn{width:100%;margin-top:8px;background:rgba(0,255,150,0.08);border:1px solid rgba(0,255,150,0.25);border-radius:4px;padding:5px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#00ff96;cursor:pointer;}
 .use-btn:disabled{opacity:0.3;cursor:not-allowed;}
 
 /* GOREV */
 .quest-list{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
-.quest-card{background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.12);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;}
+.quest-card{background:rgba(0,220,255,0.07);border:1px solid rgba(0,220,255,0.22);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;}
 .quest-card.claimed{border-color:rgba(0,255,150,0.1);opacity:0.45;}
 .quest-icon{font-size:22px;flex-shrink:0;width:28px;text-align:center;}
 .quest-info{flex:1;min-width:0;}
 .quest-name{font-size:11px;font-family:'Orbitron',monospace;color:#a0c8e8;}
-.quest-desc{font-size:9px;color:rgba(0,220,255,0.4);margin-top:2px;}
+.quest-desc{font-size:9px;color:rgba(0,220,255,0.6);margin-top:2px;}
 .quest-prog-bar{height:3px;background:rgba(0,220,255,0.08);border-radius:2px;overflow:hidden;margin-top:5px;}
 .quest-prog-fill{height:100%;background:linear-gradient(90deg,#0066aa,#00dcff);border-radius:2px;}
-.quest-prog-text{font-size:8px;color:rgba(0,220,255,0.35);margin-top:2px;}
+.quest-prog-text{font-size:8px;color:rgba(0,220,255,0.55);margin-top:2px;}
 .quest-right{flex-shrink:0;text-align:right;}
 .quest-reward{font-size:10px;color:#00ff96;font-family:'Orbitron',monospace;}
 .quest-reward-sub{font-size:8px;color:rgba(0,255,150,0.4);}
@@ -136,18 +137,18 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 .bonus-val{font-size:11px;color:#00ff96;font-family:'Orbitron',monospace;}
 .bonus-active{font-size:8px;color:#00ff96;background:rgba(0,255,150,0.1);border:1px solid rgba(0,255,150,0.25);border-radius:3px;padding:2px 6px;}
 .friend-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
-.friend-row{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(0,220,255,0.08);border-radius:6px;padding:9px 11px;}
+.friend-row{display:flex;align-items:center;gap:10px;background:rgba(0,0,0,0.2);border:1px solid rgba(0,220,255,0.16);border-radius:6px;padding:9px 11px;}
 .friend-avatar{width:30px;height:30px;border-radius:50%;background:rgba(0,220,255,0.1);border:1px solid rgba(0,220,255,0.2);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
 .friend-info{flex:1;}
 .friend-name{font-size:11px;color:#a0c8e8;font-family:'Orbitron',monospace;}
-.friend-sub{font-size:9px;color:rgba(0,220,255,0.4);margin-top:1px;}
+.friend-sub{font-size:9px;color:rgba(0,220,255,0.6);margin-top:1px;}
 .friend-earn{font-size:11px;color:#00ff96;font-family:'Orbitron',monospace;}
 .invite-btn{width:100%;padding:11px;background:rgba(0,255,150,0.08);border:1px solid rgba(0,255,150,0.3);border-radius:6px;font-family:'Orbitron',monospace;font-size:11px;letter-spacing:0.1em;color:#00ff96;cursor:pointer;margin-bottom:8px;}
-.pulse-ring{position:absolute;border-radius:50%;border:1px solid rgba(0,220,255,0.18);animation:pring 2.4s ease-in-out infinite;pointer-events:none;}
+.pulse-ring{position:absolute;border-radius:50%;border:1px solid rgba(0,220,255,0.28);animation:pring 2.4s ease-in-out infinite;pointer-events:none;}
 @keyframes pring{0%{transform:scale(0.95);opacity:0.5;}50%{transform:scale(1.05);opacity:1;}100%{transform:scale(0.95);opacity:0.5;}}
 .notif{position:fixed;top:14px;right:14px;left:14px;background:rgba(0,255,150,0.12);border:1px solid rgba(0,255,150,0.4);border-radius:6px;padding:8px 12px;font-size:11px;color:#00ff96;animation:fadeSlide 2.5s ease forwards;pointer-events:none;z-index:100;text-align:center;}
 @keyframes fadeSlide{0%{opacity:0;transform:translateY(-8px);}15%{opacity:1;transform:translateY(0);}80%{opacity:1;}100%{opacity:0;}}
-.loading{position:fixed;inset:0;background:#050810;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;z-index:200;}
+.loading{position:fixed;inset:0;background:#080d1a;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;z-index:200;}
 .loading-text{font-family:'Orbitron',monospace;font-size:12px;color:#00dcff;letter-spacing:0.2em;animation:blink 1.5s ease-in-out infinite;}
 @keyframes blink{0%,100%{opacity:0.4;}50%{opacity:1;}}
 /* AYARLAR MODAL */
@@ -157,17 +158,17 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 .settings-title{font-family:'Orbitron',monospace;font-size:14px;letter-spacing:0.2em;color:#00dcff;}
 .settings-close{background:rgba(0,220,255,0.06);border:1px solid rgba(0,220,255,0.2);border-radius:5px;padding:6px 12px;font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(0,220,255,0.6);cursor:pointer;}
 .settings-section{margin-bottom:18px;}
-.settings-section-title{font-size:9px;letter-spacing:0.2em;color:rgba(0,220,255,0.4);margin-bottom:10px;border-bottom:1px solid rgba(0,220,255,0.08);padding-bottom:5px;}
+.settings-section-title{font-size:9px;letter-spacing:0.2em;color:rgba(0,220,255,0.6);margin-bottom:10px;border-bottom:1px solid rgba(0,220,255,0.08);padding-bottom:5px;}
 .settings-info-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(0,220,255,0.05);}
-.settings-info-label{font-size:10px;color:rgba(0,220,255,0.45);}
+.settings-info-label{font-size:10px;color:rgba(0,220,255,0.65);}
 .settings-info-val{font-size:10px;color:#a0c8e8;font-family:'Orbitron',monospace;}
 
 /* DIL MODAL */
 .lang-modal{position:fixed;inset:0;background:rgba(5,8,16,0.95);display:none;align-items:center;justify-content:center;z-index:300;flex-direction:column;gap:12px;}
 .lang-modal-title{font-family:'Orbitron',monospace;font-size:13px;letter-spacing:0.2em;color:#00dcff;margin-bottom:8px;}
 .lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:320px;padding:0 20px;}
-.lang-btn{background:rgba(0,220,255,0.05);border:1px solid rgba(0,220,255,0.15);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all 0.2s;}
-.lang-btn:hover{border-color:rgba(0,220,255,0.4);background:rgba(0,220,255,0.1);}
+.lang-btn{background:rgba(0,220,255,0.09);border:1px solid rgba(0,220,255,0.15);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all 0.2s;}
+.lang-btn:hover{border-color:rgba(0,220,255,0.6);background:rgba(0,220,255,0.1);}
 .lang-btn.active{border-color:rgba(0,255,150,0.4);background:rgba(0,255,150,0.06);}
 .lang-flag{font-size:22px;}
 .lang-name{font-size:11px;font-family:'Orbitron',monospace;color:#a0c8e8;}
@@ -271,6 +272,7 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
     <button class="tab" onclick="switchTab('biz')">ISLETME</button>
     <button class="tab" onclick="switchTab('quest')">GOREV</button>
     <button class="tab" onclick="switchTab('ref')">REF</button>
+    <button class="tab" onclick="switchTab('ads')">📺</button>
     <button class="tab" onclick="switchTab('ton')">TON</button>
     <button class="tab" onclick="switchTab('wheel')">🎰</button>
     <button class="tab" onclick="switchTab('ach')">🏆</button>
@@ -300,7 +302,7 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
         <div class="mc-sub">ZRC / tap</div>
       </div>
     </div>
-    <button onclick="showSettingsModal()" style="width:100%;padding:10px;background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.12);border-radius:6px;font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(0,220,255,0.6);cursor:pointer;margin-bottom:12px;letter-spacing:0.1em;display:flex;align-items:center;justify-content:center;gap:8px;">
+    <button onclick="showSettingsModal()" style="width:100%;padding:10px;background:rgba(0,220,255,0.07);border:1px solid rgba(0,220,255,0.22);border-radius:6px;font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(0,220,255,0.6);cursor:pointer;margin-bottom:12px;letter-spacing:0.1em;display:flex;align-items:center;justify-content:center;gap:8px;">
   <span>⚙️</span> <span id="settings-btn-text">AYARLAR / DİL</span>
 </button>
 <div class="section-label" id="inv-label">// ENVANTER</div>
@@ -352,7 +354,7 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
     </div>
     <div class="section-label" id="friends-label">// ARKADASLARIN</div>
     <div class="friend-list" id="friend-list">
-      <div style="font-size:10px;color:rgba(0,220,255,0.3);text-align:center;padding:16px;">Henuz kimse yok - davet et!</div>
+      <div style="font-size:10px;color:rgba(0,220,255,0.3);text-align:center;padding:16px;">'+({tr:'Henüz kimse yok - davet et!',en:'No one yet - invite them!',ru:'Пока никого нет - пригласите!',zh:'还没有朋友-邀请他们！',ar:'لا أحد بعد - ادعهم!',es:'Nadie aún - ¡invítalos!',hi:'अभी कोई नहीं - आमंत्रित करें!'}[currentLang]||'No one yet - invite them!')+'</div>
     </div>
     <button class="invite-btn" onclick="shareLink()" id="invite-btn">+ ARKADAS DAVET ET</button>
   </div>
@@ -362,6 +364,19 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
     <div class="section-label" id="leader-label">// TOP 50 LIDER TABLOSU</div>
     <div id="leader-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
       <div style="font-size:10px;color:rgba(0,220,255,0.3);text-align:center;padding:20px;">Yukleniyor...</div>
+    </div>
+  </div>
+
+  <!-- ADSGRAM REKLAM -->
+  <div class="panel" id="tab-ads">
+    <div style="text-align:center;margin-bottom:14px;">
+      <div style="font-family:Orbitron,monospace;font-size:13px;color:#00dcff;letter-spacing:0.15em;margin-bottom:4px;" id="ads-title">📺 EARN ZRC</div>
+      <div style="font-size:9px;color:rgba(0,220,255,0.6);margin-bottom:12px;" id="ads-subtitle">Watch ads, earn ZRC!</div>
+    </div>
+    <div id="ads-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;"></div>
+    <div style="background:rgba(0,255,150,0.04);border:1px solid rgba(0,255,150,0.15);border-radius:8px;padding:12px;text-align:center;">
+      <div style="font-size:9px;color:rgba(0,255,150,0.5);margin-bottom:4px;" id="ads-daily-label">Daily limit</div>
+      <div style="font-family:Orbitron,monospace;font-size:20px;color:#00ff96;" id="ads-daily-count">0 / 5</div>
     </div>
   </div>
 
@@ -394,25 +409,37 @@ body{background:#050810;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
   <div class="panel" id="tab-wheel">
     <div style="text-align:center;margin-bottom:14px;">
       <div style="font-family:Orbitron,monospace;font-size:13px;color:#00dcff;letter-spacing:0.15em;margin-bottom:4px;" id="wheel-title">🎰 ŞANS ÇARKI</div>
-      <div style="font-size:9px;color:rgba(0,220,255,0.4);" id="wheel-subtitle">Günde 1 kez ücretsiz çevir!</div>
+      <div style="font-size:9px;color:rgba(0,220,255,0.6);" id="wheel-subtitle">Günde 1 kez ücretsiz çevir!</div>
     </div>
     <div style="display:flex;justify-content:center;margin-bottom:16px;position:relative;">
       <canvas id="wheel-canvas" width="260" height="260" style="border-radius:50%;cursor:pointer;"></canvas>
       <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);font-size:28px;z-index:10;">▼</div>
     </div>
     <div id="wheel-timer-box" style="background:rgba(255,150,0,0.05);border:1px solid rgba(255,150,0,0.15);border-radius:6px;padding:10px;text-align:center;margin-bottom:12px;display:none;">
-      <div style="font-size:9px;color:rgba(255,180,0,0.5);margin-bottom:4px;" id="wheel-next-label">Sonraki çevirme</div>
+      <div style="font-size:9px;color:rgba(255,180,0,0.5);margin-bottom:4px;" id="wheel-next-label">Next free spin</div>
       <div style="font-family:Orbitron,monospace;font-size:16px;color:rgba(255,200,0,0.8);" id="wheel-countdown">00:00:00</div>
     </div>
     <button id="wheel-spin-btn" style="width:100%;padding:13px;background:linear-gradient(135deg,rgba(0,220,255,0.1),rgba(100,100,255,0.1));border:1px solid rgba(0,220,255,0.35);border-radius:8px;font-family:Orbitron,monospace;font-size:12px;letter-spacing:0.1em;color:#00dcff;cursor:pointer;">
-      🎰 ÇEVİR!
+      🎰 SPIN!
     </button>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+      <button id="wheel-ad-btn" style="padding:10px;background:rgba(0,255,150,0.08);border:1px solid rgba(0,255,150,0.25);border-radius:8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#00ff96;cursor:pointer;">
+        📺 AD (+1 SPIN)
+      </button>
+      <button id="wheel-ton-btn" style="padding:10px;background:rgba(80,120,255,0.08);border:1px solid rgba(80,120,255,0.25);border-radius:8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#8ab0ff;cursor:pointer;">
+        ⬡ 0.1 TON (+1 SPIN)
+      </button>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:8px;padding:6px 10px;background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.12);border-radius:6px;">
+      <span style="font-size:9px;color:rgba(0,220,255,0.5);" id="wheel-spins-label">EXTRA SPINS</span>
+      <span style="font-family:Orbitron,monospace;font-size:12px;color:#00dcff;" id="wheel-extra-count">0</span>
+    </div>
     <div id="wheel-result" style="margin-top:12px;text-align:center;display:none;">
       <div style="font-size:32px;" id="wheel-result-icon"></div>
       <div style="font-family:Orbitron,monospace;font-size:14px;color:#00ff96;margin-top:6px;" id="wheel-result-text"></div>
     </div>
     <div style="margin-top:14px;">
-      <div style="font-size:8px;letter-spacing:0.15em;color:rgba(0,220,255,0.35);margin-bottom:8px;">// ÖDÜLLER</div>
+      <div style="font-size:8px;letter-spacing:0.15em;color:rgba(0,220,255,0.55);margin-bottom:8px;">// ÖDÜLLER</div>
       <div id="wheel-prizes-list" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"></div>
     </div>
   </div>
@@ -437,7 +464,7 @@ var LANGS = {
     refLink:'// DAVET LINKIN', copy:'KOPYALA', copied:'KOPYALANDI!',
     invited:'DAVET', activeRef:'AKTIF', earned:'KAZANC',
     farmBonus:'// FARM BONUS TABLOSU', friends:'// ARKADASLARIN',
-    noFriends:'Henuz kimse yok - davet et!', inviteBtn:'+ ARKADAS DAVET ET',
+    noFriends:''+({tr:'Henüz kimse yok - davet et!',en:'No one yet - invite them!',ru:'Пока никого нет - пригласите!',zh:'还没有朋友-邀请他们！',ar:'لا أحد بعد - ادعهم!',es:'Nadie aún - ¡invítalos!',hi:'अभी कोई नहीं - आमंत्रित करें!'}[currentLang]||'No one yet - invite them!')+'', inviteBtn:'+ ARKADAS DAVET ET',
     leaderTitle:'// TOP 50 LIDER TABLOSU', loading2:'Yukleniyor...',
     noData:'Henuz veri yok', connErr:'Baglanamadi', me:'(SEN)',
     tonTitle:'TON BOOST PROTOKOLU', tonDesc:'TON ile anlik guc kazan',
@@ -1179,6 +1206,161 @@ function getItemDef(id){
 }
 
 
+
+// ============ ADSGRAM ============
+// Adsgram Block ID'lerini buraya yaz (adsgram.io'dan alacaksın)
+var ADSGRAM_BLOCKS = [
+  {id:'block-1a', blockId:'34663', reward:500,  cooldown:1200000},
+  {id:'block-1b', blockId:'34663', reward:500,  cooldown:1200000},
+  {id:'block-1c', blockId:'34663', reward:500,  cooldown:1200000},
+  {id:'block-2a', blockId:'34664', reward:1000, cooldown:2400000},
+  {id:'block-2b', blockId:'34664', reward:1000, cooldown:2400000},
+  {id:'block-2c', blockId:'34664', reward:1000, cooldown:2400000},
+  {id:'block-3a', blockId:'34665', reward:2000, cooldown:4800000},
+  {id:'block-3b', blockId:'34665', reward:2000, cooldown:4800000},
+  {id:'block-3c', blockId:'34665', reward:2000, cooldown:4800000},
+];
+
+var MAX_DAILY_ADS = 5; // günlük reklam sınırı
+
+function getAdWatchCount(){
+  var today = new Date().toISOString().slice(0,10);
+  var data = JSON.parse(localStorage.getItem('zro_ads_'+today)||'{"count":0}');
+  return data.count;
+}
+
+function incrementAdCount(){
+  var today = new Date().toISOString().slice(0,10);
+  var data = JSON.parse(localStorage.getItem('zro_ads_'+today)||'{"count":0}');
+  data.count++;
+  localStorage.setItem('zro_ads_'+today, JSON.stringify(data));
+}
+
+function canWatchAd(blockId){
+  var last = parseInt(localStorage.getItem('zro_ad_last_'+blockId)||'0');
+  var block = ADSGRAM_BLOCKS.find(function(b){return b.blockId===blockId||b.id===blockId;});
+  var cooldown = block ? block.cooldown : 3600000;
+  return (Date.now() - last) >= cooldown && getAdWatchCount() < MAX_DAILY_ADS;
+}
+
+function timeUntilAd(blockId){
+  var last = parseInt(localStorage.getItem('zro_ad_last_'+blockId)||'0');
+  var block = ADSGRAM_BLOCKS.find(function(b){return b.blockId===blockId||b.id===blockId;});
+  var cooldown = block ? block.cooldown : 3600000;
+  return Math.max(0, Math.ceil((last + cooldown - Date.now())/1000));
+}
+
+async function watchAd(block){
+  if(!canWatchAd(block.id)){
+    var waitTxt={tr:'Lütfen bekle!',en:'Please wait!',ru:'Подождите!',zh:'请等待！',ar:'يرجى الانتظار!',es:'¡Por favor espera!',hi:'कृपया प्रतीक्षा करें!'};
+    showNotif(waitTxt[currentLang]||waitTxt['en']);
+    return;
+  }
+
+  // Adsgram SDK kontrolü
+  if(typeof Adsgram === 'undefined' || !block.blockId || block.blockId.startsWith('YOUR_')){
+    // Demo mod - Adsgram kurulmamış
+    console.log('Adsgram demo mod');
+    S.coins += block.reward;
+    S.totalEarned += block.reward;
+    localStorage.setItem('zro_ad_last_'+block.id, Date.now().toString());
+    incrementAdCount();
+    var rewardTxt={tr:'Reklam ödülü:',en:'Ad reward:',ru:'Награда за рекламу:',zh:'广告奖励：',ar:'مكافأة الإعلان:',es:'Recompensa del anuncio:',hi:'विज्ञापन पुरस्कार:'};
+    showNotif((rewardTxt[currentLang]||rewardTxt['en'])+' +'+fmt(block.reward)+' ZRC!');
+    scheduleSave();
+    renderAll();
+    renderAdsPanel();
+    return;
+  }
+
+  // Gerçek Adsgram
+  try {
+    var AdController = await window.Adsgram.init({blockId: block.blockId});
+    await AdController.show();
+    S.coins += block.reward;
+    S.totalEarned += block.reward;
+    localStorage.setItem('zro_ad_last_'+block.id, Date.now().toString());
+    incrementAdCount();
+    var rewardTxt2={tr:'Reklam ödülü:',en:'Ad reward:',ru:'Награда за рекламу:',zh:'广告奖励：',ar:'مكافأة الإعلان:',es:'Recompensa del anuncio:',hi:'विज्ञापन पुरस्कार:'};
+    showNotif((rewardTxt2[currentLang]||rewardTxt2['en'])+' +'+fmt(block.reward)+' ZRC!');
+    scheduleSave();
+    renderAll();
+    renderAdsPanel();
+  } catch(e){
+    console.log('Adsgram hata:', e);
+    if(e.description === 'Ads not found'){
+      var noAdTxt={tr:'Şu an reklam yok, sonra dene!',en:'No ads available, try later!',ru:'Нет рекламы, попробуй позже!',zh:'暂无广告，稍后再试！',ar:'لا إعلانات الآن، حاول لاحقاً!',es:'Sin anuncios ahora, ¡inténtalo después!',hi:'अभी कोई विज्ञापन नहीं, बाद में प्रयास करें!'};
+      showNotif(noAdTxt[currentLang]||noAdTxt['en']);
+    }
+  }
+}
+
+function renderAdsPanel(){
+  // Başlık çevirisi
+  var adsTitles={tr:'📺 ZRC KAZAN',en:'📺 EARN ZRC',ru:'📺 ЗАРАБОТАЙ ZRC',zh:'📺 赚取ZRC',ar:'📺 اكسب ZRC',es:'📺 GANA ZRC',hi:'📺 ZRC कमाएं'};
+  var adsSubtitles={tr:'Reklam izle, ZRC kazan!',en:'Watch ads, earn ZRC!',ru:'Смотри рекламу, зарабатывай ZRC!',zh:'看广告，赚ZRC！',ar:'شاهد الإعلانات واكسب ZRC!',es:'¡Mira anuncios, gana ZRC!',hi:'विज्ञापन देखें, ZRC कमाएं!'};
+  var adsDailyLabels={tr:'Günlük limit',en:'Daily limit',ru:'Дневной лимит',zh:'每日限制',ar:'الحد اليومي',es:'Límite diario',hi:'दैनिक सीमा'};
+  
+  var t=document.getElementById('ads-title'); if(t) t.textContent=adsTitles[currentLang]||adsTitles['en'];
+  var s=document.getElementById('ads-subtitle'); if(s) s.textContent=adsSubtitles[currentLang]||adsSubtitles['en'];
+  var dl=document.getElementById('ads-daily-label'); if(dl) dl.textContent=adsDailyLabels[currentLang]||adsDailyLabels['en'];
+  var dc=document.getElementById('ads-daily-count'); if(dc) dc.textContent=getAdWatchCount()+' / 9';
+
+  var el=document.getElementById('ads-list');
+  if(!el) return;
+  el.innerHTML='';
+
+  var adNames=[
+    {tr:'Mini Reklam',en:'Mini Ad',ru:'Мини-реклама',zh:'迷你广告',ar:'إعلان صغير',es:'Mini anuncio',hi:'मिनी विज्ञापन'},
+    {tr:'Mini Reklam',en:'Mini Ad',ru:'Мини-реклама',zh:'迷你广告',ar:'إعلان صغير',es:'Mini anuncio',hi:'मिनी विज्ञापन'},
+    {tr:'Mini Reklam',en:'Mini Ad',ru:'Мини-реклама',zh:'迷你广告',ar:'إعلان صغير',es:'Mini anuncio',hi:'मिनी विज्ञापन'},
+    {tr:'Standart Reklam',en:'Standard Ad',ru:'Стандартная реклама',zh:'标准广告',ar:'إعلان عادي',es:'Anuncio estándar',hi:'मानक विज्ञापन'},
+    {tr:'Standart Reklam',en:'Standard Ad',ru:'Стандартная реклама',zh:'标准广告',ar:'إعلان عادي',es:'Anuncio estándar',hi:'मानक विज्ञापन'},
+    {tr:'Standart Reklam',en:'Standard Ad',ru:'Стандартная реклама',zh:'标准广告',ar:'إعلان عادي',es:'Anuncio estándar',hi:'मानक विज्ञापन'},
+    {tr:'Premium Reklam',en:'Premium Ad',ru:'Премиум реклама',zh:'高级广告',ar:'إعلان مميز',es:'Anuncio premium',hi:'प्रीमियम विज्ञापन'},
+    {tr:'Premium Reklam',en:'Premium Ad',ru:'Премиум реклама',zh:'高级广告',ar:'إعلان مميز',es:'Anuncio premium',hi:'प्रीमियम विज्ञापन'},
+    {tr:'Premium Reklam',en:'Premium Ad',ru:'Премиум реклама',zh:'高级广告',ar:'إعلان مميز',es:'Anuncio premium',hi:'प्रीمियम विज्ञापन'},
+  ];
+  var adIcons=['📱','📱','📱','📺','📺','📺','💎','💎','💎'];
+  var cooldownLabels={tr:'Bekleme',en:'Cooldown',ru:'Перезарядка',zh:'冷却',ar:'وقت الانتظار',es:'Espera',hi:'प्रतीक्षा'};
+  var watchBtns={tr:'İZLE',en:'WATCH',ru:'СМОТРЕТЬ',zh:'观看',ar:'شاهد',es:'VER',hi:'देखें'};
+  var waitBtns={tr:'BEKLE',en:'WAIT',ru:'ЖДАТЬ',zh:'等待',ar:'انتظر',es:'ESPERA',hi:'प्रतीक्षा'};
+  var dailyDoneTxt={tr:'Günlük limit doldu!',en:'Daily limit reached!',ru:'Дневной лимит!',zh:'每日限制已达！',ar:'تم الوصول للحد اليومي!',es:'¡Límite diario alcanzado!',hi:'दैनिक सीमा पूरी!'};
+
+  var dailyFull = getAdWatchCount() >= MAX_DAILY_ADS;
+
+  ADSGRAM_BLOCKS.forEach(function(block, i){
+    var canWatch = canWatchAd(block.id) && !dailyFull;
+    var remSec = timeUntilAd(block.id);
+    var name = (adNames[i]||adNames[0])[currentLang]||adNames[i]['en'];
+    var d = document.createElement('div');
+    d.style.cssText = 'background:rgba(0,220,255,0.07);border:1px solid rgba(0,220,255,0.22);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;';
+    d.innerHTML =
+      '<div style="font-size:26px;flex-shrink:0;">'+adIcons[i]+'</div>'+
+      '<div style="flex:1;">'+
+        '<div style="font-family:Orbitron,monospace;font-size:11px;color:#a0c8e8;margin-bottom:2px;">'+name+'</div>'+
+        '<div style="font-size:10px;color:#00ff96;font-family:Orbitron,monospace;">+'+fmt(block.reward)+' ZRC</div>'+
+        (!canWatch && remSec > 0 ? '<div style="font-size:9px;color:rgba(255,180,0,0.6);margin-top:2px;">'+(cooldownLabels[currentLang]||cooldownLabels['en'])+': '+fmtTime(remSec)+'</div>' : '')+
+        (dailyFull ? '<div style="font-size:9px;color:rgba(255,100,100,0.6);margin-top:2px;">'+(dailyDoneTxt[currentLang]||dailyDoneTxt['en'])+'</div>' : '')+
+      '</div>'+
+      '<button style="flex-shrink:0;background:'+(canWatch?'rgba(0,255,150,0.1)':'rgba(0,220,255,0.05)')+';border:1px solid '+(canWatch?'rgba(0,255,150,0.35)':'rgba(0,220,255,0.15)')+';border-radius:6px;padding:8px 12px;font-family:Orbitron,monospace;font-size:10px;color:'+(canWatch?'#00ff96':'rgba(0,220,255,0.4)')+';cursor:'+(canWatch?'pointer':'not-allowed')+';'+(canWatch?'':'opacity:0.5;')+'" '+(canWatch?'':'disabled')+' data-adblock="'+block.id+'">'+
+        (canWatch?(watchBtns[currentLang]||watchBtns['en']):(waitBtns[currentLang]||waitBtns['en']))+
+      '</button>';
+    el.appendChild(d);
+  });
+
+  el.querySelectorAll('[data-adblock]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var bid = btn.dataset.adblock;
+      var block = ADSGRAM_BLOCKS.find(function(b){return b.id===bid;});
+      if(block) watchAd(block);
+    });
+  });
+
+  // Cooldown timer
+  setTimeout(renderAdsPanel, 5000);
+}
+
 // ============ BASARIM SISTEMI ============
 var ACHIEVEMENTS = [
   // MADENCI
@@ -1332,7 +1514,7 @@ function renderAchievements(){
 
     var catDiv = document.createElement('div');
     catDiv.style.cssText = 'margin-bottom:14px;';
-    catDiv.innerHTML = '<div style="font-size:8px;letter-spacing:0.15em;color:rgba(0,220,255,0.35);margin-bottom:7px;border-bottom:1px solid rgba(0,220,255,0.08);padding-bottom:4px;">'+catLabel+'</div>';
+    catDiv.innerHTML = '<div style="font-size:8px;letter-spacing:0.15em;color:rgba(0,220,255,0.55);margin-bottom:7px;border-bottom:1px solid rgba(0,220,255,0.08);padding-bottom:4px;">'+catLabel+'</div>';
 
     catAchs.forEach(function(ach){
       var prog = getAchProgress(ach);
@@ -1356,7 +1538,7 @@ function renderAchievements(){
         '<div style="font-size:24px;flex-shrink:0;">'+ach.icon+'</div>'+
         '<div style="flex:1;min-width:0;">'+
           '<div style="font-size:11px;font-family:Orbitron,monospace;color:'+(claimed?'rgba(0,255,150,0.7)':'#a0c8e8')+';margin-bottom:2px;">'+name+(claimed?' ✓':'')+'</div>'+
-          '<div style="font-size:9px;color:rgba(0,220,255,0.35);margin-bottom:4px;">'+desc+'</div>'+
+          '<div style="font-size:9px;color:rgba(0,220,255,0.55);margin-bottom:4px;">'+desc+'</div>'+
           '<div style="height:3px;background:rgba(0,220,255,0.08);border-radius:2px;overflow:hidden;margin-bottom:3px;">'+
             '<div style="height:100%;width:'+pct+'%;background:'+(done?'#00ff96':'linear-gradient(90deg,#0066aa,#00dcff)')+';border-radius:2px;"></div>'+
           '</div>'+
@@ -1462,12 +1644,13 @@ function fmtTime(sec){
 }
 
 function switchTab(t){
-  document.querySelectorAll('.tab').forEach(function(b,i){b.classList.toggle('active',['mine','upgrade','biz','quest','ref','ton','wheel','ach'][i]===t);});
+  document.querySelectorAll('.tab').forEach(function(b,i){b.classList.toggle('active',['mine','upgrade','biz','quest','ref','ads','ton','wheel','ach'][i]===t);});
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
   document.getElementById('tab-'+t).classList.add('active');
   if(t==='ref') loadReferrals();
   if(t==='quest') renderQuests();
   if(t==='upgrade') renderUpgrades();
+  if(t==='ads') renderAdsPanel();
   if(t==='ton') renderTonBoosts();
   if(t==='wheel') renderWheel();
   if(t==='ach') renderAchievements();
@@ -1476,7 +1659,8 @@ function switchTab(t){
 function copyLink(){
   var link = 't.me/ZRoFarmBOT?start=USR_' + userId;
   if(navigator.clipboard) navigator.clipboard.writeText(link);
-  showNotif('Davet linki kopyalandi!');
+  var clTxts={tr:'Davet linki kopyalandi!',en:'Invite link copied!',ru:'Ссылка скопирована!',zh:'链接已复制！',ar:'تم نسخ الرابط!',es:'¡Enlace copiado!',hi:'लिंक कॉपी हो गया!'};
+  showNotif(clTxts[currentLang]||clTxts['en']);
 }
 
 function shareLink(){
@@ -1510,7 +1694,8 @@ function renderHUD(){
   document.getElementById('hud-ref').textContent=S.refCount;
   document.getElementById('hud-bonus').textContent='x'+bonus.toFixed(2);
   document.getElementById('mine-bonus').textContent='x'+bonus.toFixed(2);
-  document.getElementById('mine-bonus-sub').textContent=S.refCount+' arkadas';
+  var friendWord={tr:'arkadas',en:'friends',ru:'друзей',zh:'朋友',ar:'أصدقاء',es:'amigos',hi:'दोस्त'};
+  document.getElementById('mine-bonus-sub').textContent=S.refCount+' '+(friendWord[currentLang]||friendWord['en']);
   document.getElementById('mine-tap').textContent='+'+getTapPower();
   document.getElementById('rs-total').textContent=S.refCount;
   document.getElementById('rs-earn').textContent=fmt(S.refEarned);
@@ -1549,10 +1734,12 @@ function renderInventory(){
       if(!S.activeBoosts) S.activeBoosts={};
       if(iid==='kristal'){
         S.activeBoosts.kristal=Date.now()+3600000;
-        showNotif('ZRC Kristali aktif! 1 saat boyunca tap 2x!');
+        var krTxts={tr:'ZRC Kristali aktif! 1 saat tap 2x!',en:'ZRC Crystal active! Tap 2x for 1 hour!',ru:'ZRC Кристалл активен! Тап 2x на 1 час!',zh:'ZRC水晶激活！点击2倍1小时！',ar:'ZRC كريستال نشط! نقر 2x لساعة!',es:'¡Cristal ZRC activo! Tap 2x por 1 hora!',hi:'ZRC क्रिस्टल सक्रिय! 1 घंटे टैप 2x!'};
+      showNotif(krTxts[currentLang]||krTxts['en']);
       } else if(iid==='reaktor'){
         S.energy=S.maxEnergy;
-        showNotif('Enerji Reaktoru! Enerji tamamen doldu!');
+        var rkTxts={tr:'Enerji Reaktörü! Enerji doldu!',en:'Energy Reactor! Energy full!',ru:'Реактор! Энергия заполнена!',zh:'能量反应堆！能量已满！',ar:'مفاعل الطاقة! الطاقة ممتلئة!',es:'¡Reactor de energía! ¡Energía llena!',hi:'एनर्जी रिएक्टर! ऊर्जा भरी!'};
+      showNotif(rkTxts[currentLang]||rkTxts['en']);
       }
       scheduleSave(); renderAll();
     });
@@ -1795,9 +1982,13 @@ function renderQuests(){
         var item=S.items.find(function(x){return x.id===q.itemReward;});
         if(item) item.count++;
         var def=ITEMS.find(function(x){return x.id===q.itemReward;});
-        showNotif('Gorev tamam! +'+fmt(q.reward)+' ZRC + '+(def?def.name:'Esya')+'!');
+        var qtTxts={tr:'Görev tamam!',en:'Quest done!',ru:'Задание выполнено!',zh:'任务完成！',ar:'تمت المهمة!',es:'¡Misión completada!',hi:'कार्य पूर्ण!'};
+        var itemTxt={tr:'Eşya',en:'Item',ru:'Предмет',zh:'道具',ar:'عنصر',es:'Objeto',hi:'आइटम'};
+        showNotif((qtTxts[currentLang]||qtTxts['en'])+' +'+fmt(q.reward)+' ZRC + '+(def?def.name:(itemTxt[currentLang]||itemTxt['en']))+'!');
       } else {
-        showNotif('Gorev tamam! +'+fmt(q.reward)+' ZRC kazandin!');
+        var qt2Txts={tr:'Görev tamam!',en:'Quest done!',ru:'Задание выполнено!',zh:'任务完成！',ar:'تمت المهمة!',es:'¡Misión completada!',hi:'कार्य पूर्ण!'};
+        var earnedTxt={tr:'kazandın!',en:'earned!',ru:'заработано!',zh:'已赚取！',ar:'مكتسب!',es:'ganado!',hi:'कमाया!'};
+        showNotif((qt2Txts[currentLang]||qt2Txts['en'])+' +'+fmt(q.reward)+' ZRC '+(earnedTxt[currentLang]||earnedTxt['en']));
       }
       scheduleSave(); renderAll(); renderQuests();
     });
@@ -1906,12 +2097,36 @@ async function apiLogin(){
       var data = await res.json();
       if(data.success && data.user){
         var u = data.user;
-        S.coins = u.coins||0;
-        S.energy = u.energy||500;
+        
+        // Offline pasif geliri hesapla - max 1 saat
+        var lastSave = u.updated_at ? new Date(u.updated_at).getTime() : Date.now();
+        // Max offline süre: normal=1s, premium=8s, offline_8h boost=8s
+        var maxOffline = 3600; // 1 saat
+        if(u.is_premium) maxOffline = 28800; // 8 saat
+        var offlineBoostEnd = u.active_boosts && u.active_boosts['offline_8h'] ? u.active_boosts['offline_8h'] : 0;
+        if(offlineBoostEnd > lastSave) maxOffline = 28800; // 8 saat
+        var offlineSec = Math.min((Date.now() - lastSave) / 1000, maxOffline);
+        var passiveInc = (u.businesses||[]).reduce(function(a,b){return a+(b.inc||0);},0);
+        var offlineEarned = Math.floor(passiveInc * offlineSec);
+        
+        S.coins = (u.coins||0) + offlineEarned;
+        S.energy = Math.min(u.energy||500, u.max_energy||500);
         S.tapPower = u.tap_power||1;
         S.refCount = u.ref_count||0;
         S.refEarned = u.ref_earned||0;
         if(u.businesses && u.businesses.length>0) S.businesses = u.businesses;
+        
+        if(offlineEarned > 0){
+          var offMsgs={tr:'Hoş geldin! Çevrimdışıyken +'+fmt(offlineEarned)+' ZRC kazandın!',
+            en:'Welcome back! You earned +'+fmt(offlineEarned)+' ZRC offline!',
+            ru:'С возвращением! +'+fmt(offlineEarned)+' ZRC оффлайн!',
+            zh:'欢迎回来！离线赚取+'+fmt(offlineEarned)+' ZRC！',
+            ar:'مرحبًا! +'+fmt(offlineEarned)+' ZRC دون اتصال!',
+            es:'¡Bienvenido! +'+fmt(offlineEarned)+' ZRC sin conexión!',
+            hi:'वापस स्वागत! +'+fmt(offlineEarned)+' ZRC ऑफलाइन!'};
+          setTimeout(function(){ showNotif(offMsgs[currentLang]||offMsgs['en']); }, 1000);
+        }
+        
         if(refCode) showNotif('Referral ile katildin! +500 ZRC bonusu!');
         console.log('Login basarili, coins:', S.coins);
         return;
@@ -1988,7 +2203,7 @@ async function loadReferrals(){
       S.refCount=data.referrals.length;
       var el=document.getElementById('friend-list');
       if(data.referrals.length===0){
-        el.innerHTML='<div style="font-size:10px;color:rgba(0,220,255,0.3);text-align:center;padding:16px;">Henuz kimse yok - davet et!</div>';
+        el.innerHTML='<div style="font-size:10px;color:rgba(0,220,255,0.3);text-align:center;padding:16px;">'+({tr:'Henüz kimse yok - davet et!',en:'No one yet - invite them!',ru:'Пока никого нет - пригласите!',zh:'还没有朋友-邀请他们！',ar:'لا أحد بعد - ادعهم!',es:'Nadie aún - ¡invítalos!',hi:'अभी कोई नहीं - आमंत्रित करें!'}[currentLang]||'No one yet - invite them!')+'</div>';
       } else {
         el.innerHTML='';
         data.referrals.forEach(function(f){
@@ -2016,6 +2231,7 @@ var WHEEL_PRIZES = [
   {icon:'🚀', labels:{tr:'5000 ZRC',en:'5000 ZRC',ru:'5000 ZRC',zh:'5000 ZRC',ar:'5000 ZRC',es:'5000 ZRC',hi:'5000 ZRC'}, color:'#3a2a0a', reward:{coins:5000}},
   {icon:'⭐', labels:{tr:'200 ZRC',en:'200 ZRC',ru:'200 ZRC',zh:'200 ZRC',ar:'200 ZRC',es:'200 ZRC',hi:'200 ZRC'}, color:'#1a4a3a', reward:{coins:200}},
   {icon:'🎁', labels:{tr:'2x Boost',en:'2x Boost',ru:'2x Буст',zh:'2倍加速',ar:'تعزيز 2x',es:'Boost 2x',hi:'2x बूस्ट'}, color:'#3a0a4a', reward:{boost:true}},
+  {icon:'⏰', labels:{tr:'+1s Offline',en:'+1h Offline',ru:'+1ч Оффлайн',zh:'+1小时离线',ar:'+ساعة أوفلاين',es:'+1h Sin conexión',hi:'+1घंटे ऑफलाइन'}, color:'#2a1a4a', reward:{offlineBonus:true}},
 ];
 
 var wheelAngle = 0;
@@ -2023,14 +2239,44 @@ var wheelSpinning = false;
 
 function canSpin(){
   var last = parseInt(localStorage.getItem('zro_last_spin')||'0');
-  var now = Date.now();
-  return (now - last) >= 86400000;
+  var extras = getExtraSpins();
+  return (Date.now() - last) >= 86400000 || extras > 0;
+}
+
+function canFreeSpin(){
+  var last = parseInt(localStorage.getItem('zro_last_spin')||'0');
+  return (Date.now() - last) >= 86400000;
 }
 
 function timeUntilSpin(){
   var last = parseInt(localStorage.getItem('zro_last_spin')||'0');
   var next = last + 86400000;
   return Math.max(0, Math.ceil((next - Date.now())/1000));
+}
+
+function getExtraSpins(){
+  return parseInt(localStorage.getItem('zro_extra_spins_'+userId)||'0');
+}
+
+function addExtraSpin(n){
+  var cur = getExtraSpins();
+  localStorage.setItem('zro_extra_spins_'+userId, cur + (n||1));
+}
+
+function useExtraSpin(){
+  var cur = getExtraSpins();
+  if(cur > 0) localStorage.setItem('zro_extra_spins_'+userId, cur - 1);
+}
+
+function getAdSpinsToday(){
+  var today = new Date().toISOString().slice(0,10);
+  return parseInt(localStorage.getItem('zro_wheel_ads_'+today)||'0');
+}
+
+function incrementAdSpins(){
+  var today = new Date().toISOString().slice(0,10);
+  var cur = getAdSpinsToday();
+  localStorage.setItem('zro_wheel_ads_'+today, cur + 1);
 }
 
 function drawWheel(angle){
@@ -2081,9 +2327,14 @@ function drawWheel(angle){
 function spinWheel(){
   if(wheelSpinning) return;
   if(!canSpin()){
-    showNotif('Yarın tekrar dene!');
+    var noSpinTxt={tr:'Yarın tekrar dene!',en:'Try again tomorrow!',ru:'Попробуй завтра!',zh:'明天再试！',ar:'حاول غداً!',es:'¡Inténtalo mañana!',hi:'कल फिर कोशिश करें!'};
+    showNotif(noSpinTxt[currentLang]||noSpinTxt['en']);
     return;
   }
+  // Önce ücretsiz spin kullan, yoksa extra spin
+  var usingFree = canFreeSpin();
+  if(!usingFree) useExtraSpin();
+
   wheelSpinning = true;
   document.getElementById('wheel-spin-btn').disabled = true;
 
@@ -2107,7 +2358,8 @@ function spinWheel(){
       requestAnimationFrame(animate);
     } else {
       wheelSpinning = false;
-      localStorage.setItem('zro_last_spin', Date.now().toString());
+      if(usingFree) localStorage.setItem('zro_last_spin', Date.now().toString());
+      S.wheelSpins=(S.wheelSpins||0)+1;
       claimWheelPrize(WHEEL_PRIZES[targetPrize]);
       renderWheel();
     }
@@ -2116,7 +2368,6 @@ function spinWheel(){
 }
 
 function claimWheelPrize(prize){
-  S.wheelSpins=(S.wheelSpins||0)+1;
   var resultDiv = document.getElementById('wheel-result');
   var resultIcon = document.getElementById('wheel-result-icon');
   var resultText = document.getElementById('wheel-result-text');
@@ -2130,7 +2381,8 @@ function claimWheelPrize(prize){
     showNotif(prize.icon + ' ' + fmt(prize.reward.coins) + ' ' + (wonTxts[currentLang]||wonTxts['en']));
   } else if(prize.reward.energy){
     S.energy = S.maxEnergy;
-    resultText.textContent = 'Enerji doldu!';
+    var egWTxts={tr:'Enerji doldu!',en:'Energy full!',ru:'Энергия заполнена!',zh:'能量已满！',ar:'الطاقة ممتلئة!',es:'¡Energía llena!',hi:'ऊर्जा भरी!'};
+    resultText.textContent = egWTxts[currentLang]||egWTxts['en'];
     var egTxts={tr:'Enerji tamamen doldu!',en:'Energy fully refilled!',ru:'Энергия полностью восстановлена!',zh:'能量已完全补满！',ar:'الطاقة ممتلئة!',es:'¡Energía completamente recargada!',hi:'ऊर्जा पूरी तरह भर गई!'};
     showNotif('⚡ ' + (egTxts[currentLang]||egTxts['en']));
   } else if(prize.reward.item){
@@ -2143,7 +2395,8 @@ function claimWheelPrize(prize){
     if(!S.activeBoosts) S.activeBoosts = {};
     S.activeBoosts['boost_1h'] = Date.now() + 3600000;
     resultText.textContent = '2x Boost - 1 Saat!';
-    showNotif('🚀 1 Saatlik 2x Boost aktif!');
+    var b1hTxts={tr:'🚀 1 Saatlik 2x Boost aktif!',en:'🚀 1 Hour 2x Boost active!',ru:'🚀 2x Буст на 1 час активен!',zh:'🚀 1小时2倍加速激活！',ar:'🚀 تعزيز 2x لساعة نشط!',es:'🚀 ¡Boost 2x de 1 hora activo!',hi:'🚀 1 घंटे का 2x बूस्ट सक्रिय!'};
+    showNotif(b1hTxts[currentLang]||b1hTxts['en']);
   }
   scheduleSave(); renderAll();
 }
@@ -2170,7 +2423,7 @@ function renderWheel(){
     prizeList.innerHTML = '';
     WHEEL_PRIZES.forEach(function(p){
       var d = document.createElement('div');
-      d.style.cssText = 'background:'+p.color+';border:1px solid rgba(0,220,255,0.1);border-radius:6px;padding:7px 10px;display:flex;align-items:center;gap:6px;';
+      d.style.cssText = 'background:'+p.color+';border:1px solid rgba(0,220,255,0.2);border-radius:6px;padding:7px 10px;display:flex;align-items:center;gap:6px;';
       d.innerHTML = '<span style="font-size:16px;">'+p.icon+'</span><span style="font-size:10px;color:rgba(200,220,255,0.7);">'+((p.labels&&(p.labels[currentLang]||p.labels['en']))||p.label||'')+'</span>';
       prizeList.appendChild(d);
     });
@@ -2199,10 +2452,10 @@ async function loadLeaderboard(){
         var d = document.createElement('div');
         d.style.cssText = 'display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:6px;border:1px solid ' + (isMe?'rgba(0,255,150,0.3)':'rgba(0,220,255,0.08)') + ';background:' + (isMe?'rgba(0,255,150,0.05)':'rgba(0,0,0,0.2)');
         d.innerHTML =
-          '<div style="font-family:Orbitron,monospace;font-size:12px;color:rgba(0,220,255,0.4);width:24px;text-align:center;">' + (medal || '#'+(i+1)) + '</div>' +
+          '<div style="font-family:Orbitron,monospace;font-size:12px;color:rgba(0,220,255,0.6);width:24px;text-align:center;">' + (medal || '#'+(i+1)) + '</div>' +
           '<div style="flex:1;">' +
             '<div style="font-size:11px;font-family:Orbitron,monospace;color:' + (isMe?'#00ff96':'#a0c8e8') + ';">' + (u.first_name||u.username||'PLAYER').toUpperCase() + (isMe?' (SEN)':'') + '</div>' +
-            '<div style="font-size:9px;color:rgba(0,220,255,0.35);margin-top:1px;">' + u.ref_count + ' referral</div>' +
+            '<div style="font-size:9px;color:rgba(0,220,255,0.55);margin-top:1px;">' + u.ref_count + ' referral</div>' +
           '</div>' +
           '<div style="font-family:Orbitron,monospace;font-size:12px;color:#00dcff;">' + fmt(u.coins) + ' ZRC</div>';
         el.appendChild(d);
@@ -2252,6 +2505,13 @@ var TON_PACKAGES = [
     effects:{energy:true},
     color:'rgba(255,150,0,0.1)', border:'rgba(255,150,0,0.3)',
   },
+  {
+    id:'offline_8h', icon:'⏰', tier:'OFFLINE',
+    dur:0, label:'8H OFFLINE',
+    prices:{ton:0.3},
+    effects:{offlineBoost:true},
+    color:'rgba(150,100,255,0.1)', border:'rgba(150,100,255,0.3)',
+  },
 ];
 
 var PREMIUM = {
@@ -2273,6 +2533,7 @@ function getBoostLabel(pkg){
     'boost_weekly':{tr:'7 Gün',   en:'7 Days',   ru:'7 Дней',  zh:'7天',    ar:'7 أيام',  es:'7 Días',    hi:'7 दिन'},
     'boost_monthly':{tr:'30 Gün', en:'30 Days',  ru:'30 Дней', zh:'30天',   ar:'30 يوم',  es:'30 Días',   hi:'30 दिन'},
     'energy_fill':{tr:'Anlık',    en:'Instant',  ru:'Мгновенно',zh:'即刻',  ar:'فوري',    es:'Instantáneo',hi:'तुरंत'},
+    'offline_8h': {tr:'8s Offline',en:'8H Offline',ru:'8ч Оффлайн',zh:'8小时离线',ar:'8 ساعات',es:'8h Sin conexión',hi:'8 घंटे ऑफलाइन'},
   };
   var l = labels[pkg.id];
   if(!l) return pkg.label;
@@ -2286,6 +2547,7 @@ function getBoostDesc(pkg){
     'boost_weekly':{tr:'Tap+Farm 3x - 7 Gün',   en:'Tap+Farm 3x - 7 Days',   ru:'Тап+Ферм 3x - 7 Дней',  zh:'点击+农场3x-7天',    es:'Tap+Farm 3x - 7 Días',   hi:'टैप+फार्म 3x - 7 दिन'},
     'boost_monthly':{tr:'Tap+Farm 5x - 30 Gün', en:'Tap+Farm 5x - 30 Days',  ru:'Тап+Ферм 5x - 30 Дней', zh:'点击+农场5x-30天',   es:'Tap+Farm 5x - 30 Días',  hi:'टैप+फार्म 5x - 30 दिन'},
     'energy_fill':{tr:'Enerjiyi anında doldur',  en:'Instantly fill energy',  ru:'Мгновенно заполнить',   zh:'立即充满能量',        es:'Llenar energía al instante',hi:'तुरंत ऊर्जा भरें'},
+    'offline_8h': {tr:'Offline geliri 8 saate çıkar',en:'Boost offline income to 8 hours',ru:'Оффлайн доход до 8 часов',zh:'离线收益提升至8小时',es:'Ingresos offline hasta 8 horas',hi:'ऑफलाइन आय 8 घंटे तक'},
   };
   var d = descs[pkg.id];
   if(!d) return '';
@@ -2300,7 +2562,7 @@ function renderTonBoosts(){
 
   // Boost paketleri
   var pkgTitle = document.createElement('div');
-  pkgTitle.style.cssText = 'font-size:9px;letter-spacing:0.15em;color:rgba(0,220,255,0.4);margin-bottom:4px;';
+  pkgTitle.style.cssText = 'font-size:9px;letter-spacing:0.15em;color:rgba(0,220,255,0.6);margin-bottom:4px;';
   var boostTitles = {tr:'// BOOST PAKETLERİ',en:'// BOOST PACKAGES',ru:'// ПАКЕТЫ БУСТА',zh:'// 加速包',ar:'// حزم التعزيز',es:'// PAQUETES BOOST',hi:'// बूस्ट पैकेज'};
   pkgTitle.textContent = boostTitles[currentLang]||boostTitles['en'];
   el.appendChild(pkgTitle);
@@ -2437,7 +2699,7 @@ function updateWalletUI(){
     if(disconnectBtn) disconnectBtn.style.display='block';
   } else {
     var notConnTxts={tr:'Cüzdan bağlı değil',en:'No wallet connected',ru:'Кошелёк не подключён',zh:'未连接钱包',ar:'لا توجد محفظة متصلة',es:'Sin billetera conectada',hi:'कोई वॉलेट नहीं जुड़ा'};
-    statusWrap.innerHTML = '<div style="font-size:10px;color:rgba(0,220,255,0.35);">'+(notConnTxts[currentLang]||notConnTxts['en'])+'</div>';
+    statusWrap.innerHTML = '<div style="font-size:10px;color:rgba(0,220,255,0.55);">'+(notConnTxts[currentLang]||notConnTxts['en'])+'</div>';
     if(connectBtn) connectBtn.style.display='block';
     if(disconnectBtn) disconnectBtn.style.display='none';
   }
@@ -2477,7 +2739,8 @@ async function handleWalletDisconnect(){
 function copySettingsLink(){
   var link = 't.me/ZRoFarmBOT?start=USR_' + userId;
   if(navigator.clipboard) navigator.clipboard.writeText(link);
-  showNotif('Davet linki kopyalandi!');
+  var clTxts={tr:'Davet linki kopyalandi!',en:'Invite link copied!',ru:'Ссылка скопирована!',zh:'链接已复制！',ar:'تم نسخ الرابط!',es:'¡Enlace copiado!',hi:'लिंक कॉपी हो गया!'};
+  showNotif(clTxts[currentLang]||clTxts['en']);
 }
 
 function fillLangGrid(gridEl){
@@ -2497,9 +2760,50 @@ function fillLangGrid(gridEl){
   });
 }
 
-// Wheel spin butonu
+// Wheel butonları
 document.addEventListener('click', function(e){
   if(e.target && e.target.id === 'wheel-spin-btn') spinWheel();
+  
+  if(e.target && e.target.id === 'wheel-ad-btn'){
+    // Reklam izleyerek spin kazan
+    if(getAdSpinsToday() >= 5){
+      var limitTxt={tr:'Günlük reklam limitine ulaştın!',en:'Daily ad limit reached!',ru:'Дневной лимит!',zh:'每日广告限制！',ar:'تم الوصول للحد!',es:'¡Límite diario!',hi:'दैनिक सीमा!'};
+      showNotif(limitTxt[currentLang]||limitTxt['en']);
+      return;
+    }
+    // Adsgram ile reklam izle
+    var demoBlock = ADSGRAM_BLOCKS[0]; // blockId: 34663
+    if(typeof Adsgram === 'undefined' || !demoBlock.blockId || demoBlock.blockId.startsWith('YOUR_')){
+      // Demo mod
+      incrementAdSpins();
+      addExtraSpin(1);
+      var adWonTxt={tr:'Reklam izlendi! +1 çevirme hakkı kazandın!',en:'Ad watched! +1 spin earned!',ru:'Реклама просмотрена! +1 спин!',zh:'广告已看！获得+1转！',ar:'تمت مشاهدة الإعلان! +1 دوران!',es:'¡Anuncio visto! +1 giro!',hi:'विज्ञापन देखा! +1 स्पिन!'};
+      showNotif(adWonTxt[currentLang]||adWonTxt['en']);
+      renderWheel();
+    } else {
+      window.Adsgram.init({blockId: demoBlock.blockId}).then(function(ctrl){
+        return ctrl.show();
+      }).then(function(){
+        incrementAdSpins();
+        addExtraSpin(1);
+        var adWonTxt2={tr:'Reklam izlendi! +1 çevirme!',en:'Ad watched! +1 spin!',ru:'+1 спин!',zh:'+1转！',ar:'+1 دوران!',es:'+1 giro!',hi:'+1 स्पिन!'};
+        showNotif(adWonTxt2[currentLang]||adWonTxt2['en']);
+        renderWheel();
+      }).catch(function(e){ console.log('Ad error:', e); });
+    }
+  }
+
+  if(e.target && e.target.id === 'wheel-ton-btn'){
+    // TON ile spin satın al
+    sendTonPayment(0.1, 'ZRoFarm:wheel_spin:'+userId).then(function(result){
+      if(result){
+        addExtraSpin(1);
+        var tonSpinTxt={tr:'+1 çevirme hakkı satın alındı!',en:'+1 spin purchased!',ru:'+1 спин куплен!',zh:'+1转已购！',ar:'+1 دوران مشترى!',es:'+1 giro comprado!',hi:'+1 स्पिन खरीदा!'};
+        showNotif('⬡ ' + (tonSpinTxt[currentLang]||tonSpinTxt['en']));
+        renderWheel();
+      }
+    });
+  }
 });
 
 // Wheel geri sayım timer
