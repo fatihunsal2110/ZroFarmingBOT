@@ -272,7 +272,6 @@ body{background:#080d1a;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
     <button class="tab" onclick="switchTab('biz')">ISLETME</button>
     <button class="tab" onclick="switchTab('quest')">GOREV</button>
     <button class="tab" onclick="switchTab('ref')">REF</button>
-    <button class="tab" onclick="switchTab('ads')">📺</button>
     <button class="tab" onclick="switchTab('ton')">TON</button>
     <button class="tab" onclick="switchTab('wheel')">🎰</button>
     <button class="tab" onclick="switchTab('ach')">🏆</button>
@@ -364,19 +363,6 @@ body{background:#080d1a;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
     <div class="section-label" id="leader-label">// TOP 50 LIDER TABLOSU</div>
     <div id="leader-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
       <div style="font-size:10px;color:rgba(0,220,255,0.3);text-align:center;padding:20px;">Yukleniyor...</div>
-    </div>
-  </div>
-
-  <!-- ADSGRAM REKLAM -->
-  <div class="panel" id="tab-ads">
-    <div style="text-align:center;margin-bottom:14px;">
-      <div style="font-family:Orbitron,monospace;font-size:13px;color:#00dcff;letter-spacing:0.15em;margin-bottom:4px;" id="ads-title">📺 EARN ZRC</div>
-      <div style="font-size:9px;color:rgba(0,220,255,0.6);margin-bottom:12px;" id="ads-subtitle">Watch ads, earn ZRC!</div>
-    </div>
-    <div id="ads-list" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;"></div>
-    <div style="background:rgba(0,255,150,0.04);border:1px solid rgba(0,255,150,0.15);border-radius:8px;padding:12px;text-align:center;">
-      <div style="font-size:9px;color:rgba(0,255,150,0.5);margin-bottom:4px;" id="ads-daily-label">Daily limit</div>
-      <div style="font-family:Orbitron,monospace;font-size:20px;color:#00ff96;" id="ads-daily-count">0 / 5</div>
     </div>
   </div>
 
@@ -1648,13 +1634,12 @@ function fmtTime(sec){
 }
 
 function switchTab(t){
-  document.querySelectorAll('.tab').forEach(function(b,i){b.classList.toggle('active',['mine','upgrade','biz','quest','ref','ads','ton','wheel','ach'][i]===t);});
+  document.querySelectorAll('.tab').forEach(function(b,i){b.classList.toggle('active',['mine','upgrade','biz','quest','ref','ton','wheel','ach'][i]===t);});
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
   document.getElementById('tab-'+t).classList.add('active');
   if(t==='ref') loadReferrals();
   if(t==='quest') renderQuests();
   if(t==='upgrade') renderUpgrades();
-  if(t==='ads') renderAdsPanel();
   if(t==='ton') renderTonBoosts();
   if(t==='wheel') renderWheel();
   if(t==='ach') renderAchievements();
