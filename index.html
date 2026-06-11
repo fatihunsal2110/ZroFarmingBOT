@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>ZRo Farm</title>
+<title>ZRo Coin Farm</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tonconnect/ui@2.0.5/dist/tonconnect-ui.min.js"></script>
 <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
@@ -245,12 +245,12 @@ body{background:#080d1a;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 
 <div class="loading" id="loading">
   <div style="font-size:32px">💎</div>
-  <div class="loading-text" id="loading-text">ZRo FARM LOADING...</div>
+  <div class="loading-text" id="loading-text">ZRo COIN FARM LOADING...</div>
 </div>
 
 <div id="app" style="display:none">
 <div class="rel">
-  <div class="cy-title">ZRo FARM</div>
+  <div class="cy-title">ZRo COIN FARM</div>
   <div class="user-bar">
     <div class="user-avatar" id="u-avatar">👤</div>
     <div style="flex:1">
@@ -452,7 +452,7 @@ body{background:#080d1a;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 // ============ DIL SISTEMI ============
 var LANGS = {
   tr: {
-    title:'ZRo FARM', loading:'ZRo FARM YUKLENIYOR...',
+    title:'ZRo COIN FARM', loading:'ZRo COIN FARM YUKLENIYOR...',
     mine:'MINE', upgrade:'YUKSEL', biz:'ISLETME', quest:'GOREV', ref:'REF', top:'TOP', ton:'TON',
     coin:'ZRo COIN', perSec:'/ SN', referral:'REFERRAL', bonus:'BONUS',
     energy:'ENERJI', tapToMine:'[ KAZMAK ICIN TIKlA ]',
@@ -496,7 +496,7 @@ var LANGS = {
     settingsBtn:'AYARLAR / DİL',
   },
   en: {
-    title:'ZRo FARM', loading:'ZRo FARM LOADING...',
+    title:'ZRo COIN FARM', loading:'ZRo COIN FARM LOADING...',
     mine:'MINE', upgrade:'UPGRADE', biz:'BUSINESS', quest:'QUEST', ref:'REF', top:'TOP', ton:'TON',
     coin:'ZRo COIN', perSec:'/ SEC', referral:'REFERRAL', bonus:'BONUS',
     energy:'ENERGY', tapToMine:'[ TAP TO MINE ]',
@@ -540,7 +540,7 @@ var LANGS = {
     settingsBtn:'SETTINGS / LANGUAGE',
   },
   ru: {
-    title:'ZRo FARM', loading:'ZRo FARM ЗАГРУЗКА...',
+    title:'ZRo COIN FARM', loading:'ZRo COIN FARM ЗАГРУЗКА...',
     mine:'МАЙНИТЬ', upgrade:'УЛУЧШ.', biz:'БИЗНЕС', quest:'ЗАДАНИЯ', ref:'РЕФ', top:'ТОП', ton:'TON',
     coin:'ZRo МОНЕТА', perSec:'/ СЕК', referral:'РЕФЕРАЛ', bonus:'БОНУС',
     energy:'ЭНЕРГИЯ', tapToMine:'[ НАЖМИ ЧТОБЫ МАЙНИТЬ ]',
@@ -584,7 +584,7 @@ var LANGS = {
     settingsBtn:'НАСТРОЙКИ / ЯЗЫК',
   },
   zh: {
-    title:'ZRo 农场', loading:'ZRo 农场加载中...',
+    title:'ZRo COIN 农场', loading:'ZRo 农场加载中...',
     mine:'挖矿', upgrade:'升级', biz:'商业', quest:'任务', ref:'推荐', top:'排行', ton:'TON',
     coin:'ZRo 币', perSec:'/ 秒', referral:'推荐', bonus:'奖励',
     energy:'能量', tapToMine:'[ 点击挖矿 ]',
@@ -628,7 +628,7 @@ var LANGS = {
     settingsBtn:'设置 / 语言',
   },
   ar: {
-    title:'ZRo فارم', loading:'جار تحميل ZRo فارم...',
+    title:'ZRo COIN فارم', loading:'جار تحميل ZRo فارم...',
     mine:'تعدين', upgrade:'ترقية', biz:'أعمال', quest:'مهام', ref:'إحالة', top:'قمة', ton:'TON',
     coin:'ZRo كوين', perSec:'/ ثانية', referral:'إحالة', bonus:'مكافأة',
     energy:'طاقة', tapToMine:'[ انقر للتعدين ]',
@@ -672,7 +672,7 @@ var LANGS = {
     settingsBtn:'الإعدادات / اللغة',
   },
   es: {
-    title:'ZRo FARM', loading:'CARGANDO ZRo FARM...',
+    title:'ZRo COIN FARM', loading:'CARGANDO ZRo COIN FARM...',
     mine:'MINAR', upgrade:'MEJORAR', biz:'NEGOCIO', quest:'MISIONES', ref:'REF', top:'TOP', ton:'TON',
     coin:'ZRo MONEDA', perSec:'/ SEG', referral:'REFERIDO', bonus:'BONO',
     energy:'ENERGÍA', tapToMine:'[ TOCA PARA MINAR ]',
@@ -716,7 +716,7 @@ var LANGS = {
     settingsBtn:'AJUSTES / IDIOMA',
   },
   hi: {
-    title:'ZRo फार्म', loading:'ZRo फार्म लोड हो रहा है...',
+    title:'ZRo COIN फार्म', loading:'ZRo फार्म लोड हो रहा है...',
     mine:'माइन', upgrade:'अपग्रेड', biz:'व्यापार', quest:'कार्य', ref:'रेफर', top:'टॉप', ton:'TON',
     coin:'ZRo कॉइन', perSec:'/ सेकंड', referral:'रेफरल', bonus:'बोनस',
     energy:'ऊर्जा', tapToMine:'[ माइन करने के लिए टैप करें ]',
@@ -1257,6 +1257,10 @@ async function watchAd(block){
     return;
   }
 
+  // Kullanıcıdan onay al
+  var confirmTitles={tr:'Reklam İzle',en:'Watch Ad',ru:'Смотреть рекламу',zh:'观看广告',ar:'مشاهدة الإعلان',es:'Ver anuncio',hi:'विज्ञापन देखें'};
+  if(!window.confirm('Watch ad to earn ' + fmt(block.reward) + ' ZRC. Continue?')) return;
+
   // Adsgram SDK kontrolü
   if(typeof Adsgram === 'undefined' || !block.blockId || block.blockId.startsWith('YOUR_')){
     // Demo mod - Adsgram kurulmamış
@@ -1748,6 +1752,7 @@ function renderInventory(){
 
 function renderUpgrades(){
   var el=document.getElementById('upgrade-list');
+  if(!el) return;
   el.innerHTML='';
   S.upgrades.forEach(function(upg){
     var def=UPGRADES.find(function(x){return x.id===upg.id;})||upg;
@@ -1770,7 +1775,7 @@ function renderUpgrades(){
       '<div class="upgrade-info">'+
         '<div class="upgrade-name">'+upgName+'</div>'+
         '<div class="upgrade-desc">'+upgDesc+'</div>'+
-        '<div class="upgrade-lv">'+(isMax?'MAX SEVIYE':'Seviye '+upg.lv+' / '+maxLv)+'</div>'+
+        '<div class="upgrade-lv">'+(isMax?(L.maxLevel||'MAX LEVEL'):(L.upgradesDone||'Level')+' '+upg.lv+' / '+maxLv)+'</div>'+
         (nextLv?'<div class="upgrade-desc" style="color:rgba(0,255,150,0.5)">'+(L.nextLevel||'Next:')+' '+nextBonus+'</div>':'')+
       '</div>'+
     '</div>'+
@@ -1804,9 +1809,16 @@ function renderUpgrades(){
       // Seviye arttıkça bekleme süresi büyür (her seviye %50 daha uzun)
       var scaledWait = Math.floor(lv.waitSec * Math.pow(1.5, upg.lv));
       var cappedWait = Math.min(scaledWait, 604800); // max 7 gün
-      upg.upgEnd=Date.now()+cappedWait*1000;
       S.dailyUpgDone++;
-      showNotif((def?def.names[currentLang]||def.names['en']:'')+' '+(L.upgStarted||'upgrade started!')+' '+fmtTime(cappedWait));
+      if(cappedWait <= 0){
+        upg.lv++;
+        upg.upgEnd=0;
+        applyUpgradeEffects();
+        showNotif((def?def.names[currentLang]||def.names['en']:'')+' '+(L.upgradesDone||'Level')+' '+upg.lv+' '+(L.completed||'completed!'));
+      } else {
+        upg.upgEnd=Date.now()+cappedWait*1000;
+        showNotif((def?def.names[currentLang]||def.names['en']:'')+' '+(L.upgStarted||'upgrade started!')+' '+fmtTime(cappedWait));
+      }
       scheduleSave(); renderAll(); renderUpgrades();
     });
   });
@@ -2763,21 +2775,19 @@ function fillLangGrid(gridEl){
 // Wheel butonları
 document.addEventListener('click', function(e){
   if(e.target && e.target.id === 'wheel-spin-btn') spinWheel();
-  
+
   if(e.target && e.target.id === 'wheel-ad-btn'){
-    // Reklam izleyerek spin kazan
     if(getAdSpinsToday() >= 5){
-      var limitTxt={tr:'Günlük reklam limitine ulaştın!',en:'Daily ad limit reached!',ru:'Дневной лимит!',zh:'每日广告限制！',ar:'تم الوصول للحد!',es:'¡Límite diario!',hi:'दैनिक सीमा!'};
+      var limitTxt={tr:'Gunluk reklam limitine ulastin!',en:'Daily ad limit reached!',ru:'Дневной лимит!',zh:'每日广告限制！',ar:'تم الوصول للحد!',es:'Limite diario!',hi:'दैनिक सीमा!'};
       showNotif(limitTxt[currentLang]||limitTxt['en']);
       return;
     }
-    // Adsgram ile reklam izle
-    var demoBlock = ADSGRAM_BLOCKS[0]; // blockId: 34663
+    if(!window.confirm('Watch ad to earn +1 spin. Continue?')) return;
+    var demoBlock = ADSGRAM_BLOCKS[0];
     if(typeof Adsgram === 'undefined' || !demoBlock.blockId || demoBlock.blockId.startsWith('YOUR_')){
-      // Demo mod
       incrementAdSpins();
       addExtraSpin(1);
-      var adWonTxt={tr:'Reklam izlendi! +1 çevirme hakkı kazandın!',en:'Ad watched! +1 spin earned!',ru:'Реклама просмотрена! +1 спин!',zh:'广告已看！获得+1转！',ar:'تمت مشاهدة الإعلان! +1 دوران!',es:'¡Anuncio visto! +1 giro!',hi:'विज्ञापन देखा! +1 स्पिन!'};
+      var adWonTxt={tr:'Reklam izlendi! +1 cevirme!',en:'Ad watched! +1 spin earned!',ru:'Реклама! +1 спин!',zh:'广告已看！+1转！',ar:'تمت المشاهدة! +1 دوران!',es:'Anuncio visto! +1 giro!',hi:'विज्ञापन देखा! +1 स्पिन!'};
       showNotif(adWonTxt[currentLang]||adWonTxt['en']);
       renderWheel();
     } else {
@@ -2786,26 +2796,22 @@ document.addEventListener('click', function(e){
       }).then(function(){
         incrementAdSpins();
         addExtraSpin(1);
-        var adWonTxt2={tr:'Reklam izlendi! +1 çevirme!',en:'Ad watched! +1 spin!',ru:'+1 спин!',zh:'+1转！',ar:'+1 دوران!',es:'+1 giro!',hi:'+1 स्पिन!'};
-        showNotif(adWonTxt2[currentLang]||adWonTxt2['en']);
+        showNotif('Ad watched! +1 spin earned!');
         renderWheel();
       }).catch(function(e){ console.log('Ad error:', e); });
     }
   }
 
   if(e.target && e.target.id === 'wheel-ton-btn'){
-    // TON ile spin satın al
     sendTonPayment(0.1, 'ZRoFarm:wheel_spin:'+userId).then(function(result){
       if(result){
         addExtraSpin(1);
-        var tonSpinTxt={tr:'+1 çevirme hakkı satın alındı!',en:'+1 spin purchased!',ru:'+1 спин куплен!',zh:'+1转已购！',ar:'+1 دوران مشترى!',es:'+1 giro comprado!',hi:'+1 स्पिन खरीदा!'};
-        showNotif('⬡ ' + (tonSpinTxt[currentLang]||tonSpinTxt['en']));
+        showNotif('⬡ +1 spin purchased!');
         renderWheel();
       }
     });
   }
-});
-
+})
 // Wheel geri sayım timer
 setInterval(function(){
   var cd = document.getElementById('wheel-countdown');
