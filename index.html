@@ -27,7 +27,7 @@ body{background:#080d1a;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 .hud-val{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:#00dcff;}
 .hud-val.green{color:#00ff96;}
 .hud-sub{font-size:7px;color:rgba(0,220,255,0.3);margin-top:1px;}
-.tabs{display:flex;gap:4px;margin-bottom:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.tabs{display:flex;gap:2px;margin-bottom:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px;flex-wrap:nowrap;}
 .tabs::-webkit-scrollbar{display:none;}
 .tab{flex:0 0 auto;min-width:44px;padding:6px 8px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.04em;border:1px solid rgba(0,220,255,0.28);border-radius:5px;background:transparent;color:rgba(0,220,255,0.65);cursor:pointer;transition:all 0.2s;white-space:nowrap;}
 .tab.active{background:rgba(0,220,255,0.1);border-color:rgba(0,220,255,0.7);color:#00dcff;}
@@ -267,13 +267,16 @@ body{background:#080d1a;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
   </div>
 
   <div class="tabs">
-    <button class="tab active" onclick="switchTab('mine')">MINE</button>
-    <button class="tab" onclick="switchTab('upgrade')">YUKSEL</button>
-    <button class="tab" onclick="switchTab('biz')">ISLETME</button>
-    <button class="tab" onclick="switchTab('quest')">GOREV</button>
-    <button class="tab" onclick="switchTab('ref')">REF</button>
-    <button class="tab" onclick="switchTab('ton')">TON</button>
+    <button class="tab active" onclick="switchTab('mine')">⛏️</button>
+    <button class="tab" onclick="switchTab('upgrade')">⬆️</button>
+    <button class="tab" onclick="switchTab('biz')">🏢</button>
+    <button class="tab" onclick="switchTab('city')">🏙️</button>
+    <button class="tab" onclick="switchTab('raid')">⚔️</button>
+    <button class="tab" onclick="switchTab('quest')">📋</button>
+    <button class="tab" onclick="switchTab('ref')">👥</button>
     <button class="tab" onclick="switchTab('wheel')">🎰</button>
+    <button class="tab" onclick="switchTab('nft')">💎</button>
+    <button class="tab" onclick="switchTab('ton')">💠</button>
     <button class="tab" onclick="switchTab('ach')">🏆</button>
   </div>
 
@@ -291,111 +294,89 @@ body{background:#080d1a;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
     </div>
     <div class="mine-cards">
       <div class="mine-card">
-        <div class="mc-label">REFERRAL BONUSU</div>
+        <div class="mc-label" id="mc-label-ref">REFERRAL BONUS</div>
         <div class="mc-val" id="mine-bonus">x1.0</div>
         <div class="mc-sub" id="mine-bonus-sub">0 arkadas</div>
       </div>
       <div class="mine-card blue">
-        <div class="mc-label">TAP GUCU</div>
+        <div class="mc-label" id="mc-label-tap">TAP POWER</div>
         <div class="mc-val" id="mine-tap">+1</div>
         <div class="mc-sub">ZRC / tap</div>
       </div>
     </div>
     <button onclick="showSettingsModal()" style="width:100%;padding:10px;background:rgba(0,220,255,0.07);border:1px solid rgba(0,220,255,0.22);border-radius:6px;font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(0,220,255,0.6);cursor:pointer;margin-bottom:12px;letter-spacing:0.1em;display:flex;align-items:center;justify-content:center;gap:8px;">
-  <span>⚙️</span> <span id="settings-btn-text">AYARLAR / DİL</span>
+  <span>⚙️</span> <span id="settings-btn-text">SETTINGS / LANG</span>
 </button>
 <div class="section-label" id="inv-label">// ENVANTER</div>
     <div class="inv-grid" id="inv-grid"></div>
   </div>
 
   <!-- YUKSELME -->
+  </div>
+
   <div class="panel" id="tab-upgrade">
-    <div class="section-label" id="upg-label">// TAP & ENERJI YUKSELME</div>
+    <div class="section-label" id="upg-label">// UPGRADES</div>
     <div class="upgrade-list" id="upgrade-list"></div>
   </div>
 
-  <!-- ISLETME -->
   <div class="panel" id="tab-biz">
-    <div class="section-label" id="biz-label">// ISLETMELER</div>
+    <div class="section-label" id="biz-label">// BUSINESSES</div>
     <div class="biz-list" id="biz-list"></div>
   </div>
 
-  <!-- GOREV -->
+  <div class="panel" id="tab-city">
+    <div style="font-family:Orbitron,monospace;font-size:13px;color:#00dcff;letter-spacing:0.15em;margin-bottom:10px;">🏙️ ZRo City</div>
+    <div id="city-svg-wrap" style="width:100%;overflow:hidden;border-radius:8px;border:1px solid rgba(0,220,255,0.1);margin-bottom:10px;"></div>
+    <div id="city-stats" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"></div>
+  </div>
+
+  <div class="panel" id="tab-raid">
+    <div id="raid-panel"></div>
+  </div>
+
   <div class="panel" id="tab-quest">
     <div class="timer-box">
-      <span class="timer-label" id="quest-reset-label">GUNLUK RESET</span>
+      <span class="timer-label" id="quest-reset-label">DAILY RESET</span>
       <span class="timer-val" id="quest-timer">00:00:00</span>
     </div>
-    <div class="section-label" id="quest-label">// GUNLUK GOREVLER</div>
+    <div class="section-label" id="quest-label">// DAILY QUESTS</div>
     <div class="quest-list" id="quest-list"></div>
   </div>
 
-  <!-- REF -->
   <div class="panel" id="tab-ref">
     <div class="ref-hero">
-      <div class="ref-link-label" id="ref-link-label">// DAVET LINKIN</div>
+      <div class="ref-link-label" id="ref-link-label">// YOUR INVITE LINK</div>
       <div class="ref-link-box">
-        <span class="ref-link-text" id="ref-link">yukleniyor...</span>
-        <button class="copy-btn" id="copy-btn" onclick="copyLink()">KOPYALA</button>
+        <span class="ref-link-text" id="ref-link">loading...</span>
+        <button class="copy-btn" id="copy-btn" onclick="copyLink()">COPY</button>
       </div>
       <div class="ref-stats">
-        <div class="ref-stat"><div class="ref-stat-label" id="ref-stat-0">DAVET</div><div class="ref-stat-val" id="rs-total">0</div></div>
-        <div class="ref-stat"><div class="ref-stat-label" id="ref-stat-1">AKTIF</div><div class="ref-stat-val" id="rs-active">0</div></div>
-        <div class="ref-stat"><div class="ref-stat-label" id="ref-stat-2">KAZANC</div><div class="ref-stat-val" id="rs-earn">0</div></div>
+        <div class="ref-stat"><div class="ref-stat-label" id="ref-stat-0">INVITED</div><div class="ref-stat-val" id="rs-total">0</div></div>
+        <div class="ref-stat"><div class="ref-stat-label" id="ref-stat-1">ACTIVE</div><div class="ref-stat-val" id="rs-active">0</div></div>
+        <div class="ref-stat"><div class="ref-stat-label" id="ref-stat-2">EARNED</div><div class="ref-stat-val" id="rs-earn">0</div></div>
       </div>
     </div>
-    <div class="bonus-info">
-      <div class="bonus-title" id="farm-bonus-title">// FARM BONUS TABLOSU</div>
-      <div class="bonus-row"><span class="bonus-tier" id="ref-tier-0">1-2 friends</span><span class="bonus-val">x1.25</span><span class="bonus-active" id="tier0-badge" style="display:none">AKTIF</span></div>
-      <div class="bonus-row"><span class="bonus-tier" id="ref-tier-1">3-5 friends</span><span class="bonus-val">x1.75</span><span class="bonus-active" id="tier1-badge" style="display:none">AKTIF</span></div>
-      <div class="bonus-row"><span class="bonus-tier" id="ref-tier-2">6-9 friends</span><span class="bonus-val">x2.5</span><span class="bonus-active" id="tier2-badge" style="display:none">AKTIF</span></div>
-      <div class="bonus-row"><span class="bonus-tier" id="ref-tier-3">10+ friends</span><span class="bonus-val">x4.0</span><span class="bonus-active" id="tier3-badge" style="display:none">AKTIF</span></div>
+    <div class="bonus-table">
+      <div class="bonus-title" id="farm-bonus-title">// FARM BONUS TABLE</div>
+      <div class="bonus-row"><span class="bonus-tier" id="ref-tier-0">1-2 friends</span><span class="bonus-val">x1.25</span><span class="bonus-active" id="tier0-badge" style="display:none">ACTIVE</span></div>
+      <div class="bonus-row"><span class="bonus-tier" id="ref-tier-1">3-5 friends</span><span class="bonus-val">x1.75</span><span class="bonus-active" id="tier1-badge" style="display:none">ACTIVE</span></div>
+      <div class="bonus-row"><span class="bonus-tier" id="ref-tier-2">6-9 friends</span><span class="bonus-val">x2.5</span><span class="bonus-active" id="tier2-badge" style="display:none">ACTIVE</span></div>
+      <div class="bonus-row"><span class="bonus-tier" id="ref-tier-3">10+ friends</span><span class="bonus-val">x4.0</span><span class="bonus-active" id="tier3-badge" style="display:none">ACTIVE</span></div>
     </div>
-    <div class="section-label" id="friends-label">// ARKADASLARIN</div>
-    <div class="friend-list" id="friend-list">
-      <div style="font-size:10px;color:rgba(0,220,255,0.3);text-align:center;padding:16px;">'+({tr:'Henüz kimse yok - davet et!',en:'No one yet - invite them!',ru:'Пока никого нет - пригласите!',zh:'还没有朋友-邀请他们！',ar:'لا أحد بعد - ادعهم!',es:'Nadie aún - ¡invítalos!',hi:'अभी कोई नहीं - आमंत्रित करें!'}[currentLang]||'No one yet - invite them!')+'</div>
+    <div class="section-label" id="friends-label">// YOUR FRIENDS</div>
+    <div class="friend-list" id="friend-list"></div>
+    <div class="mine-bonus-box">
+      <div class="mc-label" id="mine-bonus-label">FARM BONUS</div>
+      <div class="mc-val" id="mine-bonus-val">x1.0</div>
+      <div class="mc-sub" id="mine-bonus-sub">0 friends</div>
     </div>
-    <button class="invite-btn" onclick="shareLink()" id="invite-btn">+ ARKADAS DAVET ET</button>
+    <button class="invite-btn" onclick="shareLink()" id="invite-btn">+ INVITE FRIENDS</button>
   </div>
 
-  <!-- LEADERBOARD -->
-  <div class="panel" id="tab-leader">
-    <div class="section-label" id="leader-label">// TOP 50 LIDER TABLOSU</div>
-    <div id="leader-list" style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;">
-      <div style="font-size:10px;color:rgba(0,220,255,0.3);text-align:center;padding:20px;">Yukleniyor...</div>
-    </div>
-  </div>
-
-  <!-- TON BOOST -->
-  <div class="panel" id="tab-ton">
-    <div style="background:rgba(80,120,255,0.06);border:1px solid rgba(80,120,255,0.2);border-radius:8px;padding:14px;margin-bottom:12px;">
-      <div id="ton-boost-title" style="font-family:Orbitron,monospace;font-size:11px;letter-spacing:0.15em;color:#8ab0ff;margin-bottom:4px;">TON BOOST PROTOKOLU</div>
-      <div id="ton-boost-desc" style="font-size:9px;color:rgba(120,160,255,0.5);margin-bottom:12px;">TON ile anlık güç kazan</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;" id="ton-boosts"></div>
-    </div>
-    <div style="background:rgba(255,150,0,0.04);border:1px solid rgba(255,150,0,0.12);border-radius:8px;padding:14px;">
-      <div id="ton-accel-title" style="font-family:Orbitron,monospace;font-size:10px;color:rgba(255,180,0,0.7);margin-bottom:8px;">YUKSELTME HIZLANDIRMA</div>
-      <div style="font-size:9px;color:rgba(255,180,0,0.4);line-height:1.6;">
-        <span id="ton-accel-desc">Herhangi bir yükseltmede bekleme varken 0.1 TON/saat ile anında tamamla.</span>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- BASARIMLAR -->
-  <div class="panel" id="tab-ach">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-      <div style="font-family:Orbitron,monospace;font-size:13px;color:#00dcff;letter-spacing:0.15em;">🏆 BAŞARIMLAR</div>
-      <div id="ach-badges" style="font-size:11px;"></div>
-    </div>
-    <div id="ach-list"></div>
-  </div>
-
-  <!-- SANS CARKI -->
   <div class="panel" id="tab-wheel">
     <div style="text-align:center;margin-bottom:14px;">
-      <div style="font-family:Orbitron,monospace;font-size:13px;color:#00dcff;letter-spacing:0.15em;margin-bottom:4px;" id="wheel-title">🎰 ŞANS ÇARKI</div>
-      <div style="font-size:9px;color:rgba(0,220,255,0.6);" id="wheel-subtitle">Günde 1 kez ücretsiz çevir!</div>
+      <div style="font-family:Orbitron,monospace;font-size:13px;color:#00dcff;letter-spacing:0.15em;margin-bottom:4px;" id="wheel-title">🎰 LUCKY WHEEL</div>
+      <div style="font-size:9px;color:rgba(0,220,255,0.6);" id="wheel-subtitle">Spin once per day free!</div>
     </div>
     <div style="display:flex;justify-content:center;margin-bottom:16px;position:relative;">
       <canvas id="wheel-canvas" width="260" height="260" style="border-radius:50%;cursor:pointer;"></canvas>
@@ -405,16 +386,10 @@ body{background:#080d1a;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
       <div style="font-size:9px;color:rgba(255,180,0,0.5);margin-bottom:4px;" id="wheel-next-label">Next free spin</div>
       <div style="font-family:Orbitron,monospace;font-size:16px;color:rgba(255,200,0,0.8);" id="wheel-countdown">00:00:00</div>
     </div>
-    <button id="wheel-spin-btn" style="width:100%;padding:13px;background:linear-gradient(135deg,rgba(0,220,255,0.1),rgba(100,100,255,0.1));border:1px solid rgba(0,220,255,0.35);border-radius:8px;font-family:Orbitron,monospace;font-size:12px;letter-spacing:0.1em;color:#00dcff;cursor:pointer;">
-      🎰 SPIN!
-    </button>
+    <button id="wheel-spin-btn" style="width:100%;padding:13px;background:linear-gradient(135deg,rgba(0,220,255,0.1),rgba(100,100,255,0.1));border:1px solid rgba(0,220,255,0.35);border-radius:8px;font-family:Orbitron,monospace;font-size:12px;letter-spacing:0.1em;color:#00dcff;cursor:pointer;">🎰 SPIN!</button>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
-      <button id="wheel-ad-btn" style="padding:10px;background:rgba(0,255,150,0.08);border:1px solid rgba(0,255,150,0.25);border-radius:8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#00ff96;cursor:pointer;">
-        📺 AD (+1 SPIN)
-      </button>
-      <button id="wheel-ton-btn" style="padding:10px;background:rgba(80,120,255,0.08);border:1px solid rgba(80,120,255,0.25);border-radius:8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#8ab0ff;cursor:pointer;">
-        ⬡ 0.1 TON (+1 SPIN)
-      </button>
+      <button id="wheel-ad-btn" style="padding:10px;background:rgba(0,255,150,0.08);border:1px solid rgba(0,255,150,0.25);border-radius:8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#00ff96;cursor:pointer;">📺 AD (+1 SPIN)</button>
+      <button id="wheel-ton-btn" style="padding:10px;background:rgba(80,120,255,0.08);border:1px solid rgba(80,120,255,0.25);border-radius:8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#8ab0ff;cursor:pointer;">⬡ 0.1 TON (+1)</button>
     </div>
     <div style="display:flex;justify-content:space-between;margin-top:8px;padding:6px 10px;background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.12);border-radius:6px;">
       <span style="font-size:9px;color:rgba(0,220,255,0.5);" id="wheel-spins-label">EXTRA SPINS</span>
@@ -425,13 +400,42 @@ body{background:#080d1a;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
       <div style="font-family:Orbitron,monospace;font-size:14px;color:#00ff96;margin-top:6px;" id="wheel-result-text"></div>
     </div>
     <div style="margin-top:14px;">
-      <div style="font-size:8px;letter-spacing:0.15em;color:rgba(0,220,255,0.55);margin-bottom:8px;">// ÖDÜLLER</div>
+      <div style="font-size:8px;letter-spacing:0.15em;color:rgba(0,220,255,0.55);margin-bottom:8px;" id="wheel-prizes-title">// PRIZES</div>
       <div id="wheel-prizes-list" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"></div>
     </div>
   </div>
 
-</div>
-</div>
+  <div class="panel" id="tab-nft">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div style="font-family:Orbitron,monospace;font-size:13px;color:#00dcff;letter-spacing:0.15em;">💎 NFT MARKET</div>
+      <div style="font-size:9px;color:rgba(0,255,150,0.6);" id="nft-bonus-summary">-</div>
+    </div>
+    <div style="background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.12);border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:9px;color:rgba(0,220,255,0.5);" id="nft-info-box">NFTs give permanent bonuses.</div>
+    <div id="nft-panel"></div>
+  </div>
+
+  <div class="panel" id="tab-ton">
+    <div style="background:rgba(80,120,255,0.06);border:1px solid rgba(80,120,255,0.2);border-radius:8px;padding:12px;margin-bottom:10px;">
+      <div id="ton-boost-title" style="font-family:Orbitron,monospace;font-size:11px;letter-spacing:0.15em;color:#8ab0ff;margin-bottom:4px;">TON BOOST</div>
+      <div id="ton-boost-desc" style="font-size:9px;color:rgba(120,160,255,0.5);margin-bottom:12px;">Boost your farm with TON</div>
+      <div id="ton-boosts"></div>
+    </div>
+    <div style="background:rgba(255,150,0,0.04);border:1px solid rgba(255,150,0,0.12);border-radius:8px;padding:12px;">
+      <div id="ton-accel-title" style="font-family:Orbitron,monospace;font-size:10px;color:rgba(255,180,0,0.7);margin-bottom:8px;">ACCELERATION</div>
+      <div id="ton-accel-list" style="display:flex;flex-direction:column;gap:6px;"></div>
+    </div>
+    <div id="ton-boosts-extra" style="margin-top:10px;"></div>
+  </div>
+
+  <div class="panel" id="tab-ach">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <div style="font-family:Orbitron,monospace;font-size:13px;color:#00dcff;letter-spacing:0.15em;">🏆 ACHIEVEMENTS</div>
+      <div id="ach-badges" style="font-size:11px;"></div>
+    </div>
+    <div id="ach-list"></div>
+  </div>
+
+
 
 <script>
 
@@ -453,8 +457,8 @@ var LANGS = {
     noFriends:''+({tr:'Henüz kimse yok - davet et!',en:'No one yet - invite them!',ru:'Пока никого нет - пригласите!',zh:'还没有朋友-邀请他们！',ar:'لا أحد بعد - ادعهم!',es:'Nadie aún - ¡invítalos!',hi:'अभी कोई नहीं - आमंत्रित करें!'}[currentLang]||'No one yet - invite them!')+'', inviteBtn:'+ ARKADAS DAVET ET',
     leaderTitle:'// TOP 50 LIDER TABLOSU', loading2:'Yukleniyor...',
     noData:'Henuz veri yok', connErr:'Baglanamadi', me:'(SEN)',
-    tonTitle:'TON BOOST PROTOKOLU', tonDesc:'TON ile anlik guc kazan',
-    accelTitle:'YUKSELTME HIZLANDIRMA',
+    tonTitle:'TON BOOST', tonDesc:'TON ile anlik guc kazan',
+    accelTitle:'ACCELERATION',
     accelDesc:'Herhangi bir yükseltmede bekleme varken 0.1 TON/saat ile anında tamamla.',
     person:'kisi', friends2:'arkadas',
     refJoined:'Referral ile katildin! +500 ZRC bonusu!',
@@ -793,16 +797,16 @@ function applyLang(){
   if(labels[3]) labels[3].textContent = L.bonus;
   // Tabs
   var tabs = document.querySelectorAll('.tab');
-  var tabKeys = ['mine','upgrade','biz','quest','ref','top','ton'];
-  var tabLangKeys = [L.mine, L.upgrade, L.biz, L.quest, L.ref, L.top, L.ton];
-  tabs.forEach(function(t,i){ if(tabLangKeys[i]) t.textContent = tabLangKeys[i]; });
+  // Sekmeler emoji - dil güncellemesi gerekmiyor
+  // tabs.forEach(function(t,i){ ... });
   // Tap hint
   var th = document.querySelector('.tap-hint');
   if(th) th.textContent = L.tapToMine;
   // Mine cards
-  var mcLabels = document.querySelectorAll('.mc-label');
-  if(mcLabels[0]) mcLabels[0].textContent = L.refBonus;
-  if(mcLabels[1]) mcLabels[1].textContent = L.tapPower;
+  var mcRef = document.getElementById('mc-label-ref');
+  var mcTap = document.getElementById('mc-label-tap');
+  if(mcRef) mcRef.textContent = L.refBonus || 'REFERRAL BONUS';
+  if(mcTap) mcTap.textContent = L.tapPower || 'TAP POWER';
   var mcSubs = document.querySelectorAll('.mc-sub');
   if(mcSubs[1]) mcSubs[1].textContent = L.perTap;
   // Section labels
@@ -856,9 +860,23 @@ function applyLang(){
   var blTexts={tr:'ROZETLER',en:'BADGES',ru:'ЗНАЧКИ',zh:'徽章',ar:'الشارات',es:'INSIGNIAS',hi:'बैज'};
   if(blEl) blEl.textContent = blTexts[currentLang]||blTexts['en'];
 
+  // TON panel başlıkları
+  var tonBoostTitleEl = document.getElementById('ton-boost-title');
+  var tonBoostTitles={tr:'TON BOOST',en:'TON BOOST',ru:'TON БУСТ',zh:'TON加速',ar:'تعزيز TON',es:'BOOST TON',hi:'TON बूस्ट'};
+  if(tonBoostTitleEl) tonBoostTitleEl.textContent = tonBoostTitles[currentLang]||tonBoostTitles['en'];
+
+  var tonAccelEl = document.getElementById('ton-accel-title');
+  var tonAccelTitles={tr:'HIZLANDIRMA',en:'ACCELERATION',ru:'УСКОРЕНИЕ',zh:'加速',ar:'تسريع',es:'ACELERACIÓN',hi:'त्वरण'};
+  if(tonAccelEl) tonAccelEl.textContent = tonAccelTitles[currentLang]||tonAccelTitles['en'];
+
   var wPL = document.querySelector('#tab-wheel > div:last-child > div:first-child');
   var wPLs={tr:'// ÖDÜLLER',en:'// PRIZES',ru:'// ПРИЗЫ',zh:'// 奖品',ar:'// الجوائز',es:'// PREMIOS',hi:'// पुरस्कार'};
   if(wPL) wPL.textContent = wPLs[currentLang]||wPLs['en'];
+  // NFT info box
+  var nftInfoEl = document.getElementById('nft-info-box');
+  var nftInfoTxts={tr:'NFTler kalici bonuslar verir.',en:'NFTs give permanent bonuses. Will become real NFTs on TON!',ru:'NFT дают постоянные бонусы на TON!',zh:'NFT提供永久奖励！',ar:'NFTs مكافآت دائمة على TON!',es:'NFTs dan bonos permanentes en TON!',hi:'NFT TON पर स्थायी बोनस!'};
+  if(nftInfoEl) nftInfoEl.textContent = nftInfoTxts[currentLang]||nftInfoTxts['en'];
+
   // Save indicator
   var saveEl = document.getElementById('save-ind');
   if(saveEl && saveEl.textContent.indexOf('●') > -1){
@@ -1351,6 +1369,983 @@ function renderAdsPanel(){
   setTimeout(renderAdsPanel, 5000);
 }
 
+
+
+// ============ ŞEHİR & RAİD SİSTEMİ ============
+
+// Bot düşmanları
+var RAID_BOTS = [
+  {id:'bot1', name:'CryptoBot_7',   avatar:'🤖', level:1, coins:5000,   power:20},
+  {id:'bot2', name:'MinerX',        avatar:'⛏️', level:2, coins:15000,  power:30},
+  {id:'bot3', name:'TON_Hunter',    avatar:'🎯', level:3, coins:35000,  power:40},
+  {id:'bot4', name:'BlockBreaker',  avatar:'💥', level:4, coins:80000,  power:45},
+  {id:'bot5', name:'ZRC_Farmer',    avatar:'🌾', level:5, coins:200000, power:50},
+];
+
+// Raid log
+var raidLog = JSON.parse(localStorage.getItem('zro_raid_log')||'[]');
+
+function canRaid(){
+  var last = parseInt(localStorage.getItem('zro_last_raid')||'0');
+  return (Date.now() - last) >= 3600000;
+}
+
+function timeUntilRaid(){
+  var last = parseInt(localStorage.getItem('zro_last_raid')||'0');
+  return Math.max(0, Math.ceil((last + 3600000 - Date.now())/1000));
+}
+
+function getRaidTargets(){
+  // Şimdilik hep botlar — gerçek oyuncular eklenince burası güncellenecek
+  return RAID_BOTS.map(function(b){
+    // Seviyeye göre coin miktarını varyasyon ekle
+    var variance = 0.7 + Math.random() * 0.6;
+    return {
+      id: b.id,
+      name: b.name,
+      avatar: b.avatar,
+      coins: Math.floor(b.coins * variance),
+      power: b.power,
+      isBot: true,
+    };
+  });
+}
+
+function doRaid(target){
+  if(!canRaid()){
+    var waitTxt={tr:'Bekleme süresi dolmadı!',en:'Not ready yet!',ru:'Ещё не готово!',zh:'还没准备好！',ar:'غير جاهز بعد!',es:'¡Aún no listo!',hi:'अभी तैयार नहीं!'};
+    showNotif(waitTxt[currentLang]||waitTxt['en']);
+    return;
+  }
+
+  // Kazanma şansı: bot ise %50-90, gerçek oyuncu ise %40-60
+  var minChance = target.isBot ? 50 : 40;
+  var maxChance = target.isBot ? 90 : 60;
+  // Oyuncunun gücü vs hedefin gücü
+  var myPower = S.tapPower + S.businesses.filter(function(b){return b.lv>0;}).length * 5;
+  var winChance = Math.min(maxChance, Math.max(minChance, 
+    minChance + (myPower - target.power) * 2
+  ));
+
+  var roll = Math.random() * 100;
+  var won = roll < winChance;
+
+  // Çalınan miktar: hedefin 1-2 saatlik pasif geliri
+  var passiveInc = S.businesses.reduce(function(a,b){return a+(b.inc||0);},0);
+  var stolenAmount = won ? Math.floor(target.coins * (0.05 + Math.random() * 0.1)) : 0;
+
+  localStorage.setItem('zro_last_raid', Date.now().toString());
+
+  // Log ekle
+  var logEntry = {
+    time: Date.now(),
+    target: target.name,
+    avatar: target.avatar,
+    won: won,
+    amount: stolenAmount,
+    chance: Math.floor(winChance),
+  };
+  raidLog.unshift(logEntry);
+  if(raidLog.length > 20) raidLog = raidLog.slice(0, 20);
+  localStorage.setItem('zro_raid_log', JSON.stringify(raidLog));
+
+  if(won){
+    S.coins += stolenAmount;
+    S.totalEarned += stolenAmount;
+    var wonMsg={tr:'Raid başarılı! +',en:'Raid success! +',ru:'Рейд успешен! +',zh:'突袭成功！+',ar:'الغارة نجحت! +',es:'¡Raid exitoso! +',hi:'रेड सफल! +'};
+    showNotif('⚔️ ' + (wonMsg[currentLang]||wonMsg['en']) + fmt(stolenAmount) + ' ZRC!');
+  } else {
+    var lostMsg={tr:'Raid başarısız! Savunma güçlüydü.',en:'Raid failed! Defense was strong.',ru:'Рейд провален!',zh:'突袭失败！防御太强！',ar:'فشلت الغارة!',es:'¡Raid fallido!',hi:'रेड असफल!'};
+    showNotif('🛡️ ' + (lostMsg[currentLang]||lostMsg['en']));
+  }
+
+  scheduleSave();
+  renderAll();
+  renderRaidPanel();
+}
+
+// Kalkan satın al (ZRC)
+var SHIELD_COST = 50000;
+var SHIELD_DURATION = 86400000; // 24 saat
+
+function buyShield(){
+  if(S.coins < SHIELD_COST){
+    var noFundsTxt={tr:'Yeterli ZRC yok!',en:'Not enough ZRC!',ru:'Недостаточно ZRC!',zh:'ZRC不足！',ar:'ZRC غير كافٍ!',es:'¡ZRC insuficiente!',hi:'पर्याप्त ZRC नहीं!'};
+    showNotif(noFundsTxt[currentLang]||noFundsTxt['en']);
+    return;
+  }
+  S.coins -= SHIELD_COST;
+  if(!S.activeBoosts) S.activeBoosts = {};
+  S.activeBoosts['shield'] = Date.now() + SHIELD_DURATION;
+  var shieldTxt={tr:'Kalkan aktif! 24 saat korunuyorsun.',en:'Shield active! Protected for 24 hours.',ru:'Щит активен! Защита 24 часа.',zh:'盾牌激活！保护24小时！',ar:'الدرع نشط! محمي 24 ساعة.',es:'¡Escudo activo! Protegido 24 horas.',hi:'ढाल सक्रिय! 24 घंटे सुरक्षित।'};
+  showNotif('🛡️ ' + (shieldTxt[currentLang]||shieldTxt['en']));
+  scheduleSave(); renderAll(); renderRaidPanel();
+}
+
+function isShieldActive(){
+  return S.activeBoosts && S.activeBoosts['shield'] && Date.now() < S.activeBoosts['shield'];
+}
+
+function renderRaidPanel(){
+  var el = document.getElementById('raid-panel');
+  if(!el) return;
+  el.innerHTML = '';
+
+  var L2 = window.LANGS ? window.LANGS[currentLang] : {};
+
+  // Başlık & durum
+  var raidTitles={tr:'⚔️ RAİD',en:'⚔️ RAID',ru:'⚔️ РЕЙД',zh:'⚔️ 突袭',ar:'⚔️ غارة',es:'⚔️ RAID',hi:'⚔️ रेड'};
+  var headerDiv = document.createElement('div');
+  headerDiv.style.cssText = 'display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;';
+  headerDiv.innerHTML =
+    '<div style="font-family:Orbitron,monospace;font-size:13px;color:#ff4444;letter-spacing:0.15em;">'+
+      (raidTitles[currentLang]||raidTitles['en'])+
+    '</div>'+
+    '<div style="font-size:9px;color:rgba(255,80,80,0.5);" id="raid-timer-txt"></div>';
+  el.appendChild(headerDiv);
+
+  // Kalkan durumu
+  var shieldDiv = document.createElement('div');
+  var shieldActive = isShieldActive();
+  var shieldRem = shieldActive ? Math.ceil((S.activeBoosts['shield'] - Date.now())/1000) : 0;
+  var shieldTxts={tr:'Kalkanın Aktif',en:'Shield Active',ru:'Щит активен',zh:'盾牌激活',ar:'الدرع نشط',es:'Escudo activo',hi:'ढाल सक्रिय'};
+  var noShieldTxts={tr:'Korumasızsın',en:'Unprotected',ru:'Без защиты',zh:'未受保护',ar:'غير محمي',es:'Sin protección',hi:'असुरक्षित'};
+  var buyShieldTxts={tr:'🛡️ Kalkan Al (50K ZRC)',en:'🛡️ Buy Shield (50K ZRC)',ru:'🛡️ Купить щит (50K ZRC)',zh:'🛡️ 购买盾牌 (50K ZRC)',ar:'🛡️ اشتر درعاً (50K ZRC)',es:'🛡️ Comprar escudo (50K ZRC)',hi:'🛡️ ढाल खरीदें (50K ZRC)'};
+  shieldDiv.style.cssText = 'background:'+(shieldActive?'rgba(0,255,150,0.06)':'rgba(255,80,80,0.06)')+';border:1px solid '+(shieldActive?'rgba(0,255,150,0.2)':'rgba(255,80,80,0.15)')+';border-radius:8px;padding:10px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;';
+  shieldDiv.innerHTML =
+    '<div>'+
+      '<div style="font-size:10px;color:'+(shieldActive?'#00ff96':'rgba(255,100,100,0.7)')+';">'+(shieldActive?'🛡️ '+(shieldTxts[currentLang]||shieldTxts['en']):'⚠️ '+(noShieldTxts[currentLang]||noShieldTxts['en']))+'</div>'+
+      (shieldActive?'<div style="font-size:9px;color:rgba(0,255,150,0.5);margin-top:2px;">'+fmtTime(shieldRem)+'</div>':'')+
+    '</div>'+
+    (!shieldActive?'<button onclick="buyShield()" style="background:rgba(0,255,150,0.08);border:1px solid rgba(0,255,150,0.25);border-radius:6px;padding:6px 10px;font-family:Share Tech Mono,monospace;font-size:9px;color:#00ff96;cursor:pointer;">'+(buyShieldTxts[currentLang]||buyShieldTxts['en'])+'</button>':'');
+  el.appendChild(shieldDiv);
+
+  // Raid butonu & timer
+  var raidReady = canRaid();
+  var raidBtnDiv = document.createElement('div');
+  raidBtnDiv.style.cssText = 'margin-bottom:12px;';
+  var raidBtnTxts={tr:'⚔️ RAID YAP (Günde 1 kez)',en:'⚔️ RAID (Once per hour)',ru:'⚔️ РЕЙД (1 раз/день)',zh:'⚔️ 突袭（每天1次）',ar:'⚔️ غارة (مرة يومياً)',es:'⚔️ RAID (1 vez/día)',hi:'⚔️ रेड (दिन में 1 बार)'};
+  var waitRaidTxts={tr:'⏳ Sonraki Raid: ',en:'⏳ Next Raid: ',ru:'⏳ Следующий рейд: ',zh:'⏳ 下次突袭：',ar:'⏳ الغارة التالية: ',es:'⏳ Próximo raid: ',hi:'⏳ अगला रेड: '};
+  raidBtnDiv.innerHTML = raidReady ?
+    '<div style="font-size:9px;color:rgba(255,80,80,0.5);margin-bottom:6px;">'+(raidBtnTxts[currentLang]||raidBtnTxts['en'])+'</div>' :
+    '<div style="background:rgba(255,80,80,0.05);border:1px solid rgba(255,80,80,0.1);border-radius:6px;padding:8px;text-align:center;font-size:10px;color:rgba(255,100,100,0.6);">'+(waitRaidTxts[currentLang]||waitRaidTxts['en'])+'<span id="raid-countdown">'+fmtTime(timeUntilRaid())+'</span></div>';
+  el.appendChild(raidBtnDiv);
+
+  // Hedef listesi
+  if(raidReady){
+    var targetsTitles={tr:'// HEDEFLER',en:'// TARGETS',ru:'// ЦЕЛИ',zh:'// 目标',ar:'// الأهداف',es:'// OBJETIVOS',hi:'// लक्ष्य'};
+    var targetsTitle = document.createElement('div');
+    targetsTitle.style.cssText = 'font-size:8px;letter-spacing:0.15em;color:rgba(255,80,80,0.4);margin-bottom:8px;';
+    targetsTitle.textContent = targetsTitles[currentLang]||targetsTitles['en'];
+    el.appendChild(targetsTitle);
+
+    var targets = getRaidTargets();
+    targets.forEach(function(target){
+      var myPower = S.tapPower + S.businesses.filter(function(b){return b.lv>0;}).length * 5;
+      var winChance = Math.min(90, Math.max(50, 50 + (myPower - target.power) * 2));
+      var chanceTxts={tr:'Kazanma şansı',en:'Win chance',ru:'Шанс победы',zh:'胜率',ar:'فرصة الفوز',es:'Probabilidad',hi:'जीतने की संभावना'};
+      var attackTxts={tr:'SALDUR',en:'ATTACK',ru:'АТАКА',zh:'攻击',ar:'هجوم',es:'ATACAR',hi:'हमला'};
+      var botTxts={tr:'BOT',en:'BOT',ru:'БОТ',zh:'机器人',ar:'بوت',es:'BOT',hi:'बॉट'};
+
+      var d = document.createElement('div');
+      d.style.cssText = 'background:rgba(255,50,50,0.05);border:1px solid rgba(255,50,50,0.15);border-radius:8px;padding:10px;display:flex;align-items:center;gap:10px;margin-bottom:8px;';
+      d.innerHTML =
+        '<div style="font-size:26px;flex-shrink:0;">'+target.avatar+'</div>'+
+        '<div style="flex:1;">'+
+          '<div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;">'+
+            '<span style="font-family:Orbitron,monospace;font-size:10px;color:#ff8888;">'+target.name+'</span>'+
+            (target.isBot?'<span style="font-size:7px;background:rgba(255,80,80,0.15);border-radius:3px;padding:1px 4px;color:rgba(255,100,100,0.6);">'+(botTxts[currentLang]||botTxts['en'])+'</span>':'')+
+          '</div>'+
+          '<div style="font-size:9px;color:rgba(0,220,255,0.5);">💰 '+fmt(target.coins)+' ZRC</div>'+
+          '<div style="font-size:9px;color:rgba(0,255,150,0.6);margin-top:2px;">'+
+            '<div style="height:3px;background:rgba(0,255,150,0.1);border-radius:2px;margin-top:3px;margin-bottom:2px;">'+
+              '<div style="height:100%;width:'+winChance+'%;background:linear-gradient(90deg,#ff4444,#00ff96);border-radius:2px;"></div>'+
+            '</div>'+
+            (chanceTxts[currentLang]||chanceTxts['en'])+': '+Math.floor(winChance)+'%'+
+          '</div>'+
+        '</div>'+
+        '<button style="flex-shrink:0;background:rgba(255,50,50,0.1);border:1px solid rgba(255,80,80,0.3);border-radius:6px;padding:8px 10px;font-family:Orbitron,monospace;font-size:9px;color:#ff6666;cursor:pointer;" data-raidtarget="'+target.id+'">'+
+          (attackTxts[currentLang]||attackTxts['en'])+
+        '</button>';
+      el.appendChild(d);
+    });
+
+    // Event listeners
+    el.querySelectorAll('[data-raidtarget]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var tid = btn.dataset.raidtarget;
+        var targets2 = getRaidTargets();
+        var target2 = targets2.find(function(t){return t.id===tid;});
+        if(target2) doRaid(target2);
+      });
+    });
+  }
+
+  // Raid log
+  if(raidLog.length > 0){
+    var logTitle = document.createElement('div');
+    var logTitles={tr:'// RAID GEÇMİŞİ',en:'// RAID LOG',ru:'// ИСТОРИЯ РЕЙДОВ',zh:'// 突袭日志',ar:'// سجل الغارات',es:'// HISTORIAL',hi:'// रेड लॉग'};
+    logTitle.style.cssText = 'font-size:8px;letter-spacing:0.15em;color:rgba(255,80,80,0.4);margin-top:12px;margin-bottom:8px;';
+    logTitle.textContent = logTitles[currentLang]||logTitles['en'];
+    el.appendChild(logTitle);
+
+    raidLog.slice(0, 5).forEach(function(log){
+      var ago = Math.floor((Date.now() - log.time) / 60000);
+      var agoTxt = ago < 60 ? ago+'m ago' : Math.floor(ago/60)+'h ago';
+      var d = document.createElement('div');
+      d.style.cssText = 'display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid rgba(0,220,255,0.05);';
+      d.innerHTML =
+        '<span style="font-size:14px;">'+log.avatar+'</span>'+
+        '<div style="flex:1;">'+
+          '<span style="font-size:9px;color:'+(log.won?'#00ff96':'#ff6666')+';">'+(log.won?'⚔️ WIN':'🛡️ FAIL')+' vs '+log.target+'</span>'+
+          (log.won?'<div style="font-size:8px;color:rgba(0,255,150,0.5);">+'+fmt(log.amount)+' ZRC</div>':'')+
+        '</div>'+
+        '<span style="font-size:8px;color:rgba(0,220,255,0.3);">'+agoTxt+'</span>';
+      el.appendChild(d);
+    });
+  }
+
+  // Countdown timer
+  setInterval(function(){
+    var cd = document.getElementById('raid-countdown');
+    if(cd) cd.textContent = fmtTime(timeUntilRaid());
+  }, 1000);
+}
+
+// ============ OFF-CHAIN NFT SISTEMI ============
+var NFT_CATALOG = [
+  // EKIPMAN
+  {id:'mining_drill',    cat:'equipment', rarity:'common',    icon:'⛏️',  name:{tr:'Madenci Matkabı',en:'Mining Drill',ru:'Бур',zh:'钻机',ar:'مثقاب',es:'Taladro',hi:'ड्रिल'},
+   desc:{tr:'Tap gücü +2',en:'Tap power +2',ru:'Тап +2',zh:'点击+2',ar:'نقر +2',es:'Toque +2',hi:'टैप +2'},
+   bonus:{tapBonus:2}, cost:{zrc:50000}, maxSupply:1000, minted:0},
+  {id:'energy_cell',     cat:'equipment', rarity:'common',    icon:'🔋',  name:{tr:'Enerji Hücresi',en:'Energy Cell',ru:'Батарея',zh:'能量电池',ar:'خلية طاقة',es:'Celda de energía',hi:'ऊर्जा सेल'},
+   desc:{tr:'Max enerji +500',en:'Max energy +500',ru:'Энергия +500',zh:'能量+500',ar:'طاقة +500',es:'Energía +500',hi:'ऊर्जा +500'},
+   bonus:{energyBonus:500}, cost:{zrc:30000}, maxSupply:1000, minted:0},
+  {id:'quantum_chip',    cat:'equipment', rarity:'rare',      icon:'💠',  name:{tr:'Kuantum Çip',en:'Quantum Chip',ru:'Квантовый чип',zh:'量子芯片',ar:'شريحة كمومية',es:'Chip cuántico',hi:'क्वांटम चिप'},
+   desc:{tr:'Tap gücü +5, Enerji +300',en:'Tap +5, Energy +300',ru:'Тап +5, Энергия +300',zh:'点击+5,能量+300',ar:'نقر +5, طاقة +300',es:'Toque +5, Energía +300',hi:'टैप +5, ऊर्जा +300'},
+   bonus:{tapBonus:5, energyBonus:300}, cost:{zrc:200000}, maxSupply:500, minted:0},
+  {id:'neural_miner',    cat:'equipment', rarity:'epic',      icon:'🤖',  name:{tr:'Nöral Madenci',en:'Neural Miner',ru:'Нейро-майнер',zh:'神经矿工',ar:'عامل عصبي',es:'Minero neural',hi:'न्यूरल माइनर'},
+   desc:{tr:'Tap gücü +10, Farm +20%',en:'Tap +10, Farm +20%',ru:'Тап +10, Ферм +20%',zh:'点击+10,农场+20%',ar:'نقر +10, زراعة +20%',es:'Toque +10, Farm +20%',hi:'टैप +10, फार्म +20%'},
+   bonus:{tapBonus:10, farmPercent:20}, cost:{zrc:800000}, maxSupply:200, minted:0},
+  {id:'god_hammer',      cat:'equipment', rarity:'legendary', icon:'⚡',  name:{tr:'Tanrı Çekici',en:'God Hammer',ru:'Молот богов',zh:'神锤',ar:'مطرقة الإله',es:'Martillo divino',hi:'भगवान का हथौड़ा'},
+   desc:{tr:'Tap +20, Enerji +2000, Farm +50%',en:'Tap +20, Energy +2000, Farm +50%',ru:'Тап +20, Энергия +2000, Ферм +50%',zh:'点击+20,能量+2000,农场+50%',ar:'نقر +20, طاقة +2000, زراعة +50%',es:'Toque +20, Energía +2000, Farm +50%',hi:'टैप +20, ऊर्जा +2000, फार्म +50%'},
+   bonus:{tapBonus:20, energyBonus:2000, farmPercent:50}, cost:{zrc:5000000}, maxSupply:50, minted:0},
+
+  // KARAKTER
+  {id:'crypto_rookie',   cat:'character', rarity:'common',    icon:'👤',  name:{tr:'Kripto Acemi',en:'Crypto Rookie',ru:'Новичок',zh:'加密新手',ar:'مبتدئ',es:'Novato cripto',hi:'क्रिप्टो नौसिखिया'},
+   desc:{tr:'Referral bonus +10%',en:'Referral bonus +10%',ru:'Реферал +10%',zh:'推荐+10%',ar:'إحالة +10%',es:'Referido +10%',hi:'रेफरल +10%'},
+   bonus:{refPercent:10}, cost:{zrc:40000}, maxSupply:1000, minted:0},
+  {id:'ton_knight',      cat:'character', rarity:'rare',      icon:'⚔️',  name:{tr:'TON Şövalyesi',en:'TON Knight',ru:'Рыцарь TON',zh:'TON骑士',ar:'فارس TON',es:'Caballero TON',hi:'TON नाइट'},
+   desc:{tr:'Farm +15%, Tap +3',en:'Farm +15%, Tap +3',ru:'Ферм +15%, Тап +3',zh:'农场+15%,点击+3',ar:'زراعة +15%, نقر +3',es:'Farm +15%, Toque +3',hi:'फार्म +15%, टैप +3'},
+   bonus:{farmPercent:15, tapBonus:3}, cost:{zrc:300000}, maxSupply:300, minted:0},
+  {id:'crypto_king',     cat:'character', rarity:'epic',      icon:'👑',  name:{tr:'Kripto Kral',en:'Crypto King',ru:'Крипто-король',zh:'加密王者',ar:'ملك الكريبتو',es:'Rey cripto',hi:'क्रिप्टो किंग'},
+   desc:{tr:'Tüm bonuslar +25%',en:'All bonuses +25%',ru:'Все бонусы +25%',zh:'所有奖励+25%',ar:'كل المكافآت +25%',es:'Todos los bonos +25%',hi:'सभी बोनस +25%'},
+   bonus:{allPercent:25}, cost:{zrc:1500000}, maxSupply:100, minted:0},
+  {id:'zrc_legend',      cat:'character', rarity:'legendary', icon:'🌟',  name:{tr:'ZRC Efsanesi',en:'ZRC Legend',ru:'Легенда ZRC',zh:'ZRC传说',ar:'أسطورة ZRC',es:'Leyenda ZRC',hi:'ZRC किंवदंती'},
+   desc:{tr:'Tüm bonuslar +50%, Özel rozet',en:'All bonuses +50%, Special badge',ru:'Все бонусы +50%, Особый значок',zh:'所有奖励+50%,特殊徽章',ar:'كل المكافآت +50%, شارة خاصة',es:'Todos los bonos +50%, Insignia especial',hi:'सभी बोनस +50%, विशेष बैज'},
+   bonus:{allPercent:50, badge:'🌟 ZRC Legend'}, cost:{zrc:10000000}, maxSupply:10, minted:0},
+
+  // İŞLETME NFT
+  {id:'crypto_cafe',     cat:'business',  rarity:'common',    icon:'☕',  name:{tr:'Kripto Kafesi',en:'Crypto Cafe',ru:'Крипто-кафе',zh:'加密咖啡馆',ar:'مقهى كريبتو',es:'Café cripto',hi:'क्रिप्टो कैफे'},
+   desc:{tr:'Pasif gelir +5 ZRC/sn',en:'Passive income +5 ZRC/sec',ru:'+5 ZRC/сек',zh:'被动+5 ZRC/秒',ar:'+5 ZRC/ث',es:'+5 ZRC/seg',hi:'+5 ZRC/सेकंड'},
+   bonus:{passiveBonus:5}, cost:{zrc:100000}, maxSupply:500, minted:0},
+  {id:'ton_factory',     cat:'business',  rarity:'rare',      icon:'🏭',  name:{tr:'TON Fabrikası',en:'TON Factory',ru:'TON Завод',zh:'TON工厂',ar:'مصنع TON',es:'Fábrica TON',hi:'TON फैक्ट्री'},
+   desc:{tr:'Pasif gelir +25 ZRC/sn',en:'Passive income +25 ZRC/sec',ru:'+25 ZRC/сек',zh:'被动+25 ZRC/秒',ar:'+25 ZRC/ث',es:'+25 ZRC/seg',hi:'+25 ZRC/सेकंड'},
+   bonus:{passiveBonus:25}, cost:{zrc:500000}, maxSupply:200, minted:0},
+  {id:'blockchain_tower',cat:'business',  rarity:'epic',      icon:'🗼',  name:{tr:'Blockchain Kulesi',en:'Blockchain Tower',ru:'Блокчейн-башня',zh:'区块链塔',ar:'برج البلوكشين',es:'Torre blockchain',hi:'ब्लॉकचेन टावर'},
+   desc:{tr:'Pasif gelir +100 ZRC/sn, Farm +10%',en:'Passive +100 ZRC/sec, Farm +10%',ru:'+100 ZRC/сек, Ферм +10%',zh:'被动+100 ZRC/秒,农场+10%',ar:'+100 ZRC/ث, زراعة +10%',es:'+100 ZRC/seg, Farm +10%',hi:'+100 ZRC/सेकंड, फार्म +10%'},
+   bonus:{passiveBonus:100, farmPercent:10}, cost:{zrc:2000000}, maxSupply:50, minted:0},
+
+  // ROZET NFT
+  {id:'early_adopter',   cat:'badge',     rarity:'rare',      icon:'🎖️',  name:{tr:'Erken Benimseyici',en:'Early Adopter',ru:'Ранний последователь',zh:'早期采用者',ar:'المتبني المبكر',es:'Adoptante temprano',hi:'प्रारंभिक अपनाने वाला'},
+   desc:{tr:'İlk 1000 oyuncuya özel',en:'Exclusive for first 1000 players',ru:'Для первых 1000',zh:'前1000名专属',ar:'حصري لأول 1000',es:'Exclusivo primeros 1000',hi:'पहले 1000 खिलाड़ियों के लिए'},
+   bonus:{badge:'🎖️ Early Adopter'}, cost:{zrc:0}, maxSupply:1000, minted:0, earnOnly:true},
+  {id:'whale_nft',       cat:'badge',     rarity:'legendary', icon:'🐋',  name:{tr:'Balina',en:'Whale',ru:'Кит',zh:'鲸鱼',ar:'الحوت',es:'Ballena',hi:'व्हेल'},
+   desc:{tr:'10M+ ZRC kazananlara özel',en:'Exclusive for 10M+ ZRC earners',ru:'Для заработавших 10M+ ZRC',zh:'1000万ZRC以上专属',ar:'حصري لمن يكسب +10M ZRC',es:'Exclusivo para 10M+ ZRC',hi:'10M+ ZRC कमाने वालों के लिए'},
+   bonus:{badge:'🐋 Whale', allPercent:30}, cost:{zrc:0}, maxSupply:100, minted:0, earnOnly:true},
+];
+
+// TON NFT'leri
+var TON_NFTS = [
+  {
+    id:'ton_bronze', icon:'🥉', ton:0.5, rarity:'rare',
+    name:{tr:'Bronz Madenci',en:'Bronze Miner',ru:'Бронзовый майнер',zh:'铜牌矿工',ar:'عامل برونز',es:'Minero bronce',hi:'ब्रॉन्ज माइनर'},
+    desc:{tr:'Tüm gelirler +%10',en:'All income +10%',ru:'Весь доход +10%',zh:'全部收益+10%',ar:'كل الدخل +10%',es:'Todos ingresos +10%',hi:'सभी आय +10%'},
+    bonus:{allPercent:10},
+    svgBg:'#0a0800', svgBorder:'#cc8800',
+    svgArt:'<circle cx="100" cy="90" r="50" fill="#331100"/><circle cx="100" cy="90" r="40" fill="#442200"/><text x="100" y="98" text-anchor="middle" font-family="Arial Black" font-size="36" fill="#cc8800">ZRC</text><circle cx="100" cy="90" r="52" fill="none" stroke="#cc8800" stroke-width="1.5"/><circle cx="100" cy="90" r="58" fill="none" stroke="#886600" stroke-width="0.5" opacity="0.5"/>'
+  },
+  {
+    id:'ton_silver', icon:'🥈', ton:1, rarity:'epic',
+    name:{tr:'Gümüş Maden',en:'Silver Mine',ru:'Серебряный рудник',zh:'银矿',ar:'منجم فضي',es:'Mina plata',hi:'सिल्वर माइन'},
+    desc:{tr:'Tüm gelirler +%25',en:'All income +25%',ru:'Весь доход +25%',zh:'全部收益+25%',ar:'كل الدخل +25%',es:'Todos ingresos +25%',hi:'सभी आय +25%'},
+    bonus:{allPercent:25},
+    svgBg:'#080808', svgBorder:'#aaaaaa',
+    svgArt:'<circle cx="100" cy="90" r="50" fill="#111111"/><circle cx="100" cy="90" r="40" fill="#1a1a1a"/><text x="100" y="98" text-anchor="middle" font-family="Arial Black" font-size="36" fill="#cccccc">ZRC</text><circle cx="100" cy="90" r="52" fill="none" stroke="#aaaaaa" stroke-width="1.5"/><line x1="60" y1="55" x2="70" y2="65" stroke="#cccccc" stroke-width="1" opacity="0.5"/><line x1="140" y1="55" x2="130" y2="65" stroke="#cccccc" stroke-width="1" opacity="0.5"/>'
+  },
+  {
+    id:'ton_gold', icon:'🥇', ton:3, rarity:'legendary',
+    name:{tr:'Altın Vault',en:'Gold Vault',ru:'Золотое хранилище',zh:'黄金金库',ar:'خزينة ذهبية',es:'Vault dorado',hi:'गोल्ड वॉल्ट'},
+    desc:{tr:'Tüm gelirler +%50',en:'All income +50%',ru:'Весь доход +50%',zh:'全部收益+50%',ar:'كل الدخل +50%',es:'Todos ingresos +50%',hi:'सभी आय +50%'},
+    bonus:{allPercent:50},
+    svgBg:'#0a0700', svgBorder:'#ffcc00',
+    svgArt:'<circle cx="100" cy="90" r="50" fill="#221100"/><circle cx="100" cy="90" r="40" fill="#332200"/><text x="100" y="98" text-anchor="middle" font-family="Arial Black" font-size="36" fill="#ffcc00">ZRC</text><circle cx="100" cy="90" r="52" fill="none" stroke="#ffcc00" stroke-width="2"/><circle cx="100" cy="90" r="62" fill="none" stroke="#ffaa00" stroke-width="0.5" opacity="0.4"/><circle cx="60" cy="50" r="3" fill="#ffcc00" opacity="0.7"/><circle cx="140" cy="50" r="3" fill="#ffcc00" opacity="0.7"/><circle cx="55" cy="130" r="2" fill="#ffaa00" opacity="0.5"/><circle cx="145" cy="130" r="2" fill="#ffaa00" opacity="0.5"/>'
+  },
+  {
+    id:'ton_diamond', icon:'💎', ton:5, rarity:'legendary',
+    name:{tr:'Elmas Kral',en:'Diamond King',ru:'Алмазный король',zh:'钻石之王',ar:'ملك الماس',es:'Rey diamante',hi:'डायमंड किंग'},
+    desc:{tr:'Tüm gelirler +%100',en:'All income +100%',ru:'Весь доход +100%',zh:'全部收益+100%',ar:'كل الدخل +100%',es:'Todos ingresos +100%',hi:'सभी आय +100%'},
+    bonus:{allPercent:100},
+    svgBg:'#050a10', svgBorder:'#00ddff',
+    svgArt:'<polygon points="100,45 130,70 130,110 100,135 70,110 70,70" fill="#001133"/><polygon points="100,52 125,74 125,106 100,128 75,106 75,74" fill="#002244"/><text x="100" y="98" text-anchor="middle" font-family="Arial Black" font-size="30" fill="#00ddff">ZRC</text><polygon points="100,45 130,70 130,110 100,135 70,110 70,70" fill="none" stroke="#00ddff" stroke-width="2"/><circle cx="100" cy="45" r="4" fill="#00ffff"/><circle cx="130" cy="70" r="3" fill="#00ddff"/><circle cx="130" cy="110" r="3" fill="#00ddff"/><circle cx="100" cy="135" r="4" fill="#00ffff"/><circle cx="70" cy="110" r="3" fill="#00ddff"/><circle cx="70" cy="70" r="3" fill="#00ddff"/>'
+  },
+];
+
+var RARITY_COLORS = {
+  common:    {bg:'rgba(100,100,100,0.1)',  border:'rgba(150,150,150,0.3)',  text:'#aaaaaa',  label:'COMMON'},
+  rare:      {bg:'rgba(0,100,255,0.1)',    border:'rgba(0,150,255,0.35)',   text:'#4488ff',  label:'RARE'},
+  epic:      {bg:'rgba(150,0,255,0.1)',    border:'rgba(180,50,255,0.35)',  text:'#bb44ff',  label:'EPIC'},
+  legendary: {bg:'rgba(255,150,0,0.12)',   border:'rgba(255,180,0,0.45)',   text:'#ffbb00',  label:'LEGENDARY'},
+};
+
+var NFT_CAT_NAMES = {
+  equipment: {tr:'Ekipman',en:'Equipment',ru:'Снаряжение',zh:'装备',ar:'معدات',es:'Equipamiento',hi:'उपकरण'},
+  character: {tr:'Karakter',en:'Character',ru:'Персонаж',zh:'角色',ar:'شخصية',es:'Personaje',hi:'किरदार'},
+  business:  {tr:'İşletme',en:'Business',ru:'Бизнес',zh:'商业',ar:'أعمال',es:'Negocio',hi:'व्यवसाय'},
+  badge:     {tr:'Rozet',en:'Badge',ru:'Значок',zh:'徽章',ar:'شارة',es:'Insignia',hi:'बैज'},
+};
+
+function getNFTBonus(){
+  if(!S.nfts || S.nfts.length === 0) return {tapBonus:0, energyBonus:0, farmPercent:0, passiveBonus:0, refPercent:0, allPercent:0};
+  var total = {tapBonus:0, energyBonus:0, farmPercent:0, passiveBonus:0, refPercent:0, allPercent:0};
+  S.nfts.forEach(function(nftId){
+    var nft = NFT_CATALOG.find(function(n){return n.id===nftId;}) || TON_NFTS.find(function(n){return n.id===nftId;});
+    if(!nft) return;
+    Object.keys(nft.bonus).forEach(function(k){
+      if(typeof nft.bonus[k] === 'number' && total[k] !== undefined){
+        total[k] += nft.bonus[k];
+      }
+    });
+  });
+  return total;
+}
+
+function applyNFTBonuses(){
+  var bonus = getNFTBonus();
+  // Tap power
+  var baseTap = 1;
+  S.upgrades.forEach(function(u){
+    if(u.id==='tap' && u.lv > 0){
+      var tapBonuses=[1,2,3,5,8,12];
+      baseTap = tapBonuses[u.lv-1]||baseTap;
+    }
+  });
+  S.tapPower = baseTap + bonus.tapBonus + Math.floor(baseTap * bonus.allPercent / 100);
+  // Energy
+  var baseEnergy = 500;
+  S.upgrades.forEach(function(u){
+    if(u.id==='energy' && u.lv > 0){
+      var egBonuses=[200,300,500,1000,2000,5000];
+      var total=500;
+      for(var i=0;i<u.lv;i++) total+=(egBonuses[i]||0);
+      baseEnergy = total;
+    }
+  });
+  S.maxEnergy = baseEnergy + bonus.energyBonus;
+}
+
+
+
+function getTonNFTSvgArt(nft){
+  var arts = {
+    'ton_bronze':
+      '<svg width="120" height="150" viewBox="0 0 120 150">'+
+      '<rect width="120" height="150" rx="8" fill="#1a0a00"/>'+
+      '<path d="M0 110 Q25 98 50 106 Q75 115 100 100 Q110 95 120 102 L120 150 L0 150 Z" fill="#1a0c00"/>'+
+      '<rect x="8" y="80" width="18" height="22" rx="2" fill="#2a1500"/>'+
+      '<rect x="5" y="90" width="22" height="14" rx="1" fill="#221000"/>'+
+      '<rect x="90" y="84" width="18" height="20" rx="2" fill="#2a1500"/>'+
+      '<circle cx="60" cy="58" r="10" fill="#331500"/>'+
+      '<ellipse cx="60" cy="50" rx="11" ry="6" fill="#cc8800"/>'+
+      '<circle cx="60" cy="48" r="3" fill="#ffcc00" opacity="0.8"/>'+
+      '<rect x="54" y="68" width="12" height="18" rx="2" fill="#331500"/>'+
+      '<line x1="54" y1="72" x2="43" y2="84" stroke="#442200" stroke-width="3" stroke-linecap="round"/>'+
+      '<line x1="66" y1="72" x2="78" y2="82" stroke="#442200" stroke-width="3" stroke-linecap="round"/>'+
+      '<rect x="74" y="78" width="10" height="6" rx="1" fill="#cc8800" transform="rotate(-30 74 78)"/>'+
+      '<line x1="57" y1="86" x2="54" y2="100" stroke="#331500" stroke-width="3" stroke-linecap="round"/>'+
+      '<line x1="63" y1="86" x2="66" y2="100" stroke="#331500" stroke-width="3" stroke-linecap="round"/>'+
+      '<ellipse cx="28" cy="88" rx="12" ry="20" fill="#cc4400" opacity="0.3"/>'+
+      '<ellipse cx="28" cy="82" rx="8" ry="14" fill="#ff8800" opacity="0.3"/>'+
+      '<circle cx="18" cy="30" r="1.5" fill="#ffcc00" opacity="0.7"/>'+
+      '<circle cx="100" cy="38" r="1.2" fill="#ffaa00" opacity="0.6"/>'+
+      '<rect x="0" y="118" width="120" height="1" fill="#cc8800" opacity="0.3"/>'+
+      '<text x="60" y="132" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="9" fill="#ffcc99">Bronze Miner</text>'+
+      '<text x="60" y="145" text-anchor="middle" font-family="monospace" font-size="7" fill="#cc8800">All Income +10%</text>'+
+      '</svg>',
+
+    'ton_silver':
+      '<svg width="120" height="150" viewBox="0 0 120 150">'+
+      '<rect width="120" height="150" rx="8" fill="#080808"/>'+
+      '<line x1="0" y1="38" x2="120" y2="38" stroke="#1a1a1a" stroke-width="0.5"/>'+
+      '<line x1="0" y1="68" x2="120" y2="68" stroke="#1a1a1a" stroke-width="0.5"/>'+
+      '<line x1="0" y1="98" x2="120" y2="98" stroke="#1a1a1a" stroke-width="0.5"/>'+
+      '<line x1="40" y1="0" x2="40" y2="115" stroke="#1a1a1a" stroke-width="0.5"/>'+
+      '<line x1="80" y1="0" x2="80" y2="115" stroke="#1a1a1a" stroke-width="0.5"/>'+
+      '<ellipse cx="60" cy="62" rx="20" ry="23" fill="#111" stroke="#aaaaaa" stroke-width="1"/>'+
+      '<ellipse cx="60" cy="60" rx="17" ry="19" fill="#1a1a1a"/>'+
+      '<rect x="44" y="57" width="32" height="12" rx="2" fill="#aaaaaa" opacity="0.8"/>'+
+      '<rect x="46" y="58" width="12" height="9" rx="1" fill="#ffffff" opacity="0.2"/>'+
+      '<rect x="60" y="58" width="12" height="9" rx="1" fill="#cccccc" opacity="0.15"/>'+
+      '<circle cx="52" cy="63" r="2" fill="#00ffff" opacity="0.7"/>'+
+      '<circle cx="68" cy="63" r="2" fill="#00ffff" opacity="0.7"/>'+
+      '<line x1="60" y1="40" x2="60" y2="32" stroke="#888" stroke-width="1"/>'+
+      '<circle cx="60" cy="31" r="2" fill="#aaaaaa"/>'+
+      '<rect x="40" y="85" width="14" height="16" rx="3" fill="#111" stroke="#888" stroke-width="0.8"/>'+
+      '<rect x="66" y="85" width="14" height="16" rx="3" fill="#111" stroke="#888" stroke-width="0.8"/>'+
+      '<rect x="26" y="70" width="14" height="10" rx="2" fill="#1a1a1a" stroke="#888" stroke-width="0.5"/>'+
+      '<rect x="80" y="70" width="14" height="10" rx="2" fill="#1a1a1a" stroke="#888" stroke-width="0.5"/>'+
+      '<rect x="18" y="77" width="10" height="7" rx="1" fill="#111" stroke="#888" stroke-width="0.5"/>'+
+      '<rect x="92" y="75" width="10" height="7" rx="1" fill="#111" stroke="#888" stroke-width="0.5"/>'+
+      '<circle cx="15" cy="28" r="1.5" fill="#aaaaaa" opacity="0.5"/>'+
+      '<circle cx="105" cy="42" r="1.2" fill="#888" opacity="0.4"/>'+
+      '<rect x="0" y="118" width="120" height="1" fill="#aaaaaa" opacity="0.3"/>'+
+      '<text x="60" y="132" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="9" fill="#dddddd">Silver Mine</text>'+
+      '<text x="60" y="145" text-anchor="middle" font-family="monospace" font-size="7" fill="#aaaaaa">All Income +25%</text>'+
+      '</svg>',
+
+    'ton_gold':
+      '<svg width="120" height="150" viewBox="0 0 120 150">'+
+      '<rect width="120" height="150" rx="8" fill="#0a0700"/>'+
+      '<path d="M0 100 Q30 88 55 96 Q80 104 120 91 L120 150 L0 150 Z" fill="#1a0d00"/>'+
+      '<ellipse cx="22" cy="110" rx="10" ry="4" fill="#cc9900"/>'+
+      '<ellipse cx="22" cy="108" rx="10" ry="4" fill="#ffcc00"/>'+
+      '<ellipse cx="40" cy="115" rx="8" ry="3" fill="#cc9900"/>'+
+      '<ellipse cx="40" cy="113" rx="8" ry="3" fill="#ffaa00"/>'+
+      '<ellipse cx="98" cy="108" rx="8" ry="3" fill="#cc9900"/>'+
+      '<ellipse cx="98" cy="106" rx="8" ry="3" fill="#ffcc00"/>'+
+      '<path d="M20 90 Q38 70 60 55 Q82 40 94 24" fill="none" stroke="#cc6600" stroke-width="6" stroke-linecap="round"/>'+
+      '<path d="M20 90 Q38 70 60 55 Q82 40 94 24" fill="none" stroke="#ffaa00" stroke-width="4" stroke-linecap="round"/>'+
+      '<ellipse cx="94" cy="19" rx="14" ry="9" fill="#cc6600"/>'+
+      '<ellipse cx="94" cy="17" rx="11" ry="7" fill="#dd7700"/>'+
+      '<circle cx="100" cy="15" r="3" fill="#ffcc00"/>'+
+      '<circle cx="100" cy="15" r="1.5" fill="#ff4400"/>'+
+      '<line x1="91" y1="10" x2="88" y2="4" stroke="#886600" stroke-width="1.5"/>'+
+      '<line x1="97" y1="9" x2="101" y2="3" stroke="#886600" stroke-width="1.5"/>'+
+      '<path d="M105 20 Q115 14 120 8 Q115 20 118 30 Q110 24 105 20 Z" fill="#ff4400" opacity="0.7"/>'+
+      '<path d="M107 22 Q116 16 120 11 Q116 22 118 30 Q111 25 107 22 Z" fill="#ffcc00" opacity="0.5"/>'+
+      '<path d="M65 50 Q50 34 38 32 Q50 44 56 60 Z" fill="#aa5500" opacity="0.6"/>'+
+      '<path d="M78 44 Q92 28 102 28 Q92 40 84 56 Z" fill="#aa5500" opacity="0.6"/>'+
+      '<circle cx="15" cy="22" r="1.5" fill="#ffcc00" opacity="0.7"/>'+
+      '<circle cx="108" cy="85" r="1.5" fill="#ffaa00" opacity="0.5"/>'+
+      '<rect x="0" y="118" width="120" height="1" fill="#ffcc00" opacity="0.4"/>'+
+      '<text x="60" y="132" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="9" fill="#ffeeaa">Gold Vault</text>'+
+      '<text x="60" y="145" text-anchor="middle" font-family="monospace" font-size="7" fill="#ffcc00">All Income +50%</text>'+
+      '</svg>',
+
+    'ton_diamond':
+      '<svg width="120" height="150" viewBox="0 0 120 150">'+
+      '<rect width="120" height="150" rx="8" fill="#020810"/>'+
+      '<circle cx="60" cy="62" r="46" fill="none" stroke="#003366" stroke-width="0.8" opacity="0.5"/>'+
+      '<circle cx="60" cy="62" r="36" fill="#001122" stroke="#004488" stroke-width="0.5"/>'+
+      '<circle cx="60" cy="62" r="26" fill="#001833"/>'+
+      '<circle cx="60" cy="62" r="17" fill="#002244" stroke="#00aaff" stroke-width="0.8" opacity="0.7"/>'+
+      '<circle cx="60" cy="62" r="9" fill="#003366" stroke="#00ccff" stroke-width="0.8"/>'+
+      '<circle cx="60" cy="62" r="4" fill="#00aaff"/>'+
+      '<circle cx="60" cy="62" r="1.5" fill="#ffffff" opacity="0.9"/>'+
+      '<line x1="14" y1="62" x2="43" y2="62" stroke="#00aaff" stroke-width="0.5" opacity="0.4"/>'+
+      '<line x1="77" y1="62" x2="106" y2="62" stroke="#00aaff" stroke-width="0.5" opacity="0.4"/>'+
+      '<line x1="60" y1="16" x2="60" y2="45" stroke="#00aaff" stroke-width="0.5" opacity="0.4"/>'+
+      '<line x1="60" y1="79" x2="60" y2="108" stroke="#00aaff" stroke-width="0.5" opacity="0.4"/>'+
+      '<line x1="28" y1="30" x2="44" y2="46" stroke="#00aaff" stroke-width="0.5" opacity="0.3"/>'+
+      '<line x1="92" y1="30" x2="76" y2="46" stroke="#00aaff" stroke-width="0.5" opacity="0.3"/>'+
+      '<line x1="28" y1="94" x2="44" y2="78" stroke="#00aaff" stroke-width="0.5" opacity="0.3"/>'+
+      '<line x1="92" y1="94" x2="76" y2="78" stroke="#00aaff" stroke-width="0.5" opacity="0.3"/>'+
+      '<circle cx="60" cy="16" r="4" fill="#00ffff"/>'+
+      '<circle cx="106" cy="62" r="3" fill="#00ddff"/>'+
+      '<circle cx="60" cy="108" r="4" fill="#00ffff"/>'+
+      '<circle cx="14" cy="62" r="3" fill="#00ddff"/>'+
+      '<circle cx="8" cy="20" r="2" fill="#00ffff" opacity="0.8"/>'+
+      '<circle cx="112" cy="25" r="1.5" fill="#00ddff" opacity="0.7"/>'+
+      '<circle cx="6" cy="96" r="1.5" fill="#00aaff" opacity="0.6"/>'+
+      '<circle cx="114" cy="90" r="2" fill="#00ffff" opacity="0.7"/>'+
+      '<rect x="0" y="118" width="120" height="1" fill="#00ddff" opacity="0.4"/>'+
+      '<text x="60" y="132" text-anchor="middle" font-family="Arial Black,sans-serif" font-size="9" fill="#aaeeff">Diamond King</text>'+
+      '<text x="60" y="145" text-anchor="middle" font-family="monospace" font-size="7" fill="#00aaff">All Income +100%</text>'+
+      '</svg>',
+  };
+  return arts[nft.id] || '<svg width="120" height="150" viewBox="0 0 120 150"><rect width="120" height="150" rx="8" fill="#0a1020"/><text x="60" y="80" text-anchor="middle" font-size="36">'+nft.icon+'</text></svg>';
+}
+
+
+function getNFTSvgArt(nft){
+  var arts = {
+    'mining_drill':
+      '<svg width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" rx="6" fill="#050c18"/>'+
+      '<rect x="27" y="8" width="6" height="28" rx="2" fill="#00aaff"/>'+
+      '<rect x="22" y="33" width="16" height="5" rx="1" fill="#0066cc"/>'+
+      '<polygon points="30,38 21,54 39,54" fill="#00ddff"/>'+
+      '<line x1="14" y1="18" x2="22" y2="22" stroke="#00aaff" stroke-width="1" opacity="0.5"/>'+
+      '<line x1="12" y1="26" x2="21" y2="27" stroke="#00aaff" stroke-width="0.8" opacity="0.3"/>'+
+      '<line x1="46" y1="18" x2="38" y2="22" stroke="#00aaff" stroke-width="1" opacity="0.5"/>'+
+      '<circle cx="18" cy="10" r="1.5" fill="#00ddff" opacity="0.6"/>'+
+      '<circle cx="44" cy="14" r="1" fill="#00ddff" opacity="0.5"/></svg>',
+
+    'energy_cell':
+      '<svg width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" rx="6" fill="#050c18"/>'+
+      '<rect x="18" y="14" width="24" height="36" rx="4" fill="#002244" stroke="#00aaff" stroke-width="1"/>'+
+      '<rect x="25" y="10" width="10" height="6" rx="2" fill="#004488"/>'+
+      '<rect x="21" y="20" width="18" height="6" rx="2" fill="#00aaff" opacity="0.8"/>'+
+      '<rect x="21" y="30" width="18" height="4" rx="1" fill="#00aaff" opacity="0.5"/>'+
+      '<rect x="21" y="38" width="18" height="4" rx="1" fill="#00aaff" opacity="0.3"/>'+
+      '<polygon points="30,22 24,32 29,32 26,42 36,30 31,30" fill="#00ffff" opacity="0.9"/>'+
+      '<circle cx="10" cy="20" r="1.5" fill="#00aaff" opacity="0.5"/>'+
+      '<circle cx="50" cy="40" r="1.5" fill="#00ddff" opacity="0.4"/></svg>',
+
+    'quantum_chip':
+      '<svg width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" rx="6" fill="#08031a"/>'+
+      '<rect x="18" y="18" width="24" height="24" rx="3" fill="#220044" stroke="#8844ff" stroke-width="1"/>'+
+      '<rect x="22" y="22" width="16" height="16" rx="2" fill="#330066"/>'+
+      '<circle cx="30" cy="30" r="5" fill="#6600cc"/><circle cx="30" cy="30" r="2" fill="#aa44ff"/>'+
+      '<circle cx="30" cy="30" r="0.8" fill="#fff"/>'+
+      '<line x1="18" y1="26" x2="8" y2="26" stroke="#8844ff" stroke-width="1"/>'+
+      '<line x1="18" y1="34" x2="8" y2="34" stroke="#8844ff" stroke-width="1"/>'+
+      '<line x1="42" y1="26" x2="52" y2="26" stroke="#8844ff" stroke-width="1"/>'+
+      '<line x1="42" y1="34" x2="52" y2="34" stroke="#8844ff" stroke-width="1"/>'+
+      '<line x1="26" y1="18" x2="26" y2="8" stroke="#8844ff" stroke-width="1"/>'+
+      '<line x1="34" y1="18" x2="34" y2="8" stroke="#8844ff" stroke-width="1"/>'+
+      '<line x1="26" y1="42" x2="26" y2="52" stroke="#8844ff" stroke-width="1"/>'+
+      '<line x1="34" y1="42" x2="34" y2="52" stroke="#8844ff" stroke-width="1"/>'+
+      '<circle cx="8" cy="26" r="2" fill="#8844ff"/><circle cx="8" cy="34" r="2" fill="#8844ff"/>'+
+      '<circle cx="52" cy="26" r="2" fill="#8844ff"/><circle cx="52" cy="34" r="2" fill="#8844ff"/></svg>',
+
+    'neural_miner':
+      '<svg width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" rx="6" fill="#030a05"/>'+
+      '<circle cx="30" cy="28" r="14" fill="#0a1a0a" stroke="#00ff96" stroke-width="1.2"/>'+
+      '<circle cx="22" cy="22" r="4" fill="#003311" stroke="#00cc77" stroke-width="0.8"/>'+
+      '<circle cx="38" cy="22" r="4" fill="#003311" stroke="#00cc77" stroke-width="0.8"/>'+
+      '<circle cx="22" cy="34" r="4" fill="#003311" stroke="#00cc77" stroke-width="0.8"/>'+
+      '<circle cx="38" cy="34" r="4" fill="#003311" stroke="#00cc77" stroke-width="0.8"/>'+
+      '<circle cx="30" cy="28" r="3" fill="#00ff96"/>'+
+      '<line x1="26" y1="22" x2="26" y2="34" stroke="#00ff96" stroke-width="0.5"/>'+
+      '<line x1="34" y1="22" x2="34" y2="34" stroke="#00ff96" stroke-width="0.5"/>'+
+      '<line x1="22" y1="26" x2="38" y2="26" stroke="#00ff96" stroke-width="0.5"/>'+
+      '<line x1="22" y1="30" x2="38" y2="30" stroke="#00ff96" stroke-width="0.5"/>'+
+      '<rect x="24" y="42" width="12" height="10" rx="2" fill="#002211" stroke="#00cc77" stroke-width="0.8"/>'+
+      '<line x1="30" y1="42" x2="30" y2="38" stroke="#00ff96" stroke-width="1"/>'+
+      '<circle cx="10" cy="15" r="1.5" fill="#00ff96" opacity="0.5"/>'+
+      '<circle cx="50" cy="45" r="1.5" fill="#00cc77" opacity="0.4"/></svg>',
+
+    'god_hammer':
+      '<svg width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" rx="6" fill="#0a0500"/>'+
+      '<rect x="27" y="28" width="6" height="24" rx="2" fill="#886600"/>'+
+      '<rect x="18" y="14" width="24" height="16" rx="4" fill="#cc6600"/>'+
+      '<rect x="20" y="16" width="20" height="12" rx="3" fill="#ff8800" opacity="0.5"/>'+
+      '<ellipse cx="30" cy="14" rx="8" ry="12" fill="#ff4400" opacity="0.6"/>'+
+      '<ellipse cx="30" cy="10" rx="5" ry="8" fill="#ff8800" opacity="0.7"/>'+
+      '<ellipse cx="30" cy="6" rx="3" ry="5" fill="#ffcc00" opacity="0.9"/>'+
+      '<ellipse cx="29" cy="4" rx="1.5" ry="3" fill="#fff" opacity="0.6"/>'+
+      '<polyline points="15,38 20,30 17,33 22,22" fill="none" stroke="#ffcc00" stroke-width="1"/>'+
+      '<polyline points="45,35 40,27 43,30 38,20" fill="none" stroke="#ffaa00" stroke-width="1"/>'+
+      '<circle cx="8" cy="18" r="2" fill="#ffcc00" opacity="0.7"/>'+
+      '<circle cx="52" cy="22" r="1.5" fill="#ffaa00" opacity="0.6"/>'+
+      '<circle cx="10" cy="50" r="1.5" fill="#ff8800" opacity="0.4"/></svg>',
+
+    'crypto_rookie':
+      '<svg width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" rx="6" fill="#080c18"/>'+
+      '<circle cx="30" cy="22" r="10" fill="#1a2244" stroke="#4488ff" stroke-width="1"/>'+
+      '<circle cx="30" cy="20" r="7" fill="#223366"/>'+
+      '<rect x="17" y="34" width="26" height="16" rx="5" fill="#1a2244" stroke="#4488ff" stroke-width="0.8"/>'+
+      '<circle cx="30" cy="22" r="3" fill="#4488ff" opacity="0.5"/>'+
+      '<text x="30" y="47" text-anchor="middle" font-family="monospace" font-size="6" fill="#4488ff">ROOKIE</text>'+
+      '<circle cx="10" cy="15" r="1.5" fill="#4488ff" opacity="0.5"/>'+
+      '<circle cx="50" cy="45" r="1.5" fill="#2266cc" opacity="0.4"/></svg>',
+
+    'ton_knight':
+      '<svg width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" rx="6" fill="#050c18"/>'+
+      '<ellipse cx="30" cy="28" rx="14" ry="16" fill="#1133aa"/>'+
+      '<ellipse cx="30" cy="26" rx="12" ry="13" fill="#2244cc"/>'+
+      '<rect x="20" y="30" width="20" height="10" rx="2" fill="#112299"/>'+
+      '<rect x="22" y="32" width="7" height="3" rx="1" fill="#00aaff" opacity="0.9"/>'+
+      '<rect x="31" y="32" width="7" height="3" rx="1" fill="#00aaff" opacity="0.9"/>'+
+      '<path d="M18 26 Q30 18 42 26" fill="none" stroke="#4488ff" stroke-width="1.2"/>'+
+      '<line x1="30" y1="13" x2="30" y2="8" stroke="#4488ff" stroke-width="1.5"/>'+
+      '<polygon points="26,8 30,2 34,8" fill="#4488ff"/>'+
+      '<path d="M20 42 L30 39 L40 42 L40 54 Q30 58 20 54 Z" fill="#112299" stroke="#4488ff" stroke-width="0.8"/>'+
+      '<text x="30" y="50" text-anchor="middle" font-family="monospace" font-size="7" fill="#00aaff">TON</text></svg>',
+
+    'crypto_king':
+      '<svg width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" rx="6" fill="#08030f"/>'+
+      '<path d="M14 28 L20 16 L26 24 L30 12 L34 24 L40 16 L46 28 L46 36 L14 36 Z" fill="#880099"/>'+
+      '<circle cx="20" cy="16" r="3" fill="#ff00aa"/>'+
+      '<circle cx="30" cy="12" r="4" fill="#ffcc00"/>'+
+      '<circle cx="40" cy="16" r="3" fill="#ff0066"/>'+
+      '<ellipse cx="30" cy="46" rx="12" ry="13" fill="#220033"/>'+
+      '<ellipse cx="30" cy="44" rx="10" ry="10" fill="#330044"/>'+
+      '<circle cx="26" cy="43" r="3" fill="#aa00ff"/>'+
+      '<circle cx="34" cy="43" r="3" fill="#aa00ff"/>'+
+      '<circle cx="26" cy="43" r="1.2" fill="#fff"/>'+
+      '<circle cx="34" cy="43" r="1.2" fill="#fff"/>'+
+      '<circle cx="30" cy="36" r="30" fill="none" stroke="#bb44ff" stroke-width="0.3" opacity="0.3"/></svg>',
+
+    'zrc_legend':
+      '<svg width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" rx="6" fill="#050308"/>'+
+      '<circle cx="30" cy="30" r="20" fill="none" stroke="#ffcc00" stroke-width="0.5" opacity="0.4"/>'+
+      '<circle cx="30" cy="30" r="14" fill="none" stroke="#ffaa00" stroke-width="0.5" opacity="0.3"/>'+
+      '<ellipse cx="30" cy="28" rx="9" ry="10" fill="#330066"/>'+
+      '<ellipse cx="30" cy="27" rx="7" ry="8" fill="#440088"/>'+
+      '<ellipse cx="27" cy="25" rx="2.5" ry="3" fill="#ffcc00"/>'+
+      '<ellipse cx="33" cy="25" rx="2.5" ry="3" fill="#ffcc00"/>'+
+      '<ellipse cx="27" cy="25" rx="1" ry="1.5" fill="#fff"/>'+
+      '<ellipse cx="33" cy="25" rx="1" ry="1.5" fill="#fff"/>'+
+      '<path d="M26 37 L23 48 L28 46 L26 54 L34 44 L29 46 Z" fill="#ffaa00" opacity="0.8"/>'+
+      '<line x1="30" y1="14" x2="30" y2="8" stroke="#ffcc00" stroke-width="1.5"/>'+
+      '<line x1="38" y1="17" x2="43" y2="12" stroke="#ffcc00" stroke-width="1.2"/>'+
+      '<line x1="42" y1="26" x2="48" y2="24" stroke="#ffcc00" stroke-width="1.2"/>'+
+      '<line x1="22" y1="17" x2="17" y2="12" stroke="#ffcc00" stroke-width="1.2"/>'+
+      '<line x1="18" y1="26" x2="12" y2="24" stroke="#ffcc00" stroke-width="1.2"/>'+
+      '<circle cx="8" cy="10" r="2" fill="#ffcc00" opacity="0.7"/>'+
+      '<circle cx="52" cy="14" r="1.5" fill="#ffaa00" opacity="0.6"/></svg>',
+
+    'crypto_cafe':
+      '<svg width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" rx="6" fill="#030a05"/>'+
+      '<rect x="15" y="25" width="30" height="22" rx="3" fill="#001a0d" stroke="#00cc77" stroke-width="0.8"/>'+
+      '<rect x="18" y="20" width="24" height="7" rx="2" fill="#002211" stroke="#00ff96" stroke-width="0.5"/>'+
+      '<rect x="24" y="14" width="12" height="7" rx="2" fill="#003319"/>'+
+      '<rect x="19" y="30" width="6" height="6" rx="1" fill="#00ff96" opacity="0.4"/>'+
+      '<rect x="27" y="30" width="6" height="6" rx="1" fill="#00cc77" opacity="0.3"/>'+
+      '<rect x="35" y="30" width="6" height="6" rx="1" fill="#00ff96" opacity="0.4"/>'+
+      '<rect x="19" y="38" width="6" height="5" rx="1" fill="#00aaff" opacity="0.3"/>'+
+      '<rect x="27" y="38" width="6" height="5" rx="1" fill="#00ff96" opacity="0.3"/>'+
+      '<rect x="35" y="38" width="6" height="5" rx="1" fill="#00aaff" opacity="0.3"/>'+
+      '<text x="30" y="55" text-anchor="middle" font-family="monospace" font-size="5" fill="#00ff96" opacity="0.6">+5 ZRC/s</text></svg>',
+
+    'ton_factory':
+      '<svg width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" rx="6" fill="#030808"/>'+
+      '<rect x="8" y="35" width="44" height="18" rx="2" fill="#001a15" stroke="#00cc88" stroke-width="0.8"/>'+
+      '<rect x="12" y="28" width="8" height="10" rx="1" fill="#002211"/>'+
+      '<rect x="26" y="24" width="8" height="14" rx="1" fill="#002211"/>'+
+      '<rect x="40" y="20" width="8" height="18" rx="1" fill="#002211"/>'+
+      '<rect x="12" y="28" width="8" height="4" rx="0" fill="#00ff96" opacity="0.3"/>'+
+      '<rect x="26" y="24" width="8" height="4" rx="0" fill="#00cc77" opacity="0.3"/>'+
+      '<rect x="40" y="20" width="8" height="4" rx="0" fill="#00ff96" opacity="0.3"/>'+
+      '<line x1="16" y1="20" x2="16" y2="12" stroke="#888" stroke-width="2"/>'+
+      '<line x1="30" y1="16" x2="30" y2="8" stroke="#888" stroke-width="2"/>'+
+      '<line x1="44" y1="12" x2="44" y2="4" stroke="#888" stroke-width="2"/>'+
+      '<ellipse cx="16" cy="12" rx="4" ry="6" fill="#333" opacity="0.5"/>'+
+      '<ellipse cx="30" cy="8" rx="4" ry="6" fill="#333" opacity="0.5"/>'+
+      '<ellipse cx="44" cy="4" rx="4" ry="6" fill="#333" opacity="0.5"/></svg>',
+
+    'blockchain_tower':
+      '<svg width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" rx="6" fill="#020c07"/>'+
+      '<rect x="22" y="44" width="16" height="10" rx="1" fill="#003311"/>'+
+      '<rect x="24" y="36" width="12" height="10" rx="1" fill="#004422"/>'+
+      '<rect x="26" y="28" width="8" height="10" rx="1" fill="#005533"/>'+
+      '<rect x="27" y="20" width="6" height="10" rx="1" fill="#006644"/>'+
+      '<rect x="28" y="13" width="4" height="9" rx="1" fill="#007755"/>'+
+      '<line x1="30" y1="13" x2="30" y2="7" stroke="#00ff96" stroke-width="1.5"/>'+
+      '<circle cx="30" cy="6" r="3" fill="#00ff96" opacity="0.9"/>'+
+      '<rect x="23" y="40" width="3" height="2" rx="0.5" fill="#00ff96" opacity="0.5"/>'+
+      '<rect x="28" y="40" width="3" height="2" rx="0.5" fill="#00aaff" opacity="0.4"/>'+
+      '<rect x="24" y="32" width="2" height="2" rx="0.5" fill="#00ff96" opacity="0.5"/>'+
+      '<ellipse cx="30" cy="54" rx="18" ry="5" fill="none" stroke="#00ff96" stroke-width="0.5" opacity="0.3"/>'+
+      '<circle cx="10" cy="20" r="1.5" fill="#00ff96" opacity="0.5"/>'+
+      '<circle cx="50" cy="35" r="1" fill="#00aaff" opacity="0.4"/></svg>',
+
+    'early_adopter':
+      '<svg width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" rx="6" fill="#0a0800"/>'+
+      '<polygon points="30,8 36,22 52,22 40,32 44,46 30,38 16,46 20,32 8,22 24,22" fill="#221100" stroke="#ffaa00" stroke-width="1.2"/>'+
+      '<polygon points="30,14 34,24 46,24 37,31 40,42 30,36 20,42 23,31 14,24 26,24" fill="#331500" stroke="#cc8800" stroke-width="0.5"/>'+
+      '<polygon points="30,18 33,27 42,27 35,32 38,41 30,36 22,41 25,32 18,27 27,27" fill="#ffaa00" opacity="0.8"/>'+
+      '<circle cx="30" cy="30" r="5" fill="#ffcc00"/>'+
+      '<circle cx="30" cy="30" r="2" fill="#fff" opacity="0.8"/>'+
+      '<text x="30" y="54" text-anchor="middle" font-family="monospace" font-size="5" fill="#ffaa00">OG</text></svg>',
+
+    'whale_nft':
+      '<svg width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" rx="6" fill="#050308"/>'+
+      '<path d="M10 38 Q20 28 30 32 Q40 35 50 30 Q55 36 48 42 Q38 50 30 44 Q22 50 14 44 Q6 40 10 38 Z" fill="#1a0d44"/>'+
+      '<path d="M12 38 Q22 30 30 34 Q38 37 48 32 Q52 37 46 42 Q38 48 30 43 Q22 48 16 43 Q8 40 12 38 Z" fill="#2a1566"/>'+
+      '<circle cx="22" cy="37" r="3" fill="#ffcc00"/>'+
+      '<circle cx="22" cy="37" r="1.5" fill="#000"/>'+
+      '<circle cx="22.5" cy="36.5" r="0.8" fill="#fff"/>'+
+      '<path d="M30 43 Q35 50 28 52 Q27 46 30 43 Z" fill="#2a1566"/>'+
+      '<path d="M42 30 Q44 22 41 16" fill="none" stroke="#4488ff" stroke-width="1.2"/>'+
+      '<path d="M44 30 Q47 21 45 14" fill="none" stroke="#00aaff" stroke-width="0.8"/>'+
+      '<circle cx="41" cy="14" r="2" fill="#00aaff" opacity="0.6"/>'+
+      '<circle cx="45" cy="12" r="1.5" fill="#4488ff" opacity="0.5"/>'+
+      '<path d="M5 48 Q18 42 32 48 Q45 54 55 48" fill="none" stroke="#2233aa" stroke-width="0.5" opacity="0.5"/>'+
+      '<circle cx="8" cy="18" r="2" fill="#ffcc00" opacity="0.6"/>'+
+      '<circle cx="54" cy="22" r="1.5" fill="#ffaa00" opacity="0.5"/></svg>',
+  };
+  return arts[nft.id] || '<svg width="60" height="60" viewBox="0 0 60 60"><rect width="60" height="60" rx="6" fill="#0a1020"/><text x="30" y="35" text-anchor="middle" font-size="28">'+nft.icon+'</text></svg>';
+}
+
+
+function renderCityPanel(){
+  var wrap = document.getElementById('city-svg-wrap');
+  if(!wrap) return;
+
+  var bizCount = S.businesses.filter(function(b){return b.lv>0;}).length;
+  var totalLv = S.businesses.reduce(function(a,b){return a+b.lv;},0);
+
+  // Şehir SVG oluştur
+  var svgH = 220;
+  var svg = '<svg width="100%" viewBox="0 0 340 '+svgH+'" xmlns="http://www.w3.org/2000/svg">';
+  svg += '<rect width="340" height="'+svgH+'" fill="#060c1a"/>';
+  
+  // Gökyüzü yıldızları
+  svg += '<circle cx="30" cy="20" r="1" fill="#fff" opacity="0.4"/>';
+  svg += '<circle cx="80" cy="12" r="1" fill="#fff" opacity="0.3"/>';
+  svg += '<circle cx="150" cy="18" r="1" fill="#fff" opacity="0.5"/>';
+  svg += '<circle cx="220" cy="10" r="1" fill="#fff" opacity="0.3"/>';
+  svg += '<circle cx="290" cy="22" r="1" fill="#fff" opacity="0.4"/>';
+  svg += '<circle cx="310" cy="8" r="1" fill="#00aaff" opacity="0.3"/>';
+
+  // Zemin
+  svg += '<rect x="0" y="155" width="340" height="65" fill="#040810"/>';
+  svg += '<rect x="0" y="153" width="340" height="3" fill="#0a1428"/>';
+  // Yol
+  svg += '<rect x="0" y="165" width="340" height="10" fill="#070d1c"/>';
+  svg += '<line x1="0" y1="170" x2="340" y2="170" stroke="#1a2a44" stroke-width="0.5" stroke-dasharray="10 8"/>';
+
+  // İşletme binaları
+  var bizDefs = [
+    {color:'#00aaff', name:'NODE'},
+    {color:'#00ff96', name:'MINE'},
+    {color:'#8844ff', name:'DEX'},
+    {color:'#ffcc00', name:'DEFI'},
+    {color:'#00dcff', name:'NFT'},
+    {color:'#ff44aa', name:'AI'},
+    {color:'#aa44ff', name:'QVLT'},
+    {color:'#ff4444', name:'DARK'},
+  ];
+
+  var xPositions = [15, 55, 95, 135, 180, 225, 265, 300];
+  var widths = [32, 36, 30, 40, 45, 35, 38, 36];
+
+  S.businesses.forEach(function(biz, i){
+    if(i >= 8) return;
+    var def = bizDefs[i];
+    var lv = biz.lv || 0;
+    var x = xPositions[i];
+    var w = widths[i];
+    var h = lv === 0 ? 0 : Math.min(20 + lv * 15, 130);
+    var y = 153 - h;
+
+    if(lv === 0){
+      // Boş arsa
+      svg += '<rect x="'+x+'" y="148" width="'+w+'" height="5" rx="1" fill="#0a1020" stroke="rgba(0,220,255,0.1)" stroke-width="0.5"/>';
+      svg += '<text x="'+(x+w/2)+'" y="147" text-anchor="middle" font-family="monospace" font-size="5" fill="rgba(0,220,255,0.2)">'+def.name+'</text>';
+      return;
+    }
+
+    // Bina gövdesi
+    svg += '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="1" fill="#0a1020" stroke="'+def.color+'" stroke-width="0.5" opacity="0.8"/>';
+    
+    // Pencereler
+    var winRows = Math.floor(h / 14);
+    var winCols = Math.floor(w / 10);
+    for(var r=0; r<Math.min(winRows,8); r++){
+      for(var c=0; c<Math.min(winCols,3); c++){
+        var wx = x + 3 + c * 10;
+        var wy = y + 4 + r * 12;
+        var opacity = Math.random() > 0.3 ? (0.4 + Math.random()*0.4) : 0.1;
+        svg += '<rect x="'+wx+'" y="'+wy+'" width="6" height="7" rx="1" fill="'+def.color+'" opacity="'+opacity.toFixed(1)+'"/>';
+      }
+    }
+
+    // Çatı anteni (yüksek binalarda)
+    if(lv >= 3){
+      svg += '<line x1="'+(x+w/2)+'" y1="'+y+'" x2="'+(x+w/2)+'" y2="'+(y-10)+'" stroke="'+def.color+'" stroke-width="1" opacity="0.6"/>';
+      svg += '<circle cx="'+(x+w/2)+'" cy="'+(y-11)+'" r="2" fill="'+def.color+'" opacity="0.8"/>';
+    }
+
+    // Bina adı
+    svg += '<text x="'+(x+w/2)+'" y="'+(y-2)+'" text-anchor="middle" font-family="monospace" font-size="5" fill="'+def.color+'" opacity="0.6">'+def.name+'</text>';
+  });
+
+  // Şehir adı ve seviye
+  svg += '<text x="170" y="195" text-anchor="middle" font-family="monospace" font-size="8" fill="rgba(0,220,255,0.4)">ZRo City — Level '+totalLv+'</text>';
+
+  svg += '</svg>';
+  wrap.innerHTML = svg;
+
+  // İstatistikler
+  var statsEl = document.getElementById('city-stats');
+  if(statsEl){
+    var passiveInc = S.businesses.reduce(function(a,b){return a+(b.inc||0);},0);
+    var statItems = [
+      {label:{tr:'Bina',en:'Buildings',ru:'Зданий',zh:'建筑',ar:'مبانٍ',es:'Edificios',hi:'इमारतें'}, val:bizCount+'/8'},
+      {label:{tr:'Şehir Seviyesi',en:'City Level',ru:'Уровень города',zh:'城市等级',ar:'مستوى المدينة',es:'Nivel ciudad',hi:'शहर स्तर'}, val:totalLv},
+      {label:{tr:'Pasif Gelir',en:'Passive Income',ru:'Пассивный доход',zh:'被动收入',ar:'الدخل السلبي',es:'Ingresos pasivos',hi:'निष्क्रिय आय'}, val:fmt(Math.floor(passiveInc))+'/s'},
+      {label:{tr:'Kalkan',en:'Shield',ru:'Щит',zh:'盾牌',ar:'الدرع',es:'Escudo',hi:'ढाल'}, val:isShieldActive()?'🛡️ ON':'⚠️ OFF'},
+    ];
+    statsEl.innerHTML = '';
+    statItems.forEach(function(s){
+      var lb = s.label[currentLang]||s.label['en'];
+      var d = document.createElement('div');
+      d.style.cssText = 'background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.1);border-radius:6px;padding:8px;text-align:center;';
+      d.innerHTML = '<div style="font-size:8px;color:rgba(0,220,255,0.4);margin-bottom:3px;">'+lb+'</div><div style="font-family:Orbitron,monospace;font-size:11px;color:#00dcff;">'+s.val+'</div>';
+      statsEl.appendChild(d);
+    });
+  }
+}
+
+function renderNFTPanel(){
+  var el = document.getElementById('nft-panel');
+  if(!el) return;
+  if(!S.nfts) S.nfts = [];
+
+  var nftBonus = getNFTBonus();
+  var cats = ['equipment','character','business','badge'];
+  
+  // Bonus özeti
+  var bonusSummary = document.getElementById('nft-bonus-summary');
+  if(bonusSummary){
+    var parts = [];
+    if(nftBonus.tapBonus > 0) parts.push('+'+nftBonus.tapBonus+' TAP');
+    if(nftBonus.energyBonus > 0) parts.push('+'+fmt(nftBonus.energyBonus)+' ENR');
+    if(nftBonus.farmPercent > 0) parts.push('+'+nftBonus.farmPercent+'% FARM');
+    if(nftBonus.passiveBonus > 0) parts.push('+'+fmt(nftBonus.passiveBonus)+' ZRC/s');
+    if(nftBonus.allPercent > 0) parts.push('+'+nftBonus.allPercent+'% ALL');
+    bonusSummary.textContent = parts.length > 0 ? parts.join(' · ') : '-';
+  }
+
+  el.innerHTML = '';
+
+  cats.forEach(function(cat){
+    var catNfts = NFT_CATALOG.filter(function(n){return n.cat===cat;});
+    var catName = (NFT_CAT_NAMES[cat]||{})[currentLang]||(NFT_CAT_NAMES[cat]||{})['en']||cat;
+    
+    var catDiv = document.createElement('div');
+    catDiv.style.cssText = 'margin-bottom:16px;';
+    catDiv.innerHTML = '<div style="font-size:8px;letter-spacing:0.2em;color:rgba(0,220,255,0.5);margin-bottom:8px;border-bottom:1px solid rgba(0,220,255,0.1);padding-bottom:4px;">// '+catName.toUpperCase()+'</div>';
+
+    var grid = document.createElement('div');
+    grid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:8px;';
+
+    catNfts.forEach(function(nft){
+      var owned = S.nfts.indexOf(nft.id) > -1;
+      var rc = RARITY_COLORS[nft.rarity]||RARITY_COLORS.common;
+      var name = (nft.name[currentLang]||nft.name['en']);
+      var desc = (nft.desc[currentLang]||nft.desc['en']);
+      var canBuy = !owned && !nft.earnOnly && S.coins >= nft.cost.zrc;
+      var remaining = nft.maxSupply - nft.minted;
+      
+      var buyBtnTxts={tr:'SATIN AL',en:'BUY',ru:'КУПИТЬ',zh:'购买',ar:'شراء',es:'COMPRAR',hi:'खरीदें'};
+      var ownedTxts={tr:'SAHİPSİN',en:'OWNED',ru:'В НАЛИЧИИ',zh:'已拥有',ar:'مملوك',es:'TUYO',hi:'आपका'};
+      var earnOnlyTxts={tr:'Görevden Kazan',en:'Earn via Quest',ru:'Получи за задание',zh:'通过任务获得',ar:'اكسب عبر المهام',es:'Ganar via misión',hi:'क्वेस्ट से कमाएं'};
+      var soldOutTxts={tr:'TÜKENDİ',en:'SOLD OUT',ru:'РАСПРОДАНО',zh:'售罄',ar:'نفذ',es:'AGOTADO',hi:'बिक गया'};
+
+      var nftSvgArt = getNFTSvgArt(nft);
+      var d = document.createElement('div');
+      d.style.cssText = 'background:'+rc.bg+';border:1px solid '+(owned?rc.border:'rgba(0,220,255,0.1)')+';border-radius:8px;padding:10px;position:relative;'+(owned?'box-shadow:0 0 8px '+rc.border+';':'');
+      d.innerHTML =
+        '<div style="position:absolute;top:6px;right:6px;font-size:7px;color:'+rc.text+';letter-spacing:0.1em;font-family:Orbitron,monospace;">'+rc.label+'</div>'+
+        '<div style="margin-bottom:4px;">'+nftSvgArt+'</div>'+
+        '<div style="font-size:10px;font-family:Orbitron,monospace;color:'+(owned?rc.text:'#a0c8e8')+';margin-bottom:2px;line-height:1.3;">'+name+'</div>'+
+        '<div style="font-size:8px;color:rgba(0,220,255,0.45);margin-bottom:6px;line-height:1.4;">'+desc+'</div>'+
+        '<div style="font-size:8px;color:rgba(0,220,255,0.3);margin-bottom:6px;">'+remaining+'/'+nft.maxSupply+' left</div>'+
+        (owned ?
+          '<div style="text-align:center;font-size:9px;color:'+rc.text+';font-family:Orbitron,monospace;background:'+rc.bg+';border:1px solid '+rc.border+';border-radius:4px;padding:4px;">✓ '+(ownedTxts[currentLang]||ownedTxts['en'])+'</div>'
+        : nft.earnOnly ?
+          '<div style="text-align:center;font-size:8px;color:rgba(255,200,0,0.6);font-family:Share Tech Mono,monospace;padding:3px;">'+(earnOnlyTxts[currentLang]||earnOnlyTxts['en'])+'</div>'
+        : remaining <= 0 ?
+          '<div style="text-align:center;font-size:9px;color:rgba(255,80,80,0.6);font-family:Orbitron,monospace;padding:4px;">'+(soldOutTxts[currentLang]||soldOutTxts['en'])+'</div>'
+        :
+          '<button style="width:100%;background:'+(canBuy?'rgba(0,220,255,0.1)':'rgba(0,220,255,0.04)')+';border:1px solid '+(canBuy?rc.border:'rgba(0,220,255,0.12)')+';border-radius:5px;padding:5px;font-family:Share Tech Mono,monospace;font-size:9px;color:'+(canBuy?rc.text:'rgba(0,220,255,0.3)')+';cursor:'+(canBuy?'pointer':'not-allowed')+';'+(canBuy?'':'opacity:0.5;')+'" '+(canBuy?'':'disabled')+' data-nftbuy="'+nft.id+'">'+
+            (canBuy?'⬡ '+fmt(nft.cost.zrc)+' ZRC':'⬡ '+fmt(nft.cost.zrc)+' ZRC')+
+          '</button>'
+        );
+      grid.appendChild(d);
+    });
+
+    catDiv.appendChild(grid);
+    el.appendChild(catDiv);
+  });
+
+  // TON NFT Bölümü
+  var tonDiv = document.createElement('div');
+  tonDiv.style.cssText = 'margin-bottom:16px;';
+  var tonTitles={tr:'// TON İLE AL — KALICI BONUS',en:'// BUY WITH TON — PERMANENT BONUS',ru:'// КУПИТЬ ЗА TON — ПОСТОЯННЫЙ БОНУС',zh:'// 用TON购买 — 永久奖励',ar:'// شراء بـ TON — مكافأة دائمة',es:'// COMPRAR CON TON — BONO PERMANENTE',hi:'// TON से खरीदें — स्थायी बोनस'};
+  tonDiv.innerHTML = '<div style="font-size:8px;letter-spacing:0.2em;color:rgba(255,180,0,0.6);margin-bottom:8px;border-bottom:1px solid rgba(255,180,0,0.15);padding-bottom:4px;">'+(tonTitles[currentLang]||tonTitles['en'])+'</div>';
+  
+  var tonGrid = document.createElement('div');
+  tonGrid.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:10px;';
+
+  TON_NFTS.forEach(function(nft){
+    var owned = S.nfts && S.nfts.indexOf(nft.id) > -1;
+    var rc = RARITY_COLORS[nft.rarity]||RARITY_COLORS.common;
+    var name = nft.name[currentLang]||nft.name['en'];
+    var desc = nft.desc[currentLang]||nft.desc['en'];
+    var buyTxts={tr:'⬡ '+nft.ton+' TON',en:'⬡ '+nft.ton+' TON',ru:'⬡ '+nft.ton+' TON',zh:'⬡ '+nft.ton+' TON',ar:'⬡ '+nft.ton+' TON',es:'⬡ '+nft.ton+' TON',hi:'⬡ '+nft.ton+' TON'};
+    var ownedTxts={tr:'✓ AKTİF',en:'✓ ACTIVE',ru:'✓ АКТИВНО',zh:'✓ 已激活',ar:'✓ نشط',es:'✓ ACTIVO',hi:'✓ सक्रिय'};
+
+    var d = document.createElement('div');
+    d.style.cssText = 'background:'+nft.svgBg+';border:1px solid '+(owned?nft.svgBorder:'rgba(255,180,0,0.2)')+';border-radius:8px;padding:10px;position:relative;'+(owned?'box-shadow:0 0 8px '+nft.svgBorder+'44;':'');
+    d.innerHTML =
+      '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">'+
+        '<div style="font-size:22px;">'+nft.icon+'</div>'+
+        '<div>'+
+          '<div style="font-size:9px;font-family:Orbitron,monospace;color:'+(owned?nft.svgBorder:'#e0c060')+';">'+name+'</div>'+
+          '<div style="font-size:8px;color:rgba(255,180,0,0.5);">'+rc.label+'</div>'+
+        '</div>'+
+      '</div>'+
+      '<div style="font-size:9px;color:rgba(0,255,150,0.7);margin-bottom:8px;font-family:Orbitron,monospace;">'+desc+'</div>'+
+      (owned?
+        '<div style="text-align:center;font-size:9px;color:'+nft.svgBorder+';font-family:Orbitron,monospace;background:'+nft.svgBg+';border:1px solid '+nft.svgBorder+';border-radius:4px;padding:4px;">'+(ownedTxts[currentLang]||ownedTxts['en'])+'</div>'
+      :
+        '<button style="width:100%;background:rgba(255,180,0,0.08);border:1px solid '+nft.svgBorder+';border-radius:5px;padding:6px;font-family:Orbitron,monospace;font-size:10px;color:'+nft.svgBorder+';cursor:pointer;" data-tonnft="'+nft.id+'">'+nft.ton+' TON</button>'
+      );
+    tonGrid.appendChild(d);
+  });
+
+  tonDiv.appendChild(tonGrid);
+  el.appendChild(tonDiv);
+
+  // TON NFT buy handlers
+  el.querySelectorAll('[data-tonnft]').forEach(function(btn){
+    btn.addEventListener('click', async function(){
+      var nid = btn.dataset.tonnft;
+      var nft = TON_NFTS.find(function(n){return n.id===nid;});
+      if(!nft) return;
+      btn.disabled = true; btn.textContent = '⏳';
+      var result = await sendTonPayment(nft.ton, 'ZRoFarm:nft:'+nid+':'+userId);
+      if(result){
+        if(!S.nfts) S.nfts = [];
+        S.nfts.push(nid);
+        var boughtTxts={tr:'NFT aktif!',en:'NFT active!',ru:'NFT активен!',zh:'NFT已激活！',ar:'NFT نشط!',es:'NFT activo!',hi:'NFT सक्रिय!'};
+        showNotif(nft.icon+' '+name+' - '+(boughtTxts[currentLang]||boughtTxts['en']));
+        scheduleSave(); renderAll(); renderNFTPanel();
+      } else {
+        btn.disabled = false; btn.textContent = nft.ton + ' TON';
+      }
+    });
+  });
+
+  // Buy event listeners
+  el.querySelectorAll('[data-nftbuy]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var nftId = btn.dataset.nftbuy;
+      var nft = NFT_CATALOG.find(function(n){return n.id===nftId;});
+      if(!nft || S.coins < nft.cost.zrc) return;
+      if(!S.nfts) S.nfts = [];
+      if(S.nfts.indexOf(nftId) > -1) return;
+      S.coins -= nft.cost.zrc;
+      S.nfts.push(nftId);
+      nft.minted++;
+      // Badge ekle
+      if(nft.bonus.badge){
+        if(!S.badges) S.badges = [];
+        if(S.badges.indexOf(nft.bonus.badge) === -1) S.badges.push(nft.bonus.badge);
+      }
+      applyNFTBonuses();
+      var boughtTxts={tr:'NFT satın alındı!',en:'NFT purchased!',ru:'NFT куплен!',zh:'NFT已购买！',ar:'تم شراء NFT!',es:'¡NFT comprado!',hi:'NFT खरीदा!'};
+      showNotif(nft.icon+' '+(nft.name[currentLang]||nft.name['en'])+' - '+(boughtTxts[currentLang]||boughtTxts['en']));
+      scheduleSave(); renderAll(); renderNFTPanel();
+    });
+  });
+}
+
 // ============ BASARIM SISTEMI ============
 var ACHIEVEMENTS = [
   // MADENCI
@@ -1589,7 +2584,8 @@ var S = {
   items: JSON.parse(JSON.stringify(ITEMS)),
   dailyTaps:0, dailyEarned:0, dailyBizBought:0, dailyUpgDone:0,
   questsClaimed:{}, lastReset:'',
-  activeBoosts:{}
+  activeBoosts:{},
+  nfts:[]
 };
 
 var saveTimer = null;
@@ -1634,12 +2630,15 @@ function fmtTime(sec){
 }
 
 function switchTab(t){
-  document.querySelectorAll('.tab').forEach(function(b,i){b.classList.toggle('active',['mine','upgrade','biz','quest','ref','ton','wheel','ach'][i]===t);});
+  document.querySelectorAll('.tab').forEach(function(b,i){b.classList.toggle('active',['mine','upgrade','biz','city','raid','quest','ref','wheel','nft','ton','ach'][i]===t);});
   document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
   document.getElementById('tab-'+t).classList.add('active');
   if(t==='ref') loadReferrals();
   if(t==='quest') renderQuests();
   if(t==='upgrade') renderUpgrades();
+  if(t==='city') renderCityPanel();
+  if(t==='raid') renderRaidPanel();
+  if(t==='nft') renderNFTPanel();
   if(t==='ton') renderTonBoosts();
   if(t==='wheel') renderWheel();
   if(t==='ach') renderAchievements();
@@ -1992,7 +2991,7 @@ function renderQuests(){
   });
 }
 
-function renderAll(){renderHUD();renderEnergy();renderBiz();renderInventory();updateBadges();checkAchievements();}
+function renderAll(){renderHUD();renderEnergy();renderBiz();renderInventory();updateBadges();checkAchievements();applyNFTBonuses();}
 
 // Timer guncelle
 function updateTimer(){
@@ -2069,7 +3068,8 @@ setInterval(function(){
   applyUpgradeEffects();
   applyBizUpgrades();
   var bonus=getBonus();
-  var inc=S.businesses.reduce(function(a,b){return a+(b.inc||0);},0)*bonus;
+  var nftB = getNFTBonus();
+  var inc=S.businesses.reduce(function(a,b){return a+(b.inc||0);},0)*bonus + (nftB.passiveBonus||0);
   if(inc>0){S.coins+=inc; S.totalEarned+=inc; S.dailyEarned+=inc;}
   if(S.energy<S.maxEnergy) S.energy=Math.min(S.maxEnergy,S.energy+S.regenMult);
   renderAll();
@@ -2125,6 +3125,11 @@ async function apiLogin(){
         }
         
         if(refCode) showNotif('Referral ile katildin! +500 ZRC bonusu!');
+        // NFT verilerini localStorage'dan yükle
+        try {
+          var nftData = localStorage.getItem('zro_nfts_'+userId);
+          if(nftData) S.nfts = JSON.parse(nftData);
+        } catch(e){}
         console.log('Login basarili, coins:', S.coins);
         return;
       }
@@ -2153,6 +3158,7 @@ async function saveGame(){
     localStorage.setItem('zro_tappower', S.tapPower);
     localStorage.setItem('zro_businesses', JSON.stringify(S.businesses));
     localStorage.setItem('zro_achievements_'+userId, JSON.stringify(S.achievementsClaimed||{}));
+    localStorage.setItem('zro_nfts_'+userId, JSON.stringify(S.nfts||[]));
     localStorage.setItem('zro_badges_'+userId, JSON.stringify(S.badges||[]));
     localStorage.setItem('zro_total_taps_'+userId, S.totalTaps||0);
     localStorage.setItem('zro_wheel_spins_'+userId, S.wheelSpins||0);
@@ -2242,7 +3248,7 @@ function canSpin(){
 
 function canFreeSpin(){
   var last = parseInt(localStorage.getItem('zro_last_spin')||'0');
-  return (Date.now() - last) >= 86400000;
+  return (Date.now() - last) >= 3600000;
 }
 
 function timeUntilSpin(){
