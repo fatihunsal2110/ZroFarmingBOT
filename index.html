@@ -282,6 +282,7 @@ body{background:#080d1a;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 
   <!-- MINE -->
   <div class="panel active" id="tab-mine">
+    <div id="hourly-boost-box" style="background:rgba(255,200,0,0.05);border:1px solid rgba(255,200,0,0.15);border-radius:8px;padding:8px 12px;margin-bottom:10px;"></div>
     <div class="energy-wrap">
       <div class="energy-top"><span>ENERJI</span><span id="egy-txt">500/500</span></div>
       <div class="energy-track"><div class="energy-fill" id="egy-bar" style="width:100%"></div></div>
@@ -387,9 +388,8 @@ body{background:#080d1a;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
       <div style="font-family:Orbitron,monospace;font-size:16px;color:rgba(255,200,0,0.8);" id="wheel-countdown">00:00:00</div>
     </div>
     <button id="wheel-spin-btn" style="width:100%;padding:13px;background:linear-gradient(135deg,rgba(0,220,255,0.1),rgba(100,100,255,0.1));border:1px solid rgba(0,220,255,0.35);border-radius:8px;font-family:Orbitron,monospace;font-size:12px;letter-spacing:0.1em;color:#00dcff;cursor:pointer;">🎰 SPIN!</button>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
-      <button id="wheel-ad-btn" style="padding:10px;background:rgba(0,255,150,0.08);border:1px solid rgba(0,255,150,0.25);border-radius:8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#00ff96;cursor:pointer;">📺 AD (+1 SPIN)</button>
-      <button id="wheel-ton-btn" style="padding:10px;background:rgba(80,120,255,0.08);border:1px solid rgba(80,120,255,0.25);border-radius:8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#8ab0ff;cursor:pointer;">⬡ 0.1 TON (+1)</button>
+    <div style="margin-top:8px;">
+      <button id="wheel-ton-btn" style="width:100%;padding:10px;background:rgba(80,120,255,0.08);border:1px solid rgba(80,120,255,0.25);border-radius:8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#8ab0ff;cursor:pointer;">⬡ 0.1 TON (+5 SPINS)</button>
     </div>
     <div style="display:flex;justify-content:space-between;margin-top:8px;padding:6px 10px;background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.12);border-radius:6px;">
       <span style="font-size:9px;color:rgba(0,220,255,0.5);" id="wheel-spins-label">EXTRA SPINS</span>
@@ -2087,108 +2087,124 @@ function renderCityPanel(){
   var bizCount = S.businesses.filter(function(b){return b.lv>0;}).length;
   var totalLv = S.businesses.reduce(function(a,b){return a+b.lv;},0);
 
-  // Şehir SVG oluştur
-  var svgH = 220;
+  // 5 Cag sistemi - her 10 toplam seviyede evrim
+  var era = Math.min(4, Math.floor(totalLv / 10));
+  var eraNames = ['Ortacag','Endustri','Modern','Gelecek','Uzay'];
+  var eraBgs = ['#0a0800','#080a0a','#060c1a','#060818','#04060e'];
+  var bizColors = ['#00aaff','#00ff96','#8844ff','#ffcc00','#00dcff','#ff44aa','#aa44ff','#ff4444'];
+
+  var svgH = 240;
   var svg = '<svg width="100%" viewBox="0 0 340 '+svgH+'" xmlns="http://www.w3.org/2000/svg">';
-  svg += '<rect width="340" height="'+svgH+'" fill="#060c1a"/>';
-  
-  // Gökyüzü yıldızları
-  svg += '<circle cx="30" cy="20" r="1" fill="#fff" opacity="0.4"/>';
-  svg += '<circle cx="80" cy="12" r="1" fill="#fff" opacity="0.3"/>';
-  svg += '<circle cx="150" cy="18" r="1" fill="#fff" opacity="0.5"/>';
-  svg += '<circle cx="220" cy="10" r="1" fill="#fff" opacity="0.3"/>';
-  svg += '<circle cx="290" cy="22" r="1" fill="#fff" opacity="0.4"/>';
-  svg += '<circle cx="310" cy="8" r="1" fill="#00aaff" opacity="0.3"/>';
+  svg += '<rect width="340" height="'+svgH+'" fill="'+eraBgs[era]+'"/>';
 
-  // Zemin
-  svg += '<rect x="0" y="155" width="340" height="65" fill="#040810"/>';
-  svg += '<rect x="0" y="153" width="340" height="3" fill="#0a1428"/>';
-  // Yol
-  svg += '<rect x="0" y="165" width="340" height="10" fill="#070d1c"/>';
-  svg += '<line x1="0" y1="170" x2="340" y2="170" stroke="#1a2a44" stroke-width="0.5" stroke-dasharray="10 8"/>';
+  // Gece gokyuzu
+  if(era===0){ svg+='<rect width="340" height="140" fill="#1a0800"/><circle cx="280" cy="30" r="20" fill="#ff8800" opacity="0.2"/>'; }
+  else if(era===1){ svg+='<rect width="340" height="140" fill="#0a0f0f"/><ellipse cx="80" cy="40" rx="40" ry="20" fill="#1a1a1a" opacity="0.5"/>'; }
+  else if(era===2){ svg+='<rect width="340" height="140" fill="#060c1a"/>'; }
+  else if(era===3){ svg+='<rect width="340" height="140" fill="#060818"/>'; }
+  else { svg+='<rect width="340" height="140" fill="#04060e"/><circle cx="170" cy="70" r="100" fill="none" stroke="#110022" stroke-width="30"/>'; }
 
-  // İşletme binaları
-  var bizDefs = [
-    {color:'#00aaff', name:'NODE'},
-    {color:'#00ff96', name:'MINE'},
-    {color:'#8844ff', name:'DEX'},
-    {color:'#ffcc00', name:'DEFI'},
-    {color:'#00dcff', name:'NFT'},
-    {color:'#ff44aa', name:'AI'},
-    {color:'#aa44ff', name:'QVLT'},
-    {color:'#ff4444', name:'DARK'},
-  ];
+  // Yildizlar
+  var starPts = [[30,15],[80,8],[150,18],[220,6],[290,20],[50,35],[200,28],[310,12]];
+  var sc = era===0?'#ffaa44':era===1?'#888888':'#ffffff';
+  starPts.forEach(function(s){ svg+='<circle cx="'+s[0]+'" cy="'+s[1]+'" r="1" fill="'+sc+'" opacity="0.4"/>'; });
 
-  var xPositions = [15, 55, 95, 135, 180, 225, 265, 300];
-  var widths = [32, 36, 30, 40, 45, 35, 38, 36];
+  // Zemin ve yol
+  var gc = era===0?'#1a1000':era===1?'#0a0f0a':era===4?'#030408':'#040810';
+  svg+='<rect x="0" y="155" width="340" height="85" fill="'+gc+'"/>';
+  svg+='<rect x="0" y="153" width="340" height="3" fill="#0a1428"/>';
+  svg+='<rect x="0" y="165" width="340" height="10" fill="#070d1c"/>';
+  svg+='<line x1="0" y1="170" x2="340" y2="170" stroke="#1a2a44" stroke-width="0.5" stroke-dasharray="10 8"/>';
 
-  S.businesses.forEach(function(biz, i){
-    if(i >= 8) return;
-    var def = bizDefs[i];
-    var lv = biz.lv || 0;
-    var x = xPositions[i];
-    var w = widths[i];
-    var h = lv === 0 ? 0 : Math.min(20 + lv * 15, 130);
-    var y = 153 - h;
+  // Cag ve seviye etiketi
+  svg+='<text x="5" y="235" font-family="monospace" font-size="7" fill="'+sc+'" opacity="0.5">'+eraNames[era]+'</text>';
+  svg+='<text x="335" y="235" text-anchor="end" font-family="monospace" font-size="7" fill="'+sc+'" opacity="0.4">Lv.'+totalLv+'</text>';
 
-    if(lv === 0){
-      // Boş arsa
-      svg += '<rect x="'+x+'" y="148" width="'+w+'" height="5" rx="1" fill="#0a1020" stroke="rgba(0,220,255,0.1)" stroke-width="0.5"/>';
-      svg += '<text x="'+(x+w/2)+'" y="147" text-anchor="middle" font-family="monospace" font-size="5" fill="rgba(0,220,255,0.2)">'+def.name+'</text>';
+  var xPos = [12,48,86,126,170,212,252,292];
+  var bw = [28,30,28,34,38,30,32,30];
+
+  S.businesses.forEach(function(biz,i){
+    if(i>=8) return;
+    var col = bizColors[i];
+    var lv = biz.lv||0;
+    var x = xPos[i];
+    var w = bw[i];
+    var cx = x+w/2;
+
+    if(lv===0){
+      svg+='<rect x="'+x+'" y="148" width="'+w+'" height="5" rx="1" fill="#0a1020" stroke="rgba(0,220,255,0.08)" stroke-width="0.5"/>';
       return;
     }
 
-    // Bina gövdesi
-    svg += '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="1" fill="#0a1020" stroke="'+def.color+'" stroke-width="0.5" opacity="0.8"/>';
-    
-    // Pencereler
-    var winRows = Math.floor(h / 14);
-    var winCols = Math.floor(w / 10);
-    for(var r=0; r<Math.min(winRows,8); r++){
-      for(var c=0; c<Math.min(winCols,3); c++){
-        var wx = x + 3 + c * 10;
-        var wy = y + 4 + r * 12;
-        var opacity = Math.random() > 0.3 ? (0.4 + Math.random()*0.4) : 0.1;
-        svg += '<rect x="'+wx+'" y="'+wy+'" width="6" height="7" rx="1" fill="'+def.color+'" opacity="'+opacity.toFixed(1)+'"/>';
+    var h = Math.min(15+lv*7, 125);
+    var y = 153-h;
+
+    if(era===0){ // ORTACAG - kale
+      svg+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="#221500" stroke="'+col+'" stroke-width="0.5"/>';
+      for(var m=0;m<3;m++){ svg+='<rect x="'+(x+2+m*Math.floor(w/3))+'" y="'+y+'" width="4" height="5" fill="#1a0800"/>'; }
+      if(lv>=2){ svg+='<rect x="'+(cx-2)+'" y="'+(y+h*0.3)+'" width="4" height="7" rx="1" fill="'+col+'" opacity="0.6"/>'; }
+      if(lv>=5){
+        svg+='<line x1="'+cx+'" y1="'+y+'" x2="'+cx+'" y2="'+(y-8)+'" stroke="#886600" stroke-width="1"/>';
+        svg+='<polygon points="'+cx+','+(y-8)+' '+(cx+7)+','+(y-5)+' '+cx+','+(y-2)+'" fill="'+col+'" opacity="0.8"/>';
       }
+    } else if(era===1){ // ENDUSTRI - fabrika
+      svg+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="#0f1a0f" stroke="'+col+'" stroke-width="0.5"/>';
+      for(var r=0;r<Math.min(Math.floor(h/10),5);r++){
+        svg+='<rect x="'+(x+3)+'" y="'+(y+4+r*9)+'" width="5" height="5" rx="0.5" fill="'+col+'" opacity="0.4"/>';
+        if(w>22) svg+='<rect x="'+(x+w-8)+'" y="'+(y+4+r*9)+'" width="5" height="5" rx="0.5" fill="'+col+'" opacity="0.3"/>';
+      }
+      if(lv>=2){ svg+='<rect x="'+(x+w-7)+'" y="'+(y-10)+'" width="5" height="12" rx="1" fill="#111"/><ellipse cx="'+(x+w-5)+'" cy="'+(y-11)+'" rx="4" ry="7" fill="#1a1a1a" opacity="0.5"/>'; }
+    } else if(era===2){ // MODERN - cam kule
+      svg+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="1" fill="#0a1428" stroke="'+col+'" stroke-width="0.8"/>';
+      for(var r2=0;r2<Math.min(Math.floor(h/9),10);r2++){
+        for(var c=0;c<Math.min(Math.floor(w/8),3);c++){
+          var op=(0.2+Math.random()*0.5).toFixed(1);
+          svg+='<rect x="'+(x+2+c*7)+'" y="'+(y+3+r2*8)+'" width="4" height="5" rx="0.5" fill="'+col+'" opacity="'+op+'"/>';
+        }
+      }
+      if(lv>=3){ svg+='<line x1="'+cx+'" y1="'+y+'" x2="'+cx+'" y2="'+(y-10)+'" stroke="'+col+'" stroke-width="1" opacity="0.6"/><circle cx="'+cx+'" cy="'+(y-11)+'" r="2.5" fill="'+col+'" opacity="0.8"/>'; }
+    } else if(era===3){ // GELECEK - neon
+      svg+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" rx="2" fill="rgba(0,5,20,0.95)" stroke="'+col+'" stroke-width="1"/>';
+      svg+='<line x1="'+x+'" y1="'+(y+h*0.33)+'" x2="'+(x+w)+'" y2="'+(y+h*0.33)+'" stroke="'+col+'" stroke-width="0.5" opacity="0.35"/>';
+      svg+='<line x1="'+x+'" y1="'+(y+h*0.66)+'" x2="'+(x+w)+'" y2="'+(y+h*0.66)+'" stroke="'+col+'" stroke-width="0.5" opacity="0.35"/>';
+      for(var hg=0;hg<Math.min(Math.floor(h/12),6);hg++){
+        svg+='<rect x="'+(x+2)+'" y="'+(y+4+hg*11)+'" width="'+(w-4)+'" height="6" rx="1" fill="'+col+'" opacity="0.07"/>';
+      }
+      if(lv>=2){ svg+='<line x1="'+cx+'" y1="'+y+'" x2="'+cx+'" y2="'+(y-14)+'" stroke="'+col+'" stroke-width="1.5"/><circle cx="'+cx+'" cy="'+(y-15)+'" r="4" fill="'+col+'" opacity="0.9"/><circle cx="'+cx+'" cy="'+(y-15)+'" r="7" fill="none" stroke="'+col+'" stroke-width="0.5" opacity="0.3"/>'; }
+    } else { // UZAY - kristal
+      svg+='<polygon points="'+cx+','+y+' '+(x+w)+','+(y+h*0.28)+' '+(x+w)+','+(y+h*0.8)+' '+cx+','+(y+h)+' '+x+','+(y+h*0.8)+' '+x+','+(y+h*0.28)+'" fill="rgba(15,0,35,0.95)" stroke="'+col+'" stroke-width="1"/>';
+      svg+='<line x1="'+cx+'" y1="'+y+'" x2="'+cx+'" y2="'+(y+h)+'" stroke="'+col+'" stroke-width="0.4" opacity="0.35"/>';
+      svg+='<line x1="'+x+'" y1="'+(y+h*0.54)+'" x2="'+(x+w)+'" y2="'+(y+h*0.54)+'" stroke="'+col+'" stroke-width="0.4" opacity="0.25"/>';
+      svg+='<circle cx="'+(x+3)+'" cy="'+(y+h*0.4)+'" r="1.5" fill="'+col+'" opacity="0.5"/>';
+      svg+='<circle cx="'+(x+w-3)+'" cy="'+(y+h*0.6)+'" r="1.5" fill="'+col+'" opacity="0.5"/>';
+      if(lv>=2){ svg+='<polygon points="'+cx+','+(y-10)+' '+(cx-4)+','+y+' '+(cx+4)+','+y+'" fill="'+col+'" opacity="0.9"/><circle cx="'+cx+'" cy="'+(y-11)+'" r="3" fill="'+col+'"/>'; }
     }
-
-    // Çatı anteni (yüksek binalarda)
-    if(lv >= 3){
-      svg += '<line x1="'+(x+w/2)+'" y1="'+y+'" x2="'+(x+w/2)+'" y2="'+(y-10)+'" stroke="'+def.color+'" stroke-width="1" opacity="0.6"/>';
-      svg += '<circle cx="'+(x+w/2)+'" cy="'+(y-11)+'" r="2" fill="'+def.color+'" opacity="0.8"/>';
-    }
-
-    // Bina adı
-    svg += '<text x="'+(x+w/2)+'" y="'+(y-2)+'" text-anchor="middle" font-family="monospace" font-size="5" fill="'+def.color+'" opacity="0.6">'+def.name+'</text>';
   });
 
-  // Şehir adı ve seviye
-  svg += '<text x="170" y="195" text-anchor="middle" font-family="monospace" font-size="8" fill="rgba(0,220,255,0.4)">ZRo City — Level '+totalLv+'</text>';
-
-  svg += '</svg>';
+  svg+='</svg>';
   wrap.innerHTML = svg;
 
-  // İstatistikler
   var statsEl = document.getElementById('city-stats');
   if(statsEl){
     var passiveInc = S.businesses.reduce(function(a,b){return a+(b.inc||0);},0);
+    var eraFull = ['⚔️ Medieval','🏭 Industrial','🌆 Modern','🚀 Future','🌌 Space'];
     var statItems = [
       {label:{tr:'Bina',en:'Buildings',ru:'Зданий',zh:'建筑',ar:'مبانٍ',es:'Edificios',hi:'इमारतें'}, val:bizCount+'/8'},
-      {label:{tr:'Şehir Seviyesi',en:'City Level',ru:'Уровень города',zh:'城市等级',ar:'مستوى المدينة',es:'Nivel ciudad',hi:'शहर स्तर'}, val:totalLv},
-      {label:{tr:'Pasif Gelir',en:'Passive Income',ru:'Пассивный доход',zh:'被动收入',ar:'الدخل السلبي',es:'Ingresos pasivos',hi:'निष्क्रिय आय'}, val:fmt(Math.floor(passiveInc))+'/s'},
+      {label:{tr:'Cag',en:'Era',ru:'Эпоха',zh:'时代',ar:'عصر',es:'Era',hi:'युग'}, val:eraFull[era]},
+      {label:{tr:'Pasif',en:'Passive',ru:'Пассивный',zh:'被动',ar:'السلبي',es:'Pasivo',hi:'निष्क्रिय'}, val:fmt(Math.floor(passiveInc))+'/s'},
       {label:{tr:'Kalkan',en:'Shield',ru:'Щит',zh:'盾牌',ar:'الدرع',es:'Escudo',hi:'ढाल'}, val:isShieldActive()?'🛡️ ON':'⚠️ OFF'},
     ];
-    statsEl.innerHTML = '';
+    statsEl.innerHTML='';
     statItems.forEach(function(s){
-      var lb = s.label[currentLang]||s.label['en'];
-      var d = document.createElement('div');
-      d.style.cssText = 'background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.1);border-radius:6px;padding:8px;text-align:center;';
-      d.innerHTML = '<div style="font-size:8px;color:rgba(0,220,255,0.4);margin-bottom:3px;">'+lb+'</div><div style="font-family:Orbitron,monospace;font-size:11px;color:#00dcff;">'+s.val+'</div>';
+      var lb=s.label[currentLang]||s.label['en'];
+      var d=document.createElement('div');
+      d.style.cssText='background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.1);border-radius:6px;padding:8px;text-align:center;';
+      d.innerHTML='<div style="font-size:8px;color:rgba(0,220,255,0.4);margin-bottom:3px;">'+lb+'</div><div style="font-family:Orbitron,monospace;font-size:10px;color:#00dcff;">'+s.val+'</div>';
       statsEl.appendChild(d);
     });
   }
 }
+
 
 function renderNFTPanel(){
   var el = document.getElementById('nft-panel');
@@ -2280,22 +2296,20 @@ function renderNFTPanel(){
     var buyTxts={tr:'⬡ '+nft.ton+' TON',en:'⬡ '+nft.ton+' TON',ru:'⬡ '+nft.ton+' TON',zh:'⬡ '+nft.ton+' TON',ar:'⬡ '+nft.ton+' TON',es:'⬡ '+nft.ton+' TON',hi:'⬡ '+nft.ton+' TON'};
     var ownedTxts={tr:'✓ AKTİF',en:'✓ ACTIVE',ru:'✓ АКТИВНО',zh:'✓ 已激活',ar:'✓ نشط',es:'✓ ACTIVO',hi:'✓ सक्रिय'};
 
+    var tonArt = getTonNFTSvgArt(nft);
     var d = document.createElement('div');
-    d.style.cssText = 'background:'+nft.svgBg+';border:1px solid '+(owned?nft.svgBorder:'rgba(255,180,0,0.2)')+';border-radius:8px;padding:10px;position:relative;'+(owned?'box-shadow:0 0 8px '+nft.svgBorder+'44;':'');
+    d.style.cssText = 'background:'+nft.svgBg+';border:1px solid '+(owned?nft.svgBorder:'rgba(255,180,0,0.2)')+';border-radius:8px;overflow:hidden;position:relative;'+(owned?'box-shadow:0 0 8px '+nft.svgBorder+'44;':'');
     d.innerHTML =
-      '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">'+
-        '<div style="font-size:22px;">'+nft.icon+'</div>'+
-        '<div>'+
-          '<div style="font-size:9px;font-family:Orbitron,monospace;color:'+(owned?nft.svgBorder:'#e0c060')+';">'+name+'</div>'+
-          '<div style="font-size:8px;color:rgba(255,180,0,0.5);">'+rc.label+'</div>'+
-        '</div>'+
-      '</div>'+
-      '<div style="font-size:9px;color:rgba(0,255,150,0.7);margin-bottom:8px;font-family:Orbitron,monospace;">'+desc+'</div>'+
+      '<div style="width:100%;display:block;">'+tonArt+'</div>'+
+      '<div style="padding:8px;">'+
+      '<div style="font-size:9px;font-family:Orbitron,monospace;color:'+(owned?nft.svgBorder:'#e0c060')+';margin-bottom:2px;">'+name+'</div>'+
+      '<div style="font-size:8px;color:rgba(0,255,150,0.7);margin-bottom:6px;">'+desc+'</div>'+
       (owned?
-        '<div style="text-align:center;font-size:9px;color:'+nft.svgBorder+';font-family:Orbitron,monospace;background:'+nft.svgBg+';border:1px solid '+nft.svgBorder+';border-radius:4px;padding:4px;">'+(ownedTxts[currentLang]||ownedTxts['en'])+'</div>'
+        '<div style="text-align:center;font-size:9px;color:'+nft.svgBorder+';font-family:Orbitron,monospace;border:1px solid '+nft.svgBorder+';border-radius:4px;padding:4px;">'+(ownedTxts[currentLang]||ownedTxts['en'])+'</div>'
       :
         '<button style="width:100%;background:rgba(255,180,0,0.08);border:1px solid '+nft.svgBorder+';border-radius:5px;padding:6px;font-family:Orbitron,monospace;font-size:10px;color:'+nft.svgBorder+';cursor:pointer;" data-tonnft="'+nft.id+'">'+nft.ton+' TON</button>'
-      );
+      )+
+      '</div>';
     tonGrid.appendChild(d);
   });
 
@@ -2602,10 +2616,12 @@ function checkDailyReset(){
 }
 
 function getBonus(){
+  var bonus = 1.0;
   for(var i=TIERS.length-1;i>=0;i--){
-    if(S.refCount>=TIERS[i].min) return TIERS[i].mult;
+    if(S.refCount>=TIERS[i].min){ bonus = TIERS[i].mult; break; }
   }
-  return 1.0;
+  bonus *= getHourlyBoostMult();
+  return bonus;
 }
 
 function getTapPower(){
@@ -2992,7 +3008,7 @@ function renderQuests(){
   });
 }
 
-function renderAll(){renderHUD();renderEnergy();renderBiz();renderInventory();updateBadges();checkAchievements();applyNFTBonuses();}
+function renderAll(){renderHUD();renderEnergy();renderBiz();renderInventory();updateBadges();checkAchievements();applyNFTBonuses();renderHourlyBoost();}
 
 // Timer guncelle
 function updateTimer(){
@@ -3112,7 +3128,20 @@ async function apiLogin(){
         S.tapPower = u.tap_power||1;
         S.refCount = u.ref_count||0;
         S.refEarned = u.ref_earned||0;
+        S.isPremium = u.is_premium||false;
+        if(u.max_energy) S.maxEnergy = u.max_energy;
+        if(u.regen_mult) S.regenMult = u.regen_mult;
+        if(u.active_boosts) S.activeBoosts = u.active_boosts;
         if(u.businesses && u.businesses.length>0) S.businesses = u.businesses;
+        // Upgrades yükle - sadece lv ve upgEnd kaydet
+        if(u.upgrades && u.upgrades.length>0){
+          u.upgrades.forEach(function(saved){
+            var upg = S.upgrades.find(function(x){return x.id===saved.id;});
+            if(upg){ upg.lv = saved.lv||0; upg.upgEnd = saved.upgEnd||0; }
+          });
+          // Upgrade efektlerini uygula
+          applyUpgradeEffects();
+        }
         
         if(offlineEarned > 0){
           var offMsgs={tr:'Hoş geldin! Çevrimdışıyken +'+fmt(offlineEarned)+' ZRC kazandın!',
@@ -3130,6 +3159,20 @@ async function apiLogin(){
         try {
           var nftData = localStorage.getItem('zro_nfts_'+userId);
           if(nftData) S.nfts = JSON.parse(nftData);
+          var upgData = localStorage.getItem('zro_upgrades_'+userId);
+          if(upgData && !(u.upgrades && u.upgrades.length>0)){
+            JSON.parse(upgData).forEach(function(saved){
+              var upg = S.upgrades.find(function(x){return x.id===saved.id;});
+              if(upg){ upg.lv = saved.lv||0; upg.upgEnd = saved.upgEnd||0; }
+            });
+            applyUpgradeEffects();
+          }
+          // Günlük görevleri yükle - bugünün verisini al
+          var questData = localStorage.getItem('zro_quests_'+userId);
+          if(questData){
+            var qd = JSON.parse(questData);
+            if(qd.date === todayStr()) S.questsClaimed = qd.claimed || {};
+          }
         } catch(e){}
         console.log('Login basarili, coins:', S.coins);
         return;
@@ -3160,6 +3203,8 @@ async function saveGame(){
     localStorage.setItem('zro_businesses', JSON.stringify(S.businesses));
     localStorage.setItem('zro_achievements_'+userId, JSON.stringify(S.achievementsClaimed||{}));
     localStorage.setItem('zro_nfts_'+userId, JSON.stringify(S.nfts||[]));
+    localStorage.setItem('zro_upgrades_'+userId, JSON.stringify(S.upgrades.map(function(u){return {id:u.id,lv:u.lv,upgEnd:u.upgEnd};})));
+    localStorage.setItem('zro_quests_'+userId, JSON.stringify({claimed:S.questsClaimed, date:todayStr()}));
     localStorage.setItem('zro_badges_'+userId, JSON.stringify(S.badges||[]));
     localStorage.setItem('zro_total_taps_'+userId, S.totalTaps||0);
     localStorage.setItem('zro_wheel_spins_'+userId, S.wheelSpins||0);
@@ -3177,6 +3222,11 @@ async function saveGame(){
         energy: Math.floor(S.energy),
         tap_power: S.tapPower,
         businesses: S.businesses,
+        upgrades: S.upgrades,
+        max_energy: S.maxEnergy,
+        regen_mult: S.regenMult,
+        active_boosts: S.activeBoosts,
+        is_premium: S.isPremium,
         ref_count: S.refCount,
         ref_earned: S.refEarned
       }),
@@ -3224,6 +3274,72 @@ async function loadReferrals(){
   } catch(e){}
 }
 
+
+
+// ============ SAATLİK GİRİŞ BOOST ============
+var HOURLY_BOOST_DURATION = 600000; // 10 dakika
+var HOURLY_BOOST_MULT = 1.1; // %10 bonus
+
+function checkHourlyBoost(){
+  var lastClaim = parseInt(localStorage.getItem('zro_hourly_claim')||'0');
+  var now = Date.now();
+  // Saat başı sıfırla
+  var currentHourStart = Math.floor(now / 3600000) * 3600000;
+  return lastClaim < currentHourStart;
+}
+
+function claimHourlyBoost(){
+  if(!checkHourlyBoost()) return false;
+  localStorage.setItem('zro_hourly_claim', Date.now().toString());
+  if(!S.activeBoosts) S.activeBoosts = {};
+  S.activeBoosts['hourly_boost'] = Date.now() + HOURLY_BOOST_DURATION;
+  var claimMsgs={tr:'⚡ Saatlik %10 Boost aktif! (10 dk)',en:'⚡ Hourly +10% Boost active! (10 min)',ru:'⚡ Почасовой +10% буст! (10 мин)',zh:'⚡ 每小时+10%加速激活！(10分钟)',ar:'⚡ تعزيز +10% كل ساعة! (10 دقائق)',es:'⚡ ¡Boost +10% por hora activo! (10 min)',hi:'⚡ प्रति घंटे +10% बूस्ट! (10 मिनट)'};
+  showNotif(claimMsgs[currentLang]||claimMsgs['en']);
+  scheduleSave(); renderAll();
+  return true;
+}
+
+function getHourlyBoostMult(){
+  if(!S.activeBoosts || !S.activeBoosts['hourly_boost']) return 1.0;
+  if(Date.now() > S.activeBoosts['hourly_boost']) return 1.0;
+  return HOURLY_BOOST_MULT;
+}
+
+function renderHourlyBoost(){
+  var el = document.getElementById('hourly-boost-box');
+  if(!el) return;
+  var canClaim = checkHourlyBoost();
+  var active = S.activeBoosts && S.activeBoosts['hourly_boost'] && Date.now() < S.activeBoosts['hourly_boost'];
+  var remBoost = active ? Math.ceil((S.activeBoosts['hourly_boost'] - Date.now())/1000) : 0;
+  
+  // Bir sonraki saate kadar süre
+  var nextHour = (Math.floor(Date.now()/3600000)+1)*3600000;
+  var untilNext = Math.ceil((nextHour - Date.now())/1000);
+
+  var titles={tr:'⚡ SAATLİK BOOST',en:'⚡ HOURLY BOOST',ru:'⚡ ПОЧАСОВОЙ БУСТ',zh:'⚡ 每小时加速',ar:'⚡ تعزيز كل ساعة',es:'⚡ BOOST POR HORA',hi:'⚡ प्रति घंटे बूस्ट'};
+  var claimTxts={tr:'AL (+%10, 10 DK)',en:'CLAIM (+10%, 10 MIN)',ru:'ПОЛУЧИТЬ (+10%, 10 МИН)',zh:'领取(+10%, 10分钟)',ar:'احصل (+10%, 10 دقائق)',es:'RECLAMAR (+10%, 10 MIN)',hi:'प्राप्त करें (+10%, 10 मिनट)'};
+  var nextTxts={tr:'Sonraki: ',en:'Next: ',ru:'Следующий: ',zh:'下一个: ',ar:'التالي: ',es:'Próximo: ',hi:'अगला: '};
+  var activeTxts={tr:'AKTİF',en:'ACTIVE',ru:'АКТИВНО',zh:'激活',ar:'نشط',es:'ACTIVO',hi:'सक्रिय'};
+
+  el.innerHTML =
+    '<div style="display:flex;align-items:center;justify-content:space-between;">'+
+      '<div>'+
+        '<div style="font-size:9px;font-family:Orbitron,monospace;color:#ffcc00;letter-spacing:0.1em;">'+(titles[currentLang]||titles['en'])+'</div>'+
+        (active?
+          '<div style="font-size:8px;color:rgba(0,255,150,0.7);margin-top:2px;">✓ '+(activeTxts[currentLang]||activeTxts['en'])+' — '+fmtTime(remBoost)+'</div>'
+        :!canClaim?
+          '<div style="font-size:8px;color:rgba(255,200,0,0.5);margin-top:2px;">'+(nextTxts[currentLang]||nextTxts['en'])+fmtTime(untilNext)+'</div>'
+        :
+          '<div style="font-size:8px;color:rgba(255,200,0,0.6);margin-top:2px;">+10% FARM BOOST</div>'
+        )+
+      '</div>'+
+      (canClaim && !active?
+        '<button onclick="claimHourlyBoost()" style="background:rgba(255,200,0,0.1);border:1px solid rgba(255,200,0,0.4);border-radius:6px;padding:6px 10px;font-family:Orbitron,monospace;font-size:8px;color:#ffcc00;cursor:pointer;">'+(claimTxts[currentLang]||claimTxts['en'])+'</button>'
+      :
+        '<div style="font-size:18px;">'+(active?'⚡':'⏳')+'</div>'
+      )+
+    '</div>';
+}
 
 // ============ SANS CARKI ============
 var WHEEL_PRIZES = [
@@ -3797,8 +3913,9 @@ document.addEventListener('click', function(e){
   if(e.target && e.target.id === 'wheel-ton-btn'){
     sendTonPayment(0.1, 'ZRoFarm:wheel_spin:'+userId).then(function(result){
       if(result){
-        addExtraSpin(1);
-        showNotif('⬡ +1 spin purchased!');
+        addExtraSpin(5);
+        var ton5Txts={tr:'⬡ +5 çevirme hakkı!',en:'⬡ +5 spins purchased!',ru:'⬡ +5 спинов!',zh:'⬡ +5转已购！',ar:'⬡ +5 دورات!',es:'⬡ +5 giros!',hi:'⬡ +5 स्पिन!'};
+        showNotif(ton5Txts[currentLang]||ton5Txts['en']);
         renderWheel();
       }
     });
