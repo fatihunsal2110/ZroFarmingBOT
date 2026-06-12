@@ -282,7 +282,14 @@ body{background:#080d1a;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 
   <!-- MINE -->
   <div class="panel active" id="tab-mine">
-    <div id="hourly-boost-box" style="background:rgba(255,200,0,0.05);border:1px solid rgba(255,200,0,0.15);border-radius:8px;padding:8px 12px;margin-bottom:10px;"></div>
+    <div id="hourly-boost-box" style="background:rgba(255,200,0,0.05);border:1px solid rgba(255,200,0,0.15);border-radius:8px;padding:8px 12px;margin-bottom:8px;"></div>
+    <div id="ingame-ton-box" style="background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.12);border-radius:8px;padding:8px 12px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="switchTab('loot')">
+      <div>
+        <div style="font-size:8px;color:rgba(0,220,255,0.5);letter-spacing:0.1em;" id="ingame-ton-label">IN-GAME TON</div>
+        <div style="font-size:8px;color:rgba(0,220,255,0.35);" id="ingame-ton-note">Withdrawable at token launch</div>
+      </div>
+      <div style="font-family:Orbitron,monospace;font-size:16px;color:#00dcff;" id="ingame-ton-val">0.000 TON</div>
+    </div>
     <div class="energy-wrap">
       <div class="energy-top"><span>ENERJI</span><span id="egy-txt">500/500</span></div>
       <div class="energy-track"><div class="energy-fill" id="egy-bar" style="width:100%"></div></div>
@@ -962,6 +969,7 @@ function renderSettingsInfo(){
     {id:'stat-ref-count',     label:{tr:'Referral Sayısı',en:'Referrals',ru:'Рефералов',zh:'推荐人数',ar:'عدد الإحالات',es:'Referidos',hi:'रेफरल संख्या'},          val: S.refCount||0},
     {id:'stat-achievements',  label:{tr:'Başarım',en:'Achievements',ru:'Достижений',zh:'成就',ar:'الإنجازات',es:'Logros',hi:'उपलब्धियाँ'},                    val: Object.keys(S.achievementsClaimed||{}).length+' / '+16},
     {id:'stat-badges',        label:{tr:'Rozetler',en:'Badges',ru:'Значки',zh:'徽章',ar:'الشارات',es:'Insignias',hi:'बैज'},                                  val: (S.badges||[]).length},
+    {id:'stat-ingame-ton',    label:{tr:'Oyun İçi TON',en:'In-Game TON',ru:'Внутриигровой TON',zh:'游戏内TON',ar:'TON داخل اللعبة',es:'TON en el juego',hi:'इन-गेम TON'},        val: getInGameTON().toFixed(3)+' TON'},
     {id:'stat-premium',       label:{tr:'Premium',en:'Premium',ru:'Премиум',zh:'高级',ar:'مميز',es:'Premium',hi:'प्रीमियम'},                                  val: S.isPremium?'👑 AKTİF':'—'},
   ];
 
@@ -1610,6 +1618,251 @@ function renderRaidPanel(){
     var cd = document.getElementById('raid-countdown');
     if(cd) cd.textContent = fmtTime(timeUntilRaid());
   }, 1000);
+}
+
+
+// ============ LOOT BOX SİSTEMİ ============
+
+// Oyun içi TON bakiyesi
+function getInGameTON(){
+  return parseFloat(localStorage.getItem('zro_ton_balance_'+userId)||'0');
+}
+function addInGameTON(amount){
+  var cur = getInGameTON();
+  localStorage.setItem('zro_ton_balance_'+userId, (cur+amount).toFixed(3));
+}
+
+var LOOT_BOXES = [
+  {
+    id:'common', icon:'📦', rarity:'common',
+    name:{tr:'Common Box',en:'Common Box',ru:'Обычный ящик',zh:'普通箱',ar:'صندوق عادي',es:'Caja común',hi:'सामान्य बॉक्स'},
+    cost:{zrc:10000},
+    color:'#00aaff', glow:'rgba(0,170,255,0.3)',
+    rewards:[
+      {weight:30, type:'zrc',     label:'500 ZRC',        value:500},
+      {weight:25, type:'zrc',     label:'2,000 ZRC',      value:2000},
+      {weight:15, type:'zrc',     label:'5,000 ZRC',      value:5000},
+      {weight:10, type:'item',    label:'ZRC Crystal',    value:'kristal'},
+      {weight:8,  type:'item',    label:'Energy Reactor', value:'reaktor'},
+      {weight:5,  type:'boost',   label:'1H Boost x2',    value:'boost_1h'},
+      {weight:4,  type:'nft',     label:'Mining Drill NFT',value:'mining_drill'},
+      {weight:2,  type:'nft',     label:'Energy Cell NFT', value:'energy_cell'},
+      {weight:1,  type:'ton_ig',  label:'0.05 TON (in-game)',value:0.05},
+    ]
+  },
+  {
+    id:'rare', icon:'💜', rarity:'rare',
+    name:{tr:'Rare Box',en:'Rare Box',ru:'Редкий ящик',zh:'稀有箱',ar:'صندوق نادر',es:'Caja rara',hi:'दुर्लभ बॉक्स'},
+    cost:{zrc:50000},
+    color:'#8844ff', glow:'rgba(136,68,255,0.3)',
+    rewards:[
+      {weight:20, type:'zrc',     label:'10,000 ZRC',     value:10000},
+      {weight:18, type:'zrc',     label:'30,000 ZRC',     value:30000},
+      {weight:12, type:'boost',   label:'24H Boost x2',   value:'boost_daily'},
+      {weight:10, type:'nft',     label:'Quantum Chip NFT',value:'quantum_chip'},
+      {weight:8,  type:'nft',     label:'TON Knight NFT', value:'ton_knight'},
+      {weight:7,  type:'special', label:'Early Miner Badge',value:'badge_early'},
+      {weight:6,  type:'premium', label:'3-Day Premium',  value:3},
+      {weight:5,  type:'special', label:'Referral Booster 24H',value:'ref_boost'},
+      {weight:4,  type:'nft',     label:'Neural Miner NFT',value:'neural_miner'},
+      {weight:3,  type:'special', label:'Whitelist Slot', value:'whitelist'},
+      {weight:2,  type:'ton_ig',  label:'0.1-1 TON (in-game)',value:'rare_ton'},
+    ]
+  },
+  {
+    id:'legendary', icon:'🌟', rarity:'legendary',
+    name:{tr:'Legendary Box',en:'Legendary Box',ru:'Легендарный ящик',zh:'传奇箱',ar:'صندوق أسطوري',es:'Caja legendaria',hi:'पौराणिक बॉक्स'},
+    cost:{zrc:200000},
+    color:'#ffcc00', glow:'rgba(255,200,0,0.4)',
+    rewards:[
+      {weight:15, type:'zrc',     label:'50,000 ZRC',     value:50000},
+      {weight:12, type:'zrc',     label:'150,000 ZRC',    value:150000},
+      {weight:10, type:'nft',     label:'Blockchain Tower',value:'blockchain_tower'},
+      {weight:8,  type:'nft',     label:'Crypto King NFT',value:'crypto_king'},
+      {weight:7,  type:'special', label:'Diamond Status 3D',value:'diamond_3d'},
+      {weight:6,  type:'boost',   label:'Farm Rush x3 6H',value:'farm_rush'},
+      {weight:6,  type:'special', label:'City Shield 7D', value:'shield_7d'},
+      {weight:5,  type:'special', label:'Airdrop Slot',   value:'airdrop_slot'},
+      {weight:4,  type:'nft',     label:'God Hammer NFT', value:'god_hammer'},
+      {weight:4,  type:'special', label:'Jackpot Ticket', value:'jackpot'},
+      {weight:4,  type:'special', label:'Tournament Pass',value:'tourney_pass'},
+      {weight:3,  type:'ton_ig',  label:'0.1-1 TON (in-game)',value:'leg_ton'},
+      {weight:2,  type:'nft',     label:'ZRC Legend NFT', value:'zrc_legend'},
+      {weight:1,  type:'special', label:'ZRC Whale Status',value:'whale_status'},
+    ]
+  }
+];
+
+function rollLootBox(box){
+  var total = box.rewards.reduce(function(a,r){return a+r.weight;},0);
+  var roll = Math.random()*total;
+  var sum = 0;
+  for(var i=0;i<box.rewards.length;i++){
+    sum += box.rewards[i].weight;
+    if(roll<=sum) return box.rewards[i];
+  }
+  return box.rewards[0];
+}
+
+function claimLootReward(reward){
+  if(!S.activeBoosts) S.activeBoosts={};
+  if(!S.nfts) S.nfts=[];
+  if(!S.badges) S.badges=[];
+
+  switch(reward.type){
+    case 'zrc':
+      S.coins+=reward.value; S.totalEarned+=reward.value; break;
+    case 'item':
+      var item=S.items.find(function(x){return x.id===reward.value;});
+      if(item) item.count++; break;
+    case 'boost':
+      var dur={boost_1h:3600000,boost_daily:86400000}[reward.value]||3600000;
+      S.activeBoosts[reward.value]=Date.now()+dur; break;
+    case 'nft':
+      if(S.nfts.indexOf(reward.value)===-1){ S.nfts.push(reward.value); applyNFTBonuses(); } break;
+    case 'ton_ig':
+      var tonAmt = reward.value;
+      if(reward.value==='rare_ton') tonAmt = 0.1+Math.random()*0.9; // 0.1-1 TON
+      if(reward.value==='leg_ton')  tonAmt = 0.1+Math.random()*0.9; // 0.1-1 TON
+      tonAmt = Math.round(tonAmt*100)/100;
+      reward.label = tonAmt+' TON (in-game)';
+      addInGameTON(tonAmt); break;
+    case 'premium':
+      S.isPremium=true;
+      S.activeBoosts['premium_temp']=Date.now()+(reward.value*86400000);
+      if(S.maxEnergy<1000) S.maxEnergy*=2; break;
+    case 'special':
+      if(reward.value==='badge_early'){ if(S.badges.indexOf('🎖️ Early Miner')===-1) S.badges.push('🎖️ Early Miner'); }
+      else if(reward.value==='ref_boost'){ S.activeBoosts['ref_boost']=Date.now()+86400000; }
+      else if(reward.value==='whitelist'){ if(S.badges.indexOf('📋 Whitelist')===-1) S.badges.push('📋 Whitelist'); }
+      else if(reward.value==='diamond_3d'){ S.activeBoosts['diamond']=Date.now()+(3*86400000); if(S.badges.indexOf('💎 Diamond')===-1) S.badges.push('💎 Diamond'); }
+      else if(reward.value==='farm_rush'){ S.activeBoosts['farm_rush']=Date.now()+(6*3600000); }
+      else if(reward.value==='shield_7d'){ S.activeBoosts['shield']=Date.now()+(7*86400000); }
+      else if(reward.value==='airdrop_slot'){ if(S.badges.indexOf('🌐 Airdrop')===-1) S.badges.push('🌐 Airdrop'); }
+      else if(reward.value==='jackpot'){ if(!S.jackpotTickets) S.jackpotTickets=0; S.jackpotTickets++; }
+      else if(reward.value==='tourney_pass'){ if(!S.tourneyPasses) S.tourneyPasses=0; S.tourneyPasses++; }
+      else if(reward.value==='whale_status'){ if(S.badges.indexOf('🐋 Whale Status')===-1) S.badges.push('🐋 Whale Status'); S.activeBoosts['whale']=Date.now()+(30*86400000); }
+      break;
+  }
+  scheduleSave(); renderAll();
+}
+
+var lootOpeningActive=false;
+
+function openLootBox(boxId){
+  if(lootOpeningActive) return;
+  var box=LOOT_BOXES.find(function(b){return b.id===boxId;});
+  if(!box) return;
+  if(S.coins<box.cost.zrc){
+    var noZrcTxts={tr:'Yeterli ZRC yok!',en:'Not enough ZRC!',ru:'Недостаточно ZRC!',zh:'ZRC不足！',ar:'ZRC غير كافٍ!',es:'¡ZRC insuficiente!',hi:'ZRC कम है!'};
+    showNotif(noZrcTxts[currentLang]||noZrcTxts['en']); return;
+  }
+
+  S.coins-=box.cost.zrc;
+  lootOpeningActive=true;
+
+  var reward=rollLootBox(box);
+  var overlay=document.getElementById('loot-overlay');
+  var boxEl=document.getElementById('loot-box-anim');
+  var resultEl=document.getElementById('loot-result');
+  var resultIcon=document.getElementById('loot-result-icon');
+  var resultLabel=document.getElementById('loot-result-label');
+  var resultRarity=document.getElementById('loot-result-rarity');
+  var rarityColors={common:'#00aaff',rare:'#8844ff',epic:'#bb44ff',legendary:'#ffcc00',special:'#00ff96',ton_ig:'#00dcff'};
+  var rewardColor=rarityColors[reward.type]||rarityColors.common;
+
+  // Animasyon
+  overlay.style.display='flex';
+  resultEl.style.display='none';
+  boxEl.style.display='block';
+  boxEl.style.fontSize='64px';
+  boxEl.textContent=box.icon;
+  boxEl.style.animation='none';
+  boxEl.style.boxShadow='0 0 40px '+box.glow;
+  boxEl.style.border='2px solid '+box.color;
+  boxEl.style.background='rgba(0,0,0,0.5)';
+  boxEl.style.borderRadius='12px';
+  boxEl.style.padding='20px';
+
+  // Titreme animasyonu
+  var shakeCount=0;
+  var shakeInterval=setInterval(function(){
+    shakeCount++;
+    var offset=shakeCount%2===0?-5:5;
+    boxEl.style.transform='translateX('+offset+'px) scale('+(1+shakeCount*0.02)+')';
+    if(shakeCount>=10){
+      clearInterval(shakeInterval);
+      boxEl.style.transform='scale(1.5)';
+      setTimeout(function(){
+        // Reveal
+        boxEl.style.display='none';
+        resultEl.style.display='block';
+        resultEl.style.boxShadow='0 0 60px '+rewardColor;
+        resultEl.style.borderColor=rewardColor;
+        // Reward icon
+        var icons={zrc:'💰',item:'🎁',boost:'⚡',nft:'🖼️',ton_ig:'💎',premium:'👑',special:'⭐'};
+        resultIcon.textContent=icons[reward.type]||'🎁';
+        resultIcon.style.fontSize='48px';
+        resultLabel.textContent=reward.label;
+        resultLabel.style.color=rewardColor;
+        resultRarity.textContent=box.name[currentLang]||box.name['en'];
+        resultRarity.style.color=box.color;
+        claimLootReward(reward);
+        renderLootPanel();
+      },300);
+    }
+  },80);
+}
+
+function closeLootOverlay(){
+  document.getElementById('loot-overlay').style.display='none';
+  lootOpeningActive=false;
+}
+
+function renderLootPanel(){
+  var el=document.getElementById('loot-panel-content');
+  if(!el) return;
+  el.innerHTML='';
+
+  // Oyun içi TON bakiyesi
+  var tonBal=getInGameTON();
+  var tonDiv=document.createElement('div');
+  tonDiv.style.cssText='background:rgba(0,220,255,0.05);border:1px solid rgba(0,220,255,0.15);border-radius:8px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;';
+  var tonLabelTxts={tr:'Oyun İçi TON',en:'In-Game TON',ru:'Внутриигровой TON',zh:'游戏内TON',ar:'TON داخل اللعبة',es:'TON en el juego',hi:'इन-गेम TON'};
+  var tonNoteTxts={tr:'Token launch sonrasi cekilebilir',en:'Withdrawable at token launch',ru:'Доступно при запуске токена',zh:'代币发布时可提取',ar:'قابل للسحب عند إطلاق الرمز',es:'Retirable en el lanzamiento',hi:'टोकन लॉन्च पर निकालें'};
+  tonDiv.innerHTML='<div><div style="font-family:Orbitron,monospace;font-size:11px;color:#00dcff;">'+(tonLabelTxts[currentLang]||tonLabelTxts['en'])+'</div><div style="font-size:8px;color:rgba(0,220,255,0.4);margin-top:2px;">'+(tonNoteTxts[currentLang]||tonNoteTxts['en'])+'</div></div><div style="font-family:Orbitron,monospace;font-size:18px;color:#00dcff;">'+tonBal.toFixed(3)+' TON</div>';
+  el.appendChild(tonDiv);
+
+  // Loot kutular
+  LOOT_BOXES.forEach(function(box){
+    var rc=RARITY_COLORS[box.rarity]||RARITY_COLORS.common;
+    var canBuy=S.coins>=box.cost.zrc;
+    var d=document.createElement('div');
+    d.style.cssText='background:'+rc.bg+';border:1px solid '+rc.border+';border-radius:10px;padding:12px;margin-bottom:10px;';
+
+    // Ödül listesi
+    var topRewards=box.rewards.slice(0,5).map(function(r){
+      return '<span style="font-size:8px;background:rgba(0,0,0,0.3);border-radius:3px;padding:2px 5px;color:rgba(255,255,255,0.6);margin:2px;display:inline-block;">'+r.label+'</span>';
+    }).join('');
+
+    var openTxts={tr:'AÇ',en:'OPEN',ru:'ОТКРЫТЬ',zh:'开启',ar:'افتح',es:'ABRIR',hi:'खोलें'};
+    d.innerHTML=
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">'+
+        '<div style="font-size:36px;">'+box.icon+'</div>'+
+        '<div style="flex:1;">'+
+          '<div style="font-family:Orbitron,monospace;font-size:12px;color:'+rc.text+';">'+(box.name[currentLang]||box.name['en'])+'</div>'+
+          '<div style="font-size:9px;color:rgba(255,255,255,0.4);margin-top:2px;">'+fmt(box.cost.zrc)+' ZRC</div>'+
+        '</div>'+
+        '<button style="background:'+(canBuy?rc.bg:'rgba(0,0,0,0.3)')+';border:1px solid '+(canBuy?rc.border:'rgba(100,100,100,0.2)')+';border-radius:8px;padding:8px 14px;font-family:Orbitron,monospace;font-size:11px;color:'+(canBuy?rc.text:'rgba(150,150,150,0.5)')+';cursor:'+(canBuy?'pointer':'not-allowed')+';" '+(canBuy?'':'disabled')+' data-lootbox="'+box.id+'">'+(openTxts[currentLang]||openTxts['en'])+'</button>'+
+      '</div>'+
+      '<div style="margin-top:6px;">'+topRewards+'<span style="font-size:8px;color:rgba(255,255,255,0.3);margin:2px;">...</span></div>';
+    el.appendChild(d);
+  });
+
+  // Event listeners
+  el.querySelectorAll('[data-lootbox]').forEach(function(btn){
+    btn.addEventListener('click',function(){ openLootBox(btn.dataset.lootbox); });
+  });
 }
 
 // ============ OFF-CHAIN NFT SISTEMI ============
@@ -3008,7 +3261,17 @@ function renderQuests(){
   });
 }
 
-function renderAll(){renderHUD();renderEnergy();renderBiz();renderInventory();updateBadges();checkAchievements();applyNFTBonuses();renderHourlyBoost();}
+function renderAll(){renderHUD();renderEnergy();renderBiz();renderInventory();updateBadges();checkAchievements();applyNFTBonuses();renderHourlyBoost();updateInGameTON();}
+function updateInGameTON(){
+  var el=document.getElementById('ingame-ton-val');
+  if(el) el.textContent=getInGameTON().toFixed(3)+' TON';
+  var lbl=document.getElementById('ingame-ton-label');
+  var lblTxts={tr:'OYUN İÇİ TON',en:'IN-GAME TON',ru:'ВНУТРИИГРОВОЙ TON',zh:'游戏内TON',ar:'TON داخل اللعبة',es:'TON EN EL JUEGO',hi:'इन-गेम TON'};
+  if(lbl) lbl.textContent=lblTxts[currentLang]||lblTxts['en'];
+  var note=document.getElementById('ingame-ton-note');
+  var noteTxts={tr:'Token launch sonrasi cekilebilir',en:'Withdrawable at token launch',ru:'При запуске токена',zh:'代币发布时可提取',ar:'عند إطلاق الرمز',es:'Al lanzamiento del token',hi:'टोकन लॉन्च पर'};
+  if(note) note.textContent=noteTxts[currentLang]||noteTxts['en'];
+}
 
 // Timer guncelle
 function updateTimer(){
