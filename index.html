@@ -410,6 +410,12 @@ body{background:#080d1a;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
       <div style="font-size:8px;letter-spacing:0.15em;color:rgba(0,220,255,0.55);margin-bottom:8px;" id="wheel-prizes-title">// PRIZES</div>
       <div id="wheel-prizes-list" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"></div>
     </div>
+
+    <!-- LOOT BOX -->
+    <div style="margin-top:16px;border-top:1px solid rgba(255,200,0,0.15);padding-top:14px;">
+      <div style="font-family:Orbitron,monospace;font-size:13px;color:#ffcc00;letter-spacing:0.15em;margin-bottom:10px;">🎁 LOOT BOX</div>
+      <div id="loot-panel-content"></div>
+    </div>
   </div>
 
   <div class="panel" id="tab-nft">
@@ -1636,7 +1642,7 @@ var LOOT_BOXES = [
   {
     id:'common', icon:'📦', rarity:'common',
     name:{tr:'Common Box',en:'Common Box',ru:'Обычный ящик',zh:'普通箱',ar:'صندوق عادي',es:'Caja común',hi:'सामान्य बॉक्स'},
-    cost:{zrc:10000},
+    cost:{zrc:10000, ton:0.10},
     color:'#00aaff', glow:'rgba(0,170,255,0.3)',
     rewards:[
       {weight:30, type:'zrc',     label:'500 ZRC',        value:500},
@@ -1647,13 +1653,13 @@ var LOOT_BOXES = [
       {weight:5,  type:'boost',   label:'1H Boost x2',    value:'boost_1h'},
       {weight:4,  type:'nft',     label:'Mining Drill NFT',value:'mining_drill'},
       {weight:2,  type:'nft',     label:'Energy Cell NFT', value:'energy_cell'},
-      {weight:1,  type:'ton_ig',  label:'0.05 TON (in-game)',value:0.05},
+      {weight:1,  type:'ton_ig',  label:'0.05 TON',value:0.05},
     ]
   },
   {
     id:'rare', icon:'💜', rarity:'rare',
     name:{tr:'Rare Box',en:'Rare Box',ru:'Редкий ящик',zh:'稀有箱',ar:'صندوق نادر',es:'Caja rara',hi:'दुर्लभ बॉक्स'},
-    cost:{zrc:50000},
+    cost:{zrc:50000, ton:0.5},
     color:'#8844ff', glow:'rgba(136,68,255,0.3)',
     rewards:[
       {weight:20, type:'zrc',     label:'10,000 ZRC',     value:10000},
@@ -1666,13 +1672,13 @@ var LOOT_BOXES = [
       {weight:5,  type:'special', label:'Referral Booster 24H',value:'ref_boost'},
       {weight:4,  type:'nft',     label:'Neural Miner NFT',value:'neural_miner'},
       {weight:3,  type:'special', label:'Whitelist Slot', value:'whitelist'},
-      {weight:2,  type:'ton_ig',  label:'0.1-1 TON (in-game)',value:'rare_ton'},
+      {weight:2,  type:'ton_ig',  label:'0.1-1 TON',value:'rare_ton'},
     ]
   },
   {
     id:'legendary', icon:'🌟', rarity:'legendary',
     name:{tr:'Legendary Box',en:'Legendary Box',ru:'Легендарный ящик',zh:'传奇箱',ar:'صندوق أسطوري',es:'Caja legendaria',hi:'पौराणिक बॉक्स'},
-    cost:{zrc:200000},
+    cost:{zrc:150000, ton:1},
     color:'#ffcc00', glow:'rgba(255,200,0,0.4)',
     rewards:[
       {weight:15, type:'zrc',     label:'50,000 ZRC',     value:50000},
@@ -1686,7 +1692,7 @@ var LOOT_BOXES = [
       {weight:4,  type:'nft',     label:'God Hammer NFT', value:'god_hammer'},
       {weight:4,  type:'special', label:'Jackpot Ticket', value:'jackpot'},
       {weight:4,  type:'special', label:'Tournament Pass',value:'tourney_pass'},
-      {weight:3,  type:'ton_ig',  label:'0.1-1 TON (in-game)',value:'leg_ton'},
+      {weight:3,  type:'ton_ig',  label:'0.1-1 TON',value:'leg_ton'},
       {weight:2,  type:'nft',     label:'ZRC Legend NFT', value:'zrc_legend'},
       {weight:1,  type:'special', label:'ZRC Whale Status',value:'whale_status'},
     ]
@@ -1725,7 +1731,7 @@ function claimLootReward(reward){
       if(reward.value==='rare_ton') tonAmt = 0.1+Math.random()*0.9; // 0.1-1 TON
       if(reward.value==='leg_ton')  tonAmt = 0.1+Math.random()*0.9; // 0.1-1 TON
       tonAmt = Math.round(tonAmt*100)/100;
-      reward.label = tonAmt+' TON (in-game)';
+      reward.label = tonAmt+' TON';
       addInGameTON(tonAmt); break;
     case 'premium':
       S.isPremium=true;
@@ -1846,22 +1852,34 @@ function renderLootPanel(){
     }).join('');
 
     var openTxts={tr:'AÇ',en:'OPEN',ru:'ОТКРЫТЬ',zh:'开启',ar:'افتح',es:'ABRIR',hi:'खोलें'};
+    // Tüm ödülleri göster
+    var allRewards = box.rewards.map(function(r){
+      var chance = Math.round(r.weight/box.rewards.reduce(function(a,b){return a+b.weight;},0)*100);
+      var tonColor = r.type==='ton_ig'?'color:#00dcff;':'';
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);">'+
+        '<span style="font-size:9px;'+tonColor+'color:rgba(255,255,255,0.65);">'+r.label+'</span>'+
+        '<span style="font-size:8px;color:rgba(255,255,255,0.3);">%'+chance+'</span>'+
+      '</div>';
+    }).join('');
     d.innerHTML=
-      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">'+
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">'+
         '<div style="font-size:36px;">'+box.icon+'</div>'+
         '<div style="flex:1;">'+
           '<div style="font-family:Orbitron,monospace;font-size:12px;color:'+rc.text+';">'+(box.name[currentLang]||box.name['en'])+'</div>'+
           '<div style="font-size:9px;color:rgba(255,255,255,0.4);margin-top:2px;">'+fmt(box.cost.zrc)+' ZRC</div>'+
         '</div>'+
-        '<button style="background:'+(canBuy?rc.bg:'rgba(0,0,0,0.3)')+';border:1px solid '+(canBuy?rc.border:'rgba(100,100,100,0.2)')+';border-radius:8px;padding:8px 14px;font-family:Orbitron,monospace;font-size:11px;color:'+(canBuy?rc.text:'rgba(150,150,150,0.5)')+';cursor:'+(canBuy?'pointer':'not-allowed')+';" '+(canBuy?'':'disabled')+' data-lootbox="'+box.id+'">'+(openTxts[currentLang]||openTxts['en'])+'</button>'+
+        '<div style="display:flex;flex-direction:column;gap:4px;">'+
+          '<button style="background:'+(canBuy?rc.bg:'rgba(0,0,0,0.3)')+';border:1px solid '+(canBuy?rc.border:'rgba(100,100,100,0.2)')+';border-radius:6px;padding:6px 10px;font-family:Orbitron,monospace;font-size:9px;color:'+(canBuy?rc.text:'rgba(150,150,150,0.5)')+';cursor:'+(canBuy?'pointer':'not-allowed')+';white-space:nowrap;" '+(canBuy?'':'disabled')+' data-lootbox="'+box.id+'" data-pay="zrc">'+fmt(box.cost.zrc)+' ZRC</button>'+
+          '<button style="background:rgba(80,120,255,0.1);border:1px solid rgba(80,120,255,0.3);border-radius:6px;padding:6px 10px;font-family:Orbitron,monospace;font-size:9px;color:#8ab0ff;cursor:pointer;white-space:nowrap;" data-lootbox="'+box.id+'" data-pay="ton">⬡ '+box.cost.ton+' TON</button>'+
+        '</div>'+
       '</div>'+
-      '<div style="margin-top:6px;">'+topRewards+'<span style="font-size:8px;color:rgba(255,255,255,0.3);margin:2px;">...</span></div>';
+      '<div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:6px 8px;">'+allRewards+'</div>';
     el.appendChild(d);
   });
 
   // Event listeners
   el.querySelectorAll('[data-lootbox]').forEach(function(btn){
-    btn.addEventListener('click',function(){ openLootBox(btn.dataset.lootbox); });
+    btn.addEventListener('click',function(){ openLootBox(btn.dataset.lootbox, btn.dataset.pay); });
   });
 }
 
@@ -2909,7 +2927,7 @@ function switchTab(t){
   if(t==='raid') renderRaidPanel();
   if(t==='nft') renderNFTPanel();
   if(t==='ton') renderTonBoosts();
-  if(t==='wheel') renderWheel();
+  if(t==='wheel'){ renderWheel(); renderLootPanel(); }
   if(t==='ach') renderAchievements();
 }
 
