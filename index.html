@@ -2791,8 +2791,9 @@ function renderUpgrades(){
       if(!lv||S.coins<lv.cost) return;
       S.coins-=lv.cost;
       // Seviye arttıkça bekleme süresi büyür (her seviye %50 daha uzun)
-      var scaledWait = Math.floor(lv.waitSec * Math.pow(1.5, upg.lv));
-      var cappedWait = Math.min(scaledWait, 604800); // max 7 gün
+      // İlk seviye anında, sonrakiler beklemeli
+      var scaledWait = upg.lv === 0 ? 0 : Math.floor(lv.waitSec * Math.pow(1.5, upg.lv));
+      var cappedWait = Math.min(scaledWait, 604800);
       S.dailyUpgDone++;
       if(cappedWait <= 0){
         upg.lv++;
