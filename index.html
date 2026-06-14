@@ -1132,6 +1132,10 @@ var urlUserId = new URLSearchParams(location.search).get('user_id');
 var userId = (user && user.id) ? user.id : (urlUserId || ('guest_' + Math.random().toString(36).substr(2,9)));
 console.log('User:', user, 'userId:', userId);
 var refCode = new URLSearchParams(location.search).get('ref') || '';
+// Telegram startParam'dan da al (t.me/bot?start=USR_xxx)
+if(!refCode && tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param){
+  refCode = tg.initDataUnsafe.start_param;
+}
 console.log('TG user:', user, 'userId:', userId);
 
 var TIERS = [{min:1,max:2,mult:1.25},{min:3,max:5,mult:1.75},{min:6,max:9,mult:2.5},{min:10,max:999,mult:4.0}];
