@@ -257,9 +257,12 @@ body{background:#080d1a;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
       <div class="user-name" id="u-name">PLAYER</div>
       <div class="user-id" id="u-id">ID: ---</div>
     </div>
-    <div class="save-indicator" id="save-ind">● KAYITLI</div>
+    <div style="text-align:right;">
+      <div class="save-indicator" id="save-ind">● KAYITLI</div>
+      <div style="font-family:Orbitron,monospace;font-size:13px;color:#8ab0ff;margin-top:2px;">⬡ <span id="hud-ton">0.000</span> TON</div>
+    </div>
   </div>
-  <div class="hud-row">
+  <div class="hud-row" style="grid-template-columns:1fr 1fr 1fr 1fr;">
     <div class="hud-card"><div class="hud-label">ZRo COIN</div><div class="hud-val" id="hud-coin">0</div><div class="hud-sub">ZRC</div></div>
     <div class="hud-card"><div class="hud-label">/ SN</div><div class="hud-val" id="hud-ps">0</div><div class="hud-sub">ZRC</div></div>
     <div class="hud-card"><div class="hud-label">REFERRAL</div><div class="hud-val green" id="hud-ref">0</div><div class="hud-sub">KISI</div></div>
@@ -283,13 +286,7 @@ body{background:#080d1a;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
   <!-- MINE -->
   <div class="panel active" id="tab-mine">
     <div id="hourly-boost-box" style="background:rgba(255,200,0,0.05);border:1px solid rgba(255,200,0,0.15);border-radius:8px;padding:8px 12px;margin-bottom:8px;"></div>
-    <div id="ingame-ton-box" style="background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.12);border-radius:8px;padding:8px 12px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="switchTab('loot')">
-      <div>
-        <div style="font-size:8px;color:rgba(0,220,255,0.5);letter-spacing:0.1em;" id="ingame-ton-label">IN-GAME TON</div>
-        <div style="font-size:8px;color:rgba(0,220,255,0.35);" id="ingame-ton-note">Withdrawable at token launch</div>
-      </div>
-      <div style="font-family:Orbitron,monospace;font-size:16px;color:#00dcff;" id="ingame-ton-val">0.000 TON</div>
-    </div>
+
     <div class="energy-wrap">
       <div class="energy-top"><span>ENERJI</span><span id="egy-txt">500/500</span></div>
       <div class="energy-track"><div class="energy-fill" id="egy-bar" style="width:100%"></div></div>
@@ -3285,14 +3282,11 @@ function renderQuests(){
 
 function renderAll(){renderHUD();renderEnergy();renderBiz();renderInventory();updateBadges();checkAchievements();applyNFTBonuses();renderHourlyBoost();updateInGameTON();}
 function updateInGameTON(){
-  var el=document.getElementById('ingame-ton-val');
-  if(el) el.textContent=getInGameTON().toFixed(3)+' TON';
-  var lbl=document.getElementById('ingame-ton-label');
-  var lblTxts={tr:'OYUN İÇİ TON',en:'IN-GAME TON',ru:'ВНУТРИИГРОВОЙ TON',zh:'游戏内TON',ar:'TON داخل اللعبة',es:'TON EN EL JUEGO',hi:'इन-गेम TON'};
-  if(lbl) lbl.textContent=lblTxts[currentLang]||lblTxts['en'];
-  var note=document.getElementById('ingame-ton-note');
-  var noteTxts={tr:'Token launch sonrasi cekilebilir',en:'Withdrawable at token launch',ru:'При запуске токена',zh:'代币发布时可提取',ar:'عند إطلاق الرمز',es:'Al lanzamiento del token',hi:'टोकन लॉन्च पर'};
-  if(note) note.textContent=noteTxts[currentLang]||noteTxts['en'];
+  var el=document.getElementById('hud-ton');
+  if(el) el.textContent=getInGameTON().toFixed(3);
+  var sub=document.getElementById('hud-ton-sub');
+  var subTxts={tr:'ZRC SUNUMUNDA',en:'AT ZRC LAUNCH',ru:'ПРИ ЗАПУСКЕ ZRC',zh:'ZRC发布时',ar:'عند إطلاق ZRC',es:'AL LANZAR ZRC',hi:'ZRC लॉन्च पर'};
+  if(sub) sub.textContent=subTxts[currentLang]||subTxts['en'];
 }
 
 // Timer guncelle
