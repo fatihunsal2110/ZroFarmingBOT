@@ -3613,8 +3613,10 @@ function watchAdChainStep(){
   var nextStep = AD_CHAIN_STEPS[progress.completed];
   if(!nextStep) return;
 
-  var cmsg = currentLang==='tr' ? 'Reklam izle: '+nextStep.label+' kazan. Devam?' : 'Watch ad to earn '+nextStep.label+'. Continue?';
-  if(!window.confirm(cmsg)) return;
+  if(!S.isPremium){
+    var cmsg = currentLang==='tr' ? 'Reklam izle: '+nextStep.label+' kazan. Devam?' : 'Watch ad to earn '+nextStep.label+'. Continue?';
+    if(!window.confirm(cmsg)) return;
+  }
 
   // Demo mod (Adsgram aktif olunca gercek reklam gosterilecek)
   claimAdChainReward(nextStep);
@@ -3635,6 +3637,8 @@ function renderAdChain(){
   var subTxts={tr:'Her reklam bir sonraki ödülü açar!',en:'Each ad unlocks the next reward!',ru:'Каждая реклама открывает награду!',zh:'每个广告解锁下一个奖励！',ar:'كل إعلان يفتح المكافأة التالية!',es:'¡Cada anuncio desbloquea la recompensa!',hi:'हर विज्ञापन अगला पुरस्कार खोलता है!'};
   var resetTxts={tr:'Yarın sıfırlanır',en:'Resets tomorrow',ru:'Сброс завтра',zh:'明天重置',ar:'يُعاد ضبطه غداً',es:'Se reinicia mañana',hi:'कल रीसेट होगा'};
   var watchTxts={tr:'📺 REKLAM İZLE',en:'📺 WATCH AD',ru:'📺 СМОТРЕТЬ',zh:'📺 观看广告',ar:'📺 شاهد',es:'📺 VER ANUNCIO',hi:'📺 विज्ञापन देखें'};
+  var claimPremTxts={tr:'👑 AL',en:'👑 CLAIM',ru:'👑 ПОЛУЧИТЬ',zh:'👑 领取',ar:'👑 احصل',es:'👑 RECLAMAR',hi:'👑 प्राप्त करें'};
+  var watchBtnLabel = S.isPremium ? (claimPremTxts[currentLang]||claimPremTxts['en']) : (watchTxts[currentLang]||watchTxts['en']);
   var doneAllTxts={tr:'Tüm ödüller alındı!',en:'All rewards claimed!',ru:'Все награды получены!',zh:'所有奖励已领取！',ar:'تم الحصول على كل المكافآت!',es:'¡Todas las recompensas reclamadas!',hi:'सभी पुरस्कार प्राप्त!'};
   var stepTxts={tr:'ADIM',en:'STEP',ru:'ШАГ',zh:'步骤',ar:'خطوة',es:'PASO',hi:'चरण'};
 
@@ -3651,9 +3655,11 @@ function renderAdChain(){
     10:{icon:'🌟',grad:'linear-gradient(135deg,#5a1a1a,#2e0d0d)',bcol:'#dc3a3a'},
   };
 
+  var premBadgeTxts={tr:'👑 Premium: Reklamsız anında al!',en:'👑 Premium: Instant claim, no ads!',ru:'👑 Премиум: Без рекламы!',zh:'👑 高级会员：无广告领取！',ar:'👑 مميز: بدون إعلانات!',es:'👑 Premium: ¡Sin anuncios!',hi:'👑 प्रीमियम: बिना विज्ञापन!'};
   var html = '<div style="text-align:center;margin-bottom:12px;">'+
     '<div style="font-family:Orbitron,monospace;font-size:13px;color:#ffcc00;letter-spacing:0.12em;text-shadow:0 0 10px rgba(255,200,0,0.4);">'+(titles[currentLang]||titles['en'])+'</div>'+
     '<div style="font-size:9px;color:rgba(255,200,0,0.55);margin-top:3px;">'+(subTxts[currentLang]||subTxts['en'])+'</div>'+
+    (S.isPremium?'<div style="font-size:8px;color:#f0c0ff;margin-top:4px;">'+(premBadgeTxts[currentLang]||premBadgeTxts['en'])+'</div>':'')+
   '</div>';
 
   if(progress.completed>=10){
@@ -3693,7 +3699,7 @@ function renderAdChain(){
         '<div style="font-size:8px;color:rgba(255,255,255,0.5);letter-spacing:0.1em;">'+(stepTxts[currentLang]||stepTxts['en'])+' '+nextStep.step+'/10</div>'+
         '<div style="font-size:14px;color:#fff;font-family:Orbitron,monospace;margin-top:2px;">'+nextStep.label+'</div>'+
       '</div>'+
-      '<button onclick="watchAdChainStep()" style="background:'+sv2.bcol+';border:none;border-radius:8px;padding:10px 16px;font-family:Orbitron,monospace;font-size:10px;color:#000;font-weight:bold;cursor:pointer;white-space:nowrap;">'+(watchTxts[currentLang]||watchTxts['en'])+'</button>'+
+      '<button onclick="watchAdChainStep()" style="background:'+sv2.bcol+';border:none;border-radius:8px;padding:10px 16px;font-family:Orbitron,monospace;font-size:10px;color:#000;font-weight:bold;cursor:pointer;white-space:nowrap;">'+watchBtnLabel+'</button>'+
     '</div>';
   }
 
@@ -4310,8 +4316,10 @@ document.addEventListener('click', function(e){
   if(e.target && e.target.id === 'wheel-spin-btn') spinWheel();
 
   if(e.target && e.target.id === 'wheel-ad-btn'){
-    var spinAdMsg = currentLang==='tr' ? 'Reklam izle: +1 çevirme hakkı. Devam?' : 'Watch ad to earn +1 spin. Continue?';
-    if(!window.confirm(spinAdMsg)) return;
+    if(!S.isPremium){
+      var spinAdMsg = currentLang==='tr' ? 'Reklam izle: +1 çevirme hakkı. Devam?' : 'Watch ad to earn +1 spin. Continue?';
+      if(!window.confirm(spinAdMsg)) return;
+    }
     addExtraSpin(1);
     var adSpinTxts={tr:'+1 çevirme hakkı kazandın!',en:'+1 spin earned!',ru:'+1 спин получен!',zh:'获得+1转！',ar:'+1 دوران!',es:'+1 giro!',hi:'+1 स्पिन!'};
     showNotif('📺 '+(adSpinTxts[currentLang]||adSpinTxts['en']));
