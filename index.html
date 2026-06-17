@@ -1847,6 +1847,32 @@ function renderLootPanel(){
   tonDiv.innerHTML='<div><div style="font-family:Orbitron,monospace;font-size:11px;color:#00dcff;">'+(tonLabelTxts[currentLang]||tonLabelTxts['en'])+'</div><div style="font-size:8px;color:rgba(0,220,255,0.4);margin-top:2px;">'+(tonNoteTxts[currentLang]||tonNoteTxts['en'])+'</div></div><div style="font-family:Orbitron,monospace;font-size:18px;color:#00dcff;">'+tonBal.toFixed(3)+' TON</div>';
   el.appendChild(tonDiv);
 
+  // Envanterdeki kutular
+  if(!S.lootInventory) S.lootInventory={};
+  var hasInventory = Object.values(S.lootInventory).some(function(c){return c>0;});
+  if(hasInventory){
+    var invTitles={tr:'📦 ENVANTERİNDEKİ KUTULAR',en:'📦 YOUR BOXES',ru:'📦 ВАШИ ЯЩИКИ',zh:'📦 你的箱子',ar:'📦 صناديقك',es:'📦 TUS CAJAS',hi:'📦 आपके बॉक्स'};
+    var invDiv=document.createElement('div');
+    invDiv.style.cssText='background:rgba(0,255,150,0.04);border:1px solid rgba(0,255,150,0.15);border-radius:8px;padding:10px;margin-bottom:14px;';
+    var invHtml='<div style="font-size:9px;color:rgba(0,255,150,0.6);margin-bottom:8px;font-family:Orbitron,monospace;">'+(invTitles[currentLang]||invTitles['en'])+'</div>';
+    invHtml+='<div style="display:flex;gap:8px;flex-wrap:wrap;">';
+    LOOT_BOXES.forEach(function(box){
+      var count=S.lootInventory[box.id]||0;
+      if(count<=0) return;
+      var openInvTxts={tr:'AÇ',en:'OPEN',ru:'ОТКРЫТЬ',zh:'打开',ar:'افتح',es:'ABRIR',hi:'खोलें'};
+      invHtml+='<div style="background:rgba(0,0,0,0.3);border:1px solid '+box.color+';border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:8px;">'+
+        '<div style="font-size:22px;">'+box.icon+'</div>'+
+        '<div>'+
+          '<div style="font-size:9px;color:#fff;">x'+count+'</div>'+
+          '<button data-openinv="'+box.id+'" style="background:'+box.color+';border:none;border-radius:4px;padding:3px 8px;font-size:8px;color:#000;font-weight:bold;cursor:pointer;margin-top:2px;">'+(openInvTxts[currentLang]||openInvTxts['en'])+'</button>'+
+        '</div>'+
+      '</div>';
+    });
+    invHtml+='</div>';
+    invDiv.innerHTML=invHtml;
+    el.appendChild(invDiv);
+  }
+
   // Loot kutular
   LOOT_BOXES.forEach(function(box){
     var rc=RARITY_COLORS[box.rarity]||RARITY_COLORS.common;
@@ -1888,6 +1914,9 @@ function renderLootPanel(){
   // Event listeners
   el.querySelectorAll('[data-lootbox]').forEach(function(btn){
     btn.addEventListener('click',function(){ openLootBox(btn.dataset.lootbox, btn.dataset.pay); });
+  });
+  el.querySelectorAll('[data-openinv]').forEach(function(btn){
+    btn.addEventListener('click',function(){ openLootBox(btn.dataset.openinv, 'inventory'); });
   });
 }
 
@@ -2878,7 +2907,8 @@ var S = {
   dailyTaps:0, dailyEarned:0, dailyBizBought:0, dailyUpgDone:0,
   questsClaimed:{}, lastReset:'',
   activeBoosts:{},
-  nfts:[]
+  nfts:[],
+  lootInventory:{}
 };
 
 var saveTimer = null;
@@ -3445,6 +3475,8 @@ async function apiLogin(){
         try {
           var nftData = localStorage.getItem('zro_nfts_'+userId);
           if(nftData) S.nfts = JSON.parse(nftData);
+          var lootInvData = localStorage.getItem('zro_lootinv_'+userId);
+          if(lootInvData) S.lootInventory = JSON.parse(lootInvData);
           var upgData = localStorage.getItem('zro_upgrades_'+userId);
           if(upgData && !(u.upgrades && u.upgrades.length>0)){
             JSON.parse(upgData).forEach(function(saved){
@@ -3489,6 +3521,7 @@ async function saveGame(){
     localStorage.setItem('zro_businesses', JSON.stringify(S.businesses));
     localStorage.setItem('zro_achievements_'+userId, JSON.stringify(S.achievementsClaimed||{}));
     localStorage.setItem('zro_nfts_'+userId, JSON.stringify(S.nfts||[]));
+    localStorage.setItem('zro_lootinv_'+userId, JSON.stringify(S.lootInventory||{}));
     localStorage.setItem('zro_upgrades_'+userId, JSON.stringify(S.upgrades.map(function(u){return {id:u.id,lv:u.lv,upgEnd:u.upgEnd};})));
     localStorage.setItem('zro_quests_'+userId, JSON.stringify({claimed:S.questsClaimed, date:todayStr()}));
     localStorage.setItem('zro_badges_'+userId, JSON.stringify(S.badges||[]));
@@ -3600,8 +3633,8 @@ function claimAdChainReward(stepData){
       S.activeBoosts['ad_chain_boost']=Date.now()+stepData.value.dur;
       S.adChainBoostPct=stepData.value.pct; break;
     case 'lootbox':
-      var box=LOOT_BOXES.find(function(b){return b.id===stepData.value;});
-      if(box){ var reward=rollLootBox(box); claimLootReward(reward); }
+      if(!S.lootInventory) S.lootInventory={};
+      S.lootInventory[stepData.value]=(S.lootInventory[stepData.value]||0)+1;
       break;
   }
   scheduleSave(); renderAll();
