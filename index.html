@@ -1762,30 +1762,67 @@ function claimLootReward(reward){
 }
 
 var lootOpeningActive=false;
+var lootBatchQueue=[];
 
-function openLootBox(boxId){
-  if(lootOpeningActive) return;
+function buyLootBox(boxId, payWith){
   var box=LOOT_BOXES.find(function(b){return b.id===boxId;});
   if(!box) return;
+
+  if(payWith==='ton'){
+    sendTonPayment(box.cost.ton, 'ZRoFarm:loot:'+boxId+':'+userId).then(function(result){
+      if(result){
+        if(!S.lootInventory) S.lootInventory={};
+        S.lootInventory[boxId]=(S.lootInventory[boxId]||0)+1;
+        var boughtTxt = currentLang==='tr' ? 'satın alındı! Envantere eklendi.' : 'purchased! Added to inventory.';
+        showNotif(box.icon+' '+(box.name[currentLang]||box.name['en'])+' '+boughtTxt);
+        scheduleSave(); renderAll(); renderLootPanel();
+      }
+    });
+    return;
+  }
+
   if(S.coins<box.cost.zrc){
     var noZrcTxts={tr:'Yeterli ZRC yok!',en:'Not enough ZRC!',ru:'Недостаточно ZRC!',zh:'ZRC不足！',ar:'ZRC غير كافٍ!',es:'¡ZRC insuficiente!',hi:'ZRC कम है!'};
     showNotif(noZrcTxts[currentLang]||noZrcTxts['en']); return;
   }
-
   S.coins-=box.cost.zrc;
-  lootOpeningActive=true;
+  if(!S.lootInventory) S.lootInventory={};
+  S.lootInventory[boxId]=(S.lootInventory[boxId]||0)+1;
+  var boughtTxt2 = currentLang==='tr' ? 'satın alındı! Envantere eklendi.' : 'purchased! Added to inventory.';
+  showNotif(box.icon+' '+(box.name[currentLang]||box.name['en'])+' '+boughtTxt2);
+  scheduleSave(); renderAll(); renderLootPanel();
+}
 
-  var reward=rollLootBox(box);
+function openLootBox(boxId, count){
+  if(lootOpeningActive) return;
+  var box=LOOT_BOXES.find(function(b){return b.id===boxId;});
+  if(!box) return;
+  if(!S.lootInventory || !S.lootInventory[boxId] || S.lootInventory[boxId]<=0){
+    var noBoxTxt = currentLang==='tr' ? 'Bu kutudan hiç yok!' : 'You have none of this box!';
+    showNotif(noBoxTxt); return;
+  }
+  var n = Math.min(count||1, S.lootInventory[boxId]);
+  S.lootInventory[boxId] -= n;
+
+  // n adet odulu topla
+  lootBatchQueue=[];
+  for(var i=0;i<n;i++){ lootBatchQueue.push(rollLootBox(box)); }
+  _playLootAnim(box, 0, n);
+}
+
+function _playLootAnim(box, index, total){
+  lootOpeningActive=true;
+  var reward = lootBatchQueue[index];
+
   var overlay=document.getElementById('loot-overlay');
   var boxEl=document.getElementById('loot-box-anim');
   var resultEl=document.getElementById('loot-result');
   var resultIcon=document.getElementById('loot-result-icon');
   var resultLabel=document.getElementById('loot-result-label');
   var resultRarity=document.getElementById('loot-result-rarity');
-  var rarityColors={common:'#00aaff',rare:'#8844ff',epic:'#bb44ff',legendary:'#ffcc00',special:'#00ff96',ton_ig:'#00dcff'};
-  var rewardColor=rarityColors[reward.type]||rarityColors.common;
+  var rarityColors={zrc:'#00dcff',item:'#00ff96',boost:'#ffcc00',nft:'#bb44ff',ton_ig:'#00dcff',premium:'#f0c0ff',special:'#ff8844'};
+  var rewardColor=rarityColors[reward.type]||rarityColors.zrc;
 
-  // Animasyon
   overlay.style.display='flex';
   resultEl.style.display='none';
   boxEl.style.display='block';
@@ -1797,8 +1834,8 @@ function openLootBox(boxId){
   boxEl.style.background='rgba(0,0,0,0.5)';
   boxEl.style.borderRadius='12px';
   boxEl.style.padding='20px';
+  boxEl.style.transform='scale(1)';
 
-  // Titreme animasyonu
   var shakeCount=0;
   var shakeInterval=setInterval(function(){
     shakeCount++;
@@ -1808,21 +1845,33 @@ function openLootBox(boxId){
       clearInterval(shakeInterval);
       boxEl.style.transform='scale(1.5)';
       setTimeout(function(){
-        // Reveal
         boxEl.style.display='none';
         resultEl.style.display='block';
         resultEl.style.boxShadow='0 0 60px '+rewardColor;
         resultEl.style.borderColor=rewardColor;
-        // Reward icon
         var icons={zrc:'💰',item:'🎁',boost:'⚡',nft:'🖼️',ton_ig:'💎',premium:'👑',special:'⭐'};
         resultIcon.textContent=icons[reward.type]||'🎁';
         resultIcon.style.fontSize='48px';
         resultLabel.textContent=reward.label;
         resultLabel.style.color=rewardColor;
-        resultRarity.textContent=box.name[currentLang]||box.name['en'];
+        var countTxt = total>1 ? ' ('+(index+1)+'/'+total+')' : '';
+        resultRarity.textContent=(box.name[currentLang]||box.name['en'])+countTxt;
         resultRarity.style.color=box.color;
         claimLootReward(reward);
-        renderLootPanel();
+        renderLootPanel(); renderAll();
+        var wonTxt = (currentLang==='tr'?'Kazandın: ':'You won: ')+reward.label;
+        showNotif('🎁 '+wonTxt);
+
+        // Sonraki varsa devam butonu, yoksa kapat
+        var nextBtn = document.getElementById('loot-next-btn');
+        if(index+1<total){
+          nextBtn.style.display='block';
+          var nextTxt = currentLang==='tr' ? 'Sıradaki ('+(index+2)+'/'+total+') →' : 'Next ('+(index+2)+'/'+total+') →';
+          nextBtn.textContent=nextTxt;
+          nextBtn.onclick=function(e){ e.stopPropagation(); _playLootAnim(box, index+1, total); };
+        } else {
+          nextBtn.style.display='none';
+        }
       },300);
     }
   },80);
