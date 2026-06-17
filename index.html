@@ -174,6 +174,7 @@ body{background:#080d1a;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
 .lang-name{font-size:11px;font-family:'Orbitron',monospace;color:#a0c8e8;}
 
 
+@keyframes pulse{0%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(1.3);}100%{opacity:1;transform:scale(1);}}
 </style>
 </head>
 <body>
@@ -392,8 +393,9 @@ body{background:#080d1a;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
       <div style="font-family:Orbitron,monospace;font-size:16px;color:rgba(255,200,0,0.8);" id="wheel-countdown">00:00:00</div>
     </div>
     <button id="wheel-spin-btn" style="width:100%;padding:13px;background:linear-gradient(135deg,rgba(0,220,255,0.1),rgba(100,100,255,0.1));border:1px solid rgba(0,220,255,0.35);border-radius:8px;font-family:Orbitron,monospace;font-size:12px;letter-spacing:0.1em;color:#00dcff;cursor:pointer;">🎰 SPIN!</button>
-    <div style="margin-top:8px;">
-      <button id="wheel-ton-btn" style="width:100%;padding:10px;background:rgba(80,120,255,0.08);border:1px solid rgba(80,120,255,0.25);border-radius:8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#8ab0ff;cursor:pointer;">⬡ 0.1 TON (+5 SPINS)</button>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+      <button id="wheel-ad-btn" style="padding:10px;background:rgba(0,255,150,0.08);border:1px solid rgba(0,255,150,0.25);border-radius:8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#00ff96;cursor:pointer;">📺 AD (+1 SPIN)</button>
+      <button id="wheel-ton-btn" style="padding:10px;background:rgba(80,120,255,0.08);border:1px solid rgba(80,120,255,0.25);border-radius:8px;font-family:'Share Tech Mono',monospace;font-size:10px;color:#8ab0ff;cursor:pointer;">⬡ 0.1 TON (+5)</button>
     </div>
     <div style="display:flex;justify-content:space-between;margin-top:8px;padding:6px 10px;background:rgba(0,220,255,0.04);border:1px solid rgba(0,220,255,0.12);border-radius:6px;">
       <span style="font-size:9px;color:rgba(0,220,255,0.5);" id="wheel-spins-label">EXTRA SPINS</span>
@@ -406,6 +408,11 @@ body{background:#080d1a;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
     <div style="margin-top:14px;">
       <div style="font-size:8px;letter-spacing:0.15em;color:rgba(0,220,255,0.55);margin-bottom:8px;" id="wheel-prizes-title">// PRIZES</div>
       <div id="wheel-prizes-list" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"></div>
+    </div>
+
+    <!-- GUNLUK REKLAM ZINCIRI -->
+    <div style="margin-top:16px;border-top:1px solid rgba(255,200,0,0.15);padding-top:14px;">
+      <div id="adchain-panel"></div>
     </div>
 
     <!-- LOOT BOX -->
@@ -2928,7 +2935,7 @@ function switchTab(t){
   if(t==='raid') renderRaidPanel();
   if(t==='nft') renderNFTPanel();
   if(t==='ton') renderTonBoosts();
-  if(t==='wheel'){ renderWheel(); renderLootPanel(); }
+  if(t==='wheel'){ renderWheel(); renderLootPanel(); renderAdChain(); }
   if(t==='ach') renderAchievements();
 }
 
@@ -3555,6 +3562,145 @@ async function loadReferrals(){
 
 
 
+
+// ============ GUNLUK REKLAM GOREV ZINCIRI ============
+var AD_CHAIN_STEPS = [
+  {step:1, type:'zrc',   value:200,  label:'200 ZRC'},
+  {step:2, type:'zrc',   value:500,  label:'500 ZRC'},
+  {step:3, type:'zrc',   value:1000, label:'1,000 ZRC'},
+  {step:4, type:'shield',value:43200000, label:'12H Shield'},
+  {step:5, type:'lootbox',value:'common', label:'Common Loot Box'},
+  {step:6, type:'zrc',   value:2000, label:'2,000 ZRC'},
+  {step:7, type:'zrc',   value:2500, label:'2,500 ZRC'},
+  {step:8, type:'boost', value:{pct:25,dur:7200000}, label:'2H +25% Boost'},
+  {step:9, type:'zrc',   value:3500, label:'3,500 ZRC'},
+  {step:10,type:'lootbox',value:'rare', label:'Rare Loot Box'},
+];
+
+function getAdChainProgress(){
+  var today = todayStr();
+  var data = JSON.parse(localStorage.getItem('zro_adchain_'+userId)||'{}');
+  if(data.date !== today){ data = {date:today, completed:0}; }
+  return data;
+}
+
+function saveAdChainProgress(completed){
+  var today = todayStr();
+  localStorage.setItem('zro_adchain_'+userId, JSON.stringify({date:today, completed:completed}));
+}
+
+function claimAdChainReward(stepData){
+  if(!S.activeBoosts) S.activeBoosts={};
+  switch(stepData.type){
+    case 'zrc':
+      S.coins+=stepData.value; S.totalEarned+=stepData.value; break;
+    case 'shield':
+      S.activeBoosts['shield']=Date.now()+stepData.value; break;
+    case 'boost':
+      S.activeBoosts['ad_chain_boost']=Date.now()+stepData.value.dur;
+      S.adChainBoostPct=stepData.value.pct; break;
+    case 'lootbox':
+      var box=LOOT_BOXES.find(function(b){return b.id===stepData.value;});
+      if(box){ var reward=rollLootBox(box); claimLootReward(reward); }
+      break;
+  }
+  scheduleSave(); renderAll();
+}
+
+function watchAdChainStep(){
+  var progress = getAdChainProgress();
+  if(progress.completed >= 10) return;
+  var nextStep = AD_CHAIN_STEPS[progress.completed];
+  if(!nextStep) return;
+
+  var cmsg = currentLang==='tr' ? 'Reklam izle: '+nextStep.label+' kazan. Devam?' : 'Watch ad to earn '+nextStep.label+'. Continue?';
+  if(!window.confirm(cmsg)) return;
+
+  // Demo mod (Adsgram aktif olunca gercek reklam gosterilecek)
+  claimAdChainReward(nextStep);
+  progress.completed++;
+  saveAdChainProgress(progress.completed);
+
+  var doneMsgs={tr:'Kazandın: ',en:'Earned: ',ru:'Получено: ',zh:'获得: ',ar:'كسبت: ',es:'Ganado: ',hi:'कमाया: '};
+  showNotif('🎁 '+(doneMsgs[currentLang]||doneMsgs['en'])+nextStep.label);
+  renderAdChain();
+}
+
+function renderAdChain(){
+  var el=document.getElementById('adchain-panel');
+  if(!el) return;
+  var progress=getAdChainProgress();
+
+  var titles={tr:'📺 GÜNLÜK REKLAM ZİNCİRİ',en:'📺 DAILY AD CHAIN',ru:'📺 ЕЖЕДНЕВНАЯ ЦЕПЬ',zh:'📺 每日广告链',ar:'📺 سلسلة الإعلانات اليومية',es:'📺 CADENA DIARIA',hi:'📺 दैनिक विज्ञापन श्रृंखला'};
+  var subTxts={tr:'Her reklam bir sonraki ödülü açar!',en:'Each ad unlocks the next reward!',ru:'Каждая реклама открывает награду!',zh:'每个广告解锁下一个奖励！',ar:'كل إعلان يفتح المكافأة التالية!',es:'¡Cada anuncio desbloquea la recompensa!',hi:'हर विज्ञापन अगला पुरस्कार खोलता है!'};
+  var resetTxts={tr:'Yarın sıfırlanır',en:'Resets tomorrow',ru:'Сброс завтра',zh:'明天重置',ar:'يُعاد ضبطه غداً',es:'Se reinicia mañana',hi:'कल रीसेट होगा'};
+  var watchTxts={tr:'📺 REKLAM İZLE',en:'📺 WATCH AD',ru:'📺 СМОТРЕТЬ',zh:'📺 观看广告',ar:'📺 شاهد',es:'📺 VER ANUNCIO',hi:'📺 विज्ञापन देखें'};
+  var doneAllTxts={tr:'Tüm ödüller alındı!',en:'All rewards claimed!',ru:'Все награды получены!',zh:'所有奖励已领取！',ar:'تم الحصول على كل المكافآت!',es:'¡Todas las recompensas reclamadas!',hi:'सभी पुरस्कार प्राप्त!'};
+  var stepTxts={tr:'ADIM',en:'STEP',ru:'ШАГ',zh:'步骤',ar:'خطوة',es:'PASO',hi:'चरण'};
+
+  var stepVisuals = {
+    1:{icon:'💰',grad:'linear-gradient(135deg,#1a3a6a,#0a2040)',bcol:'#3a7adc'},
+    2:{icon:'💰',grad:'linear-gradient(135deg,#1a4a3a,#0a2818)',bcol:'#3adc8a'},
+    3:{icon:'💰',grad:'linear-gradient(135deg,#3a3a1a,#201f0a)',bcol:'#dcdc3a'},
+    4:{icon:'🛡️',grad:'linear-gradient(135deg,#0a3a4a,#051a24)',bcol:'#3ad0dc'},
+    5:{icon:'🎁',grad:'linear-gradient(135deg,#2a1a5a,#15102e)',bcol:'#7a4adc'},
+    6:{icon:'💰',grad:'linear-gradient(135deg,#4a2a0a,#241405)',bcol:'#dc8a3a'},
+    7:{icon:'💰',grad:'linear-gradient(135deg,#4a0a2a,#240515)',bcol:'#dc3a8a'},
+    8:{icon:'⚡',grad:'linear-gradient(135deg,#4a3a0a,#241c05)',bcol:'#dcc23a'},
+    9:{icon:'💰',grad:'linear-gradient(135deg,#0a4a4a,#052424)',bcol:'#3adcdc'},
+    10:{icon:'🌟',grad:'linear-gradient(135deg,#5a1a1a,#2e0d0d)',bcol:'#dc3a3a'},
+  };
+
+  var html = '<div style="text-align:center;margin-bottom:12px;">'+
+    '<div style="font-family:Orbitron,monospace;font-size:13px;color:#ffcc00;letter-spacing:0.12em;text-shadow:0 0 10px rgba(255,200,0,0.4);">'+(titles[currentLang]||titles['en'])+'</div>'+
+    '<div style="font-size:9px;color:rgba(255,200,0,0.55);margin-top:3px;">'+(subTxts[currentLang]||subTxts['en'])+'</div>'+
+  '</div>';
+
+  if(progress.completed>=10){
+    html += '<div style="text-align:center;padding:20px;background:linear-gradient(135deg,rgba(0,255,150,0.1),rgba(0,200,255,0.06));border:1px solid rgba(0,255,150,0.3);border-radius:12px;">'+
+      '<div style="font-size:32px;margin-bottom:8px;">🎉</div>'+
+      '<div style="font-size:12px;color:#00ff96;font-family:Orbitron,monospace;">'+(doneAllTxts[currentLang]||doneAllTxts['en'])+'</div>'+
+      '<div style="font-size:9px;color:rgba(0,255,150,0.55);margin-top:6px;">'+(resetTxts[currentLang]||resetTxts['en'])+'</div>'+
+    '</div>';
+  } else {
+    // Yatay kaydırılabilir adım yolu
+    html += '<div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:14px;-webkit-overflow-scrolling:touch;">';
+    AD_CHAIN_STEPS.forEach(function(s,i){
+      var done = i<progress.completed;
+      var current = i===progress.completed;
+      var sv = stepVisuals[s.step];
+      var opacity = done ? '0.55' : current ? '1' : '0.35';
+      var scale = current ? 'transform:scale(1.08);' : '';
+      var glow = current ? 'box-shadow:0 0 16px '+sv.bcol+'88, inset 0 0 20px '+sv.bcol+'22;' : done ? 'box-shadow:0 0 8px rgba(0,255,150,0.3);' : '';
+      html += '<div style="flex-shrink:0;width:62px;height:78px;background:'+sv.grad+';border:1.5px solid '+(done?'#00ff96':current?sv.bcol:'rgba(255,255,255,0.1)')+';border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;opacity:'+opacity+';'+scale+glow+'">'+
+        '<div style="font-size:22px;'+(done?'filter:grayscale(0.3);':'')+'">'+(done?'✅':sv.icon)+'</div>'+
+        '<div style="font-size:6.5px;color:rgba(255,255,255,0.8);margin-top:3px;text-align:center;line-height:1.2;padding:0 2px;font-family:Share Tech Mono,monospace;">'+s.label+'</div>'+
+        '<div style="position:absolute;top:3px;left:4px;font-size:7px;color:rgba(255,255,255,0.4);font-family:Orbitron,monospace;">'+s.step+'</div>'+
+        (current?'<div style="position:absolute;top:-6px;right:-6px;width:14px;height:14px;background:'+sv.bcol+';border-radius:50%;animation:pulse 1.2s infinite;"></div>':'')+
+      '</div>';
+      // Bağlantı çizgisi
+      if(i<AD_CHAIN_STEPS.length-1){
+        html += '<div style="flex-shrink:0;width:6px;align-self:center;height:2px;background:'+(done?'#00ff96':'rgba(255,255,255,0.08)')+';border-radius:1px;"></div>';
+      }
+    });
+    html += '</div>';
+
+    var nextStep = AD_CHAIN_STEPS[progress.completed];
+    var sv2 = stepVisuals[nextStep.step];
+    html += '<div style="background:'+sv2.grad+';border:1.5px solid '+sv2.bcol+';border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;box-shadow:0 0 20px '+sv2.bcol+'33;">'+
+      '<div style="font-size:36px;">'+sv2.icon+'</div>'+
+      '<div style="flex:1;">'+
+        '<div style="font-size:8px;color:rgba(255,255,255,0.5);letter-spacing:0.1em;">'+(stepTxts[currentLang]||stepTxts['en'])+' '+nextStep.step+'/10</div>'+
+        '<div style="font-size:14px;color:#fff;font-family:Orbitron,monospace;margin-top:2px;">'+nextStep.label+'</div>'+
+      '</div>'+
+      '<button onclick="watchAdChainStep()" style="background:'+sv2.bcol+';border:none;border-radius:8px;padding:10px 16px;font-family:Orbitron,monospace;font-size:10px;color:#000;font-weight:bold;cursor:pointer;white-space:nowrap;">'+(watchTxts[currentLang]||watchTxts['en'])+'</button>'+
+    '</div>';
+  }
+
+  el.innerHTML = html;
+}
+
+
 // ============ SAATLİK GİRİŞ BOOST ============
 var HOURLY_BOOST_DURATION = 600000; // 10 dakika
 var HOURLY_BOOST_MULT = 1.1; // %10 bonus
@@ -4162,6 +4308,15 @@ function fillLangGrid(gridEl){
 // Wheel butonları
 document.addEventListener('click', function(e){
   if(e.target && e.target.id === 'wheel-spin-btn') spinWheel();
+
+  if(e.target && e.target.id === 'wheel-ad-btn'){
+    var spinAdMsg = currentLang==='tr' ? 'Reklam izle: +1 çevirme hakkı. Devam?' : 'Watch ad to earn +1 spin. Continue?';
+    if(!window.confirm(spinAdMsg)) return;
+    addExtraSpin(1);
+    var adSpinTxts={tr:'+1 çevirme hakkı kazandın!',en:'+1 spin earned!',ru:'+1 спин получен!',zh:'获得+1转！',ar:'+1 دوران!',es:'+1 giro!',hi:'+1 स्पिन!'};
+    showNotif('📺 '+(adSpinTxts[currentLang]||adSpinTxts['en']));
+    renderWheel();
+  }
 
   if(e.target && e.target.id === 'wheel-ad-btn'){
     if(getAdSpinsToday() >= 5){
