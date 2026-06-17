@@ -452,7 +452,19 @@ body{background:#080d1a;font-family:'Share Tech Mono',monospace;color:#e0eaff;ov
     <div id="ach-list"></div>
   </div>
 
-
+</div>
+</div>
+<!-- LOOT OVERLAY -->
+<div id="loot-overlay" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;flex-direction:column;align-items:center;justify-content:center;gap:16px;" onclick="closeLootOverlay()">
+  <div id="loot-box-anim" style="transition:all 0.15s;"></div>
+  <div id="loot-result" style="display:none;text-align:center;background:rgba(5,10,25,0.95);border:2px solid #ffcc00;border-radius:16px;padding:24px 32px;min-width:220px;">
+    <div id="loot-result-icon" style="font-size:48px;margin-bottom:8px;"></div>
+    <div id="loot-result-label" style="font-family:Orbitron,monospace;font-size:14px;margin-bottom:6px;"></div>
+    <div id="loot-result-rarity" style="font-size:10px;opacity:0.6;margin-bottom:14px;"></div>
+    <button id="loot-next-btn" style="display:none;background:#ffcc00;border:none;border-radius:8px;padding:8px 16px;font-family:Orbitron,monospace;font-size:10px;color:#000;font-weight:bold;cursor:pointer;margin-bottom:8px;width:100%;"></button>
+    <div style="font-size:9px;color:rgba(0,220,255,0.4);">TAP TO CLOSE</div>
+  </div>
+</div>
 
 <script>
 
@@ -1896,64 +1908,60 @@ function renderLootPanel(){
   tonDiv.innerHTML='<div><div style="font-family:Orbitron,monospace;font-size:11px;color:#00dcff;">'+(tonLabelTxts[currentLang]||tonLabelTxts['en'])+'</div><div style="font-size:8px;color:rgba(0,220,255,0.4);margin-top:2px;">'+(tonNoteTxts[currentLang]||tonNoteTxts['en'])+'</div></div><div style="font-family:Orbitron,monospace;font-size:18px;color:#00dcff;">'+tonBal.toFixed(3)+' TON</div>';
   el.appendChild(tonDiv);
 
-  // Envanterdeki kutular
+  // Envanterdeki kutular - her zaman gösterilir
   if(!S.lootInventory) S.lootInventory={};
-  var hasInventory = Object.values(S.lootInventory).some(function(c){return c>0;});
-  if(hasInventory){
-    var invTitles={tr:'📦 ENVANTERİNDEKİ KUTULAR',en:'📦 YOUR BOXES',ru:'📦 ВАШИ ЯЩИКИ',zh:'📦 你的箱子',ar:'📦 صناديقك',es:'📦 TUS CAJAS',hi:'📦 आपके बॉक्स'};
-    var invDiv=document.createElement('div');
-    invDiv.style.cssText='background:rgba(0,255,150,0.04);border:1px solid rgba(0,255,150,0.15);border-radius:8px;padding:10px;margin-bottom:14px;';
-    var invHtml='<div style="font-size:9px;color:rgba(0,255,150,0.6);margin-bottom:8px;font-family:Orbitron,monospace;">'+(invTitles[currentLang]||invTitles['en'])+'</div>';
-    invHtml+='<div style="display:flex;gap:8px;flex-wrap:wrap;">';
-    LOOT_BOXES.forEach(function(box){
-      var count=S.lootInventory[box.id]||0;
-      if(count<=0) return;
-      var openInvTxts={tr:'AÇ',en:'OPEN',ru:'ОТКРЫТЬ',zh:'打开',ar:'افتح',es:'ABRIR',hi:'खोलें'};
-      invHtml+='<div style="background:rgba(0,0,0,0.3);border:1px solid '+box.color+';border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:8px;">'+
-        '<div style="font-size:22px;">'+box.icon+'</div>'+
-        '<div>'+
-          '<div style="font-size:9px;color:#fff;">x'+count+'</div>'+
-          '<button data-openinv="'+box.id+'" style="background:'+box.color+';border:none;border-radius:4px;padding:3px 8px;font-size:8px;color:#000;font-weight:bold;cursor:pointer;margin-top:2px;">'+(openInvTxts[currentLang]||openInvTxts['en'])+'</button>'+
-        '</div>'+
-      '</div>';
-    });
-    invHtml+='</div>';
-    invDiv.innerHTML=invHtml;
-    el.appendChild(invDiv);
-  }
+  var invTitles={tr:'📦 ENVANTERİNDEKİ KUTULAR',en:'📦 YOUR BOXES',ru:'📦 ВАШИ ЯЩИКИ',zh:'📦 你的箱子',ar:'📦 صناديقك',es:'📦 TUS CAJAS',hi:'📦 आपके बॉक्स'};
+  var invDiv=document.createElement('div');
+  invDiv.style.cssText='background:rgba(0,255,150,0.04);border:1px solid rgba(0,255,150,0.15);border-radius:8px;padding:10px;margin-bottom:14px;';
+  var invHtml='<div style="font-size:9px;color:rgba(0,255,150,0.6);margin-bottom:8px;font-family:Orbitron,monospace;">'+(invTitles[currentLang]||invTitles['en'])+'</div>';
 
-  // Loot kutular
+  LOOT_BOXES.forEach(function(box){
+    var count=S.lootInventory[box.id]||0;
+    invHtml+='<div style="background:rgba(0,0,0,0.3);border:1px solid '+(count>0?box.color:'rgba(255,255,255,0.08)')+';border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:8px;margin-bottom:6px;'+(count<=0?'opacity:0.45;':'')+'">'+
+      '<div style="font-size:22px;">'+box.icon+'</div>'+
+      '<div style="flex:1;">'+
+        '<div style="font-size:9px;color:#fff;font-family:Orbitron,monospace;">'+(box.name[currentLang]||box.name['en'])+'</div>'+
+        '<div style="font-size:8px;color:rgba(255,255,255,0.4);margin-top:1px;">x'+count+'</div>'+
+      '</div>'+
+      '<div style="display:flex;gap:4px;">';
+    [1,5,10].forEach(function(n){
+      var enabled = count>=n;
+      invHtml+='<button '+(enabled?'data-openinv="'+box.id+'" data-count="'+n+'"':'disabled')+' style="background:'+(enabled?box.color:'rgba(100,100,100,0.15)')+';border:none;border-radius:4px;padding:5px 8px;font-size:8px;color:'+(enabled?'#000':'rgba(150,150,150,0.4)')+';font-weight:bold;cursor:'+(enabled?'pointer':'not-allowed')+';">x'+n+'</button>';
+    });
+    invHtml+='</div></div>';
+  });
+  invDiv.innerHTML=invHtml;
+  el.appendChild(invDiv);
+
+  // Loot kutular - satin alma
+  var shopTitles={tr:'🛒 KUTU SATIN AL',en:'🛒 BUY BOXES',ru:'🛒 КУПИТЬ ЯЩИКИ',zh:'🛒 购买箱子',ar:'🛒 شراء الصناديق',es:'🛒 COMPRAR CAJAS',hi:'🛒 बॉक्स खरीदें'};
+  var shopTitle=document.createElement('div');
+  shopTitle.style.cssText='font-size:9px;color:rgba(255,200,0,0.6);margin-bottom:8px;font-family:Orbitron,monospace;';
+  shopTitle.textContent=shopTitles[currentLang]||shopTitles['en'];
+  el.appendChild(shopTitle);
+
   LOOT_BOXES.forEach(function(box){
     var rc=RARITY_COLORS[box.rarity]||RARITY_COLORS.common;
     var canBuy=S.coins>=box.cost.zrc;
     var d=document.createElement('div');
     d.style.cssText='background:'+rc.bg+';border:1px solid '+rc.border+';border-radius:10px;padding:12px;margin-bottom:10px;';
 
-    // Ödül listesi
-    var topRewards=box.rewards.slice(0,5).map(function(r){
-      return '<span style="font-size:8px;background:rgba(0,0,0,0.3);border-radius:3px;padding:2px 5px;color:rgba(255,255,255,0.6);margin:2px;display:inline-block;">'+r.label+'</span>';
-    }).join('');
-
-    var openTxts={tr:'AÇ',en:'OPEN',ru:'ОТКРЫТЬ',zh:'开启',ar:'افتح',es:'ABRIR',hi:'खोलें'};
-    // Tüm ödülleri göster
     var allRewards = box.rewards.map(function(r){
-      var chance = Math.round(r.weight/box.rewards.reduce(function(a,b){return a+b.weight;},0)*100);
       var tonColor = r.type==='ton_ig'?'color:#00dcff;':'';
-      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);">'+
+      return '<div style="padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);">'+
         '<span style="font-size:9px;'+tonColor+'color:rgba(255,255,255,0.65);">'+r.label+'</span>'+
-        '<span style="font-size:8px;color:rgba(255,255,255,0.3);">%'+chance+'</span>'+
       '</div>';
     }).join('');
+
     d.innerHTML=
       '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">'+
         '<div style="font-size:36px;">'+box.icon+'</div>'+
         '<div style="flex:1;">'+
           '<div style="font-family:Orbitron,monospace;font-size:12px;color:'+rc.text+';">'+(box.name[currentLang]||box.name['en'])+'</div>'+
-          '<div style="font-size:9px;color:rgba(255,255,255,0.4);margin-top:2px;">'+fmt(box.cost.zrc)+' ZRC</div>'+
         '</div>'+
         '<div style="display:flex;flex-direction:column;gap:4px;">'+
-          '<button style="background:'+(canBuy?rc.bg:'rgba(0,0,0,0.3)')+';border:1px solid '+(canBuy?rc.border:'rgba(100,100,100,0.2)')+';border-radius:6px;padding:6px 10px;font-family:Orbitron,monospace;font-size:9px;color:'+(canBuy?rc.text:'rgba(150,150,150,0.5)')+';cursor:'+(canBuy?'pointer':'not-allowed')+';white-space:nowrap;" '+(canBuy?'':'disabled')+' data-lootbox="'+box.id+'" data-pay="zrc">'+fmt(box.cost.zrc)+' ZRC</button>'+
-          '<button style="background:rgba(80,120,255,0.1);border:1px solid rgba(80,120,255,0.3);border-radius:6px;padding:6px 10px;font-family:Orbitron,monospace;font-size:9px;color:#8ab0ff;cursor:pointer;white-space:nowrap;" data-lootbox="'+box.id+'" data-pay="ton">⬡ '+box.cost.ton+' TON</button>'+
+          '<button style="background:'+(canBuy?rc.bg:'rgba(0,0,0,0.3)')+';border:1px solid '+(canBuy?rc.border:'rgba(100,100,100,0.2)')+';border-radius:6px;padding:6px 10px;font-family:Orbitron,monospace;font-size:9px;color:'+(canBuy?rc.text:'rgba(150,150,150,0.5)')+';cursor:'+(canBuy?'pointer':'not-allowed')+';white-space:nowrap;" '+(canBuy?'':'disabled')+' data-buybox="'+box.id+'" data-pay="zrc">'+fmt(box.cost.zrc)+' ZRC</button>'+
+          '<button style="background:rgba(80,120,255,0.1);border:1px solid rgba(80,120,255,0.3);border-radius:6px;padding:6px 10px;font-family:Orbitron,monospace;font-size:9px;color:#8ab0ff;cursor:pointer;white-space:nowrap;" data-buybox="'+box.id+'" data-pay="ton">⬡ '+box.cost.ton+' TON</button>'+
         '</div>'+
       '</div>'+
       '<div style="background:rgba(0,0,0,0.2);border-radius:6px;padding:6px 8px;">'+allRewards+'</div>';
@@ -1961,13 +1969,14 @@ function renderLootPanel(){
   });
 
   // Event listeners
-  el.querySelectorAll('[data-lootbox]').forEach(function(btn){
-    btn.addEventListener('click',function(){ openLootBox(btn.dataset.lootbox, btn.dataset.pay); });
+  el.querySelectorAll('[data-buybox]').forEach(function(btn){
+    btn.addEventListener('click',function(){ buyLootBox(btn.dataset.buybox, btn.dataset.pay); });
   });
   el.querySelectorAll('[data-openinv]').forEach(function(btn){
-    btn.addEventListener('click',function(){ openLootBox(btn.dataset.openinv, 'inventory'); });
+    btn.addEventListener('click',function(){ openLootBox(btn.dataset.openinv, parseInt(btn.dataset.count)); });
   });
 }
+
 
 // ============ OFF-CHAIN NFT SISTEMI ============
 var NFT_CATALOG = [
