@@ -308,23 +308,48 @@ body{background:linear-gradient(160deg,#e8f8ee,#d4f0e0,#c8e8f0);font-family:'Pop
   </div>
 
   <div class="panel active" id="tab-games">
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;">
-      <button class="games-subtab active" data-gamesub="snake" style="background:#2ecc71;border:3px solid #0a8a3a;border-radius:14px;padding:14px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;">
-        <span style="font-size:30px;">🐍</span>
-        <span style="font-size:11px;color:#fff;font-weight:800;">Snake</span>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;margin-bottom:16px;">
+      <button class="games-subtab active" data-gamesub="snake" style="background:#2ecc71;border:3px solid #0a8a3a;border-radius:14px;padding:10px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">
+        <span style="font-size:24px;">🐍</span>
+        <span style="font-size:9px;color:#fff;font-weight:800;">Snake</span>
       </button>
-      <button class="games-subtab" data-gamesub="match" style="background:#ffffff;border:3px solid #b8e0c8;border-radius:14px;padding:14px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;">
-        <span style="font-size:30px;">🐾</span>
-        <span style="font-size:11px;color:#5a9a7a;font-weight:700;">Match</span>
+      <button class="games-subtab" data-gamesub="match" style="background:#ffffff;border:3px solid #b8e0c8;border-radius:14px;padding:10px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">
+        <span style="font-size:24px;">🐾</span>
+        <span style="font-size:9px;color:#5a9a7a;font-weight:700;">Match</span>
       </button>
-      <button class="games-subtab" data-gamesub="raid" style="background:#ffffff;border:3px solid #b8e0c8;border-radius:14px;padding:14px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;">
-        <span style="font-size:30px;">⚔️</span>
-        <span style="font-size:11px;color:#5a9a7a;font-weight:700;">Raid</span>
+      <button class="games-subtab" data-gamesub="raid" style="background:#ffffff;border:3px solid #b8e0c8;border-radius:14px;padding:10px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">
+        <span style="font-size:24px;">⚔️</span>
+        <span style="font-size:9px;color:#5a9a7a;font-weight:700;">Raid</span>
+      </button>
+      <button class="games-subtab" data-gamesub="g2048" style="background:#ffffff;border:3px solid #b8e0c8;border-radius:14px;padding:10px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">
+        <span style="font-size:24px;">🔢</span>
+        <span style="font-size:9px;color:#5a9a7a;font-weight:700;">2048</span>
+      </button>
+      <button class="games-subtab" data-gamesub="mines" style="background:#ffffff;border:3px solid #b8e0c8;border-radius:14px;padding:10px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">
+        <span style="font-size:24px;">💣</span>
+        <span style="font-size:9px;color:#5a9a7a;font-weight:700;">Mines</span>
+      </button>
+      <button class="games-subtab" data-gamesub="slot" style="background:#ffffff;border:3px solid #b8e0c8;border-radius:14px;padding:10px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">
+        <span style="font-size:24px;">🎰</span>
+        <span style="font-size:9px;color:#5a9a7a;font-weight:700;">Slot</span>
+      </button>
+      <button class="games-subtab" data-gamesub="rush" style="background:#ffffff;border:3px solid #b8e0c8;border-radius:14px;padding:10px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">
+        <span style="font-size:24px;">⚡</span>
+        <span style="font-size:9px;color:#5a9a7a;font-weight:700;">Rush</span>
+      </button>
+      <button class="games-subtab" data-gamesub="reaction" style="background:#ffffff;border:3px solid #b8e0c8;border-radius:14px;padding:10px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;">
+        <span style="font-size:24px;">🎯</span>
+        <span style="font-size:9px;color:#5a9a7a;font-weight:700;">Reaction</span>
       </button>
     </div>
     <div id="games-sub-snake" class="games-sub-panel"><div id="sk-panel-content"></div></div>
     <div id="games-sub-match" class="games-sub-panel" style="display:none;"><div id="tm-panel-content"></div></div>
     <div id="games-sub-raid" class="games-sub-panel" style="display:none;"><div id="raid-panel"></div></div>
+    <div id="games-sub-g2048" class="games-sub-panel" style="display:none;"><div id="g2048-panel-content"></div></div>
+    <div id="games-sub-mines" class="games-sub-panel" style="display:none;"><div id="mines-panel-content"></div></div>
+    <div id="games-sub-slot" class="games-sub-panel" style="display:none;"><div id="slot-panel-content"></div></div>
+    <div id="games-sub-rush" class="games-sub-panel" style="display:none;"><div id="rush-panel-content"></div></div>
+    <div id="games-sub-reaction" class="games-sub-panel" style="display:none;"><div id="reaction-panel-content"></div></div>
   </div>
 
   <div class="panel" id="tab-upgrade">
@@ -2858,7 +2883,7 @@ function skKeyHandler(e){
 
 // ============ TRIPLE MATCH OYUNU (CatTea tarzi) ============
 
-var TM_SYMBOLS = ['🪙','💎','⚡','🎁','🔮','🛡️','⭐','🔋','🏆','🌟','💠','🔥'];
+var TM_SYMBOLS = ['btc','ton','eth','nft','zrc','diamond','turtle','bunny'];
 var TM_LAYERS = 4; // 4 katman - en alt = en cok kart, en ust = en az
 var TM_SLOTS_MAX = 7;
 
@@ -2931,38 +2956,29 @@ function tmGenerateBoard(){
     var tmp = deck[i]; deck[i]=deck[j]; deck[j]=tmp;
   }
 
-  // 4 katman, her katmanda farkli grid: L0(en alt)=6x3=18, L1=5x3=15? toplam 48 olmali
-  // Basit dagitim: L0=20, L1=14, L2=9, L3=5 => 48
-  var layerCounts = [20, 14, 9, 5];
+  // 4 katman, 8 sembol x 4 = 32 kart toplam
+  var layerCounts = [14, 10, 6, 2];
   var board = [];
   var idx = 0;
-  var layerGrids = [
-    {cols:5, rows:4},  // L0: 20 kart
-    {cols:5, rows:3, offsetX:0.5, offsetY:0.5}, // L1: 14 kart -> 5x3=15, biri eksik olur, duzeltelim
-    {cols:3, rows:3, offsetX:1, offsetY:1},     // L2: 9 kart
-    {cols:3, rows:2, offsetX:1, offsetY:1.5},   // L3: 5 kart -> 3x2=6, biri eksik
-  ];
 
-  // Basitlestirilmis: her katman icin sabit pozisyon listesi (x,y offset olarak, grid birimi 50px)
+  // Katman pozisyonlari (grid birimi olarak x,y) - 32 kart icin
   var positions = [
-    // Layer 0 (taban) - 5 sutun x 4 satir = 20
-    [[0,0],[1,0],[2,0],[3,0],[4,0],
-     [0,1],[1,1],[2,1],[3,1],[4,1],
-     [0,2],[1,2],[2,2],[3,2],[4,2],
-     [0,3],[1,3],[2,3],[3,3],[4,3]],
-    // Layer 1 - 14 kart, biraz icerde ve yukarida (offset 0.5,0.5)
-    [[0.5,0.5],[1.5,0.5],[2.5,0.5],[3.5,0.5],
-     [0.5,1.5],[1.5,1.5],[2.5,1.5],[3.5,1.5],
-     [0.5,2.5],[1.5,2.5],[2.5,2.5],[3.5,2.5],
-     [1,3.2],[2.5,3.2]],
-    // Layer 2 - 9 kart
-    [[1,1],[2,1],[3,1],
-     [1,2],[2,2],[3,2],
-     [1,3],[2,3],[3,3]],
-    // Layer 3 (tepe) - 5 kart
-    [[1.5,1.5],[2.5,1.5],
-     [1.5,2.5],[2.5,2.5],
-     [2,3]],
+    // Layer 0 (taban) - 14 kart
+    [[0,0],[1,0],[2,0],[3,0],
+     [0,1],[1,1],[2,1],[3,1],
+     [0,2],[1,2],[2,2],[3,2],
+     [1,3],[2,3]],
+    // Layer 1 - 10 kart, iceride
+    [[0.5,0.5],[1.5,0.5],[2.5,0.5],
+     [0.5,1.5],[1.5,1.5],[2.5,1.5],
+     [0.5,2.5],[1.5,2.5],[2.5,2.5],
+     [1.5,3.2]],
+    // Layer 2 - 6 kart
+    [[1,1],[2,1],
+     [1,2],[2,2],
+     [1.5,2.8],[1.5,0.3]],
+    // Layer 3 (tepe) - 2 kart
+    [[1.5,1.5],[1.5,2.2]],
   ];
 
   for(var L=0; L<4; L++){
@@ -3147,6 +3163,714 @@ function tmWatchAdForPlay(){
   showNotif('📺 '+gotMsg);
   renderTripleMatchPanel();
 }
+// ============ GENEL OYUN HAK SISTEMI (yardimci) ============
+function genGetPlaysLeft(prefix){
+  var today = todayStr();
+  var data = JSON.parse(localStorage.getItem('zro_'+prefix+'_plays_'+userId)||'{}');
+  if(data.date !== today) return 3;
+  return Math.max(0, 3 - (data.count||0));
+}
+function genGetExtraPlays(prefix){
+  var today = todayStr();
+  var data = JSON.parse(localStorage.getItem('zro_'+prefix+'_extra_'+userId)||'{}');
+  if(data.date !== today) return 0;
+  return data.count||0;
+}
+function genUsePlay(prefix){
+  var today = todayStr();
+  var freeLeft = genGetPlaysLeft(prefix);
+  if(freeLeft > 0){
+    var data = JSON.parse(localStorage.getItem('zro_'+prefix+'_plays_'+userId)||'{}');
+    if(data.date !== today) data = {date:today, count:0};
+    data.count = (data.count||0) + 1;
+    localStorage.setItem('zro_'+prefix+'_plays_'+userId, JSON.stringify(data));
+    return true;
+  }
+  var extra = genGetExtraPlays(prefix);
+  if(extra > 0){
+    var edata = JSON.parse(localStorage.getItem('zro_'+prefix+'_extra_'+userId)||'{}');
+    edata.count = Math.max(0, (edata.count||0) - 1);
+    localStorage.setItem('zro_'+prefix+'_extra_'+userId, JSON.stringify(edata));
+    return true;
+  }
+  return false;
+}
+function genAddExtraPlay(prefix){
+  var today = todayStr();
+  var data = JSON.parse(localStorage.getItem('zro_'+prefix+'_extra_'+userId)||'{}');
+  if(data.date !== today) data = {date:today, count:0};
+  data.count = (data.count||0) + 1;
+  localStorage.setItem('zro_'+prefix+'_extra_'+userId, JSON.stringify(data));
+}
+function genCanPlay(prefix){
+  return genGetPlaysLeft(prefix) > 0 || genGetExtraPlays(prefix) > 0;
+}
+function genAwardZRC(amount){
+  S.coins += amount;
+  S.totalEarned += amount;
+  scheduleSave();
+  renderAll();
+}
+function genGameHeader(panelEl, opts){
+  // opts: {icon, titleTr, titleEn, descTr, descEn, prefix, gradFrom, gradTo, startBtnFn, adBtnFn}
+  var playsLeft = genGetPlaysLeft(opts.prefix);
+  var extraPlays = genGetExtraPlays(opts.prefix);
+  var canPlay = genCanPlay(opts.prefix);
+
+  var titleTxt = opts.icon+' '+(currentLang==='tr'?opts.titleTr:opts.titleEn);
+  var descTxt = currentLang==='tr' ? opts.descTr : opts.descEn;
+  var playsTxt = currentLang==='tr' ? 'Kalan ücretsiz oyun: ' : 'Free plays left: ';
+  var extraTxt = currentLang==='tr' ? 'Ekstra hak: ' : 'Extra plays: ';
+  var startTxt = currentLang==='tr' ? '▶️ OYNA' : '▶️ PLAY';
+  var noPlayTxt = currentLang==='tr' ? 'Hakkın bitti' : 'No plays left';
+  var watchAdTxt = currentLang==='tr' ? '📺 Reklam İzle (+1 Oyun)' : '📺 Watch Ad (+1 Play)';
+
+  var html =
+    '<div style="background:linear-gradient(135deg,'+opts.gradFrom+','+opts.gradTo+');border-radius:14px;padding:16px;text-align:center;">'+
+      '<div style="font-family:Orbitron,monospace;font-size:14px;color:#fff;margin-bottom:4px;font-weight:700;">'+titleTxt+'</div>'+
+      '<div style="font-size:10px;color:rgba(255,255,255,0.9);margin-bottom:12px;">'+descTxt+'</div>'+
+      '<div style="display:flex;justify-content:center;gap:16px;margin-bottom:14px;">'+
+        '<div style="background:rgba(255,255,255,0.25);border-radius:8px;padding:6px 12px;">'+
+          '<div style="font-size:9px;color:#fff;">'+playsTxt+'</div>'+
+          '<div style="font-size:14px;font-weight:700;color:#fff;">'+playsLeft+'/3</div>'+
+        '</div>'+
+        (extraPlays>0?'<div style="background:rgba(255,255,255,0.25);border-radius:8px;padding:6px 12px;">'+
+          '<div style="font-size:9px;color:#fff;">'+extraTxt+'</div>'+
+          '<div style="font-size:14px;font-weight:700;color:#fff;">'+extraPlays+'</div>'+
+        '</div>':'')+
+      '</div>'+
+      (canPlay?
+        '<button id="'+opts.prefix+'-start-btn" style="background:#ff9233;border:none;border-radius:10px;padding:12px 28px;font-family:Orbitron,monospace;font-size:13px;color:#fff;font-weight:700;cursor:pointer;">'+startTxt+'</button>'
+      :
+        '<div style="margin-bottom:8px;font-size:11px;color:rgba(255,255,255,0.85);">'+noPlayTxt+'</div>'+
+        '<button id="'+opts.prefix+'-ad-btn" style="background:#ffffff;border:none;border-radius:10px;padding:10px 20px;font-family:Orbitron,monospace;font-size:11px;color:#1a3a2a;font-weight:700;cursor:pointer;">'+watchAdTxt+'</button>'
+      )+
+    '</div>'+
+    '<div id="'+opts.prefix+'-game-area" style="display:none;margin-top:12px;"></div>';
+
+  panelEl.innerHTML = html;
+
+  var startBtn = document.getElementById(opts.prefix+'-start-btn');
+  if(startBtn) startBtn.addEventListener('click', opts.startBtnFn);
+  var adBtn = document.getElementById(opts.prefix+'-ad-btn');
+  if(adBtn) adBtn.addEventListener('click', function(){
+    if(!S.isPremium){
+      var msg = currentLang==='tr' ? 'Reklam izle: +1 oyun hakkı. Devam?' : 'Watch ad for +1 play. Continue?';
+      if(!window.confirm(msg)) return;
+    }
+    genAddExtraPlay(opts.prefix);
+    var gotMsg = currentLang==='tr' ? '+1 oyun hakkı kazandın!' : '+1 play earned!';
+    showNotif('📺 '+gotMsg);
+    opts.rerenderFn();
+  });
+}
+
+
+// ============ 2048 OYUNU ============
+var G2048 = { board: [], score: 0, active: false, won: false };
+
+function g2048EmptyBoard(){
+  var b = [];
+  for(var i=0;i<4;i++){ b.push([0,0,0,0]); }
+  return b;
+}
+function g2048AddRandom(board){
+  var empty = [];
+  for(var r=0;r<4;r++) for(var c=0;c<4;c++) if(board[r][c]===0) empty.push({r:r,c:c});
+  if(empty.length===0) return;
+  var pick = empty[Math.floor(Math.random()*empty.length)];
+  board[pick.r][pick.c] = Math.random()<0.9 ? 2 : 4;
+}
+function g2048SlideRow(row){
+  var arr = row.filter(function(v){return v!==0;});
+  var scoreGain = 0;
+  for(var i=0;i<arr.length-1;i++){
+    if(arr[i]===arr[i+1]){
+      arr[i]*=2; scoreGain+=arr[i]; arr.splice(i+1,1);
+    }
+  }
+  while(arr.length<4) arr.push(0);
+  return {row:arr, gain:scoreGain};
+}
+function g2048Move(dir){
+  if(!G2048.active) return false;
+  var moved = false;
+  var totalGain = 0;
+  var b = G2048.board;
+
+  function getLine(i, dir){
+    var line = [];
+    for(var j=0;j<4;j++){
+      if(dir==='left'||dir==='right') line.push(b[i][j]);
+      else line.push(b[j][i]);
+    }
+    if(dir==='right'||dir==='down') line.reverse();
+    return line;
+  }
+  function setLine(i, dir, line){
+    if(dir==='right'||dir==='down') line.reverse();
+    for(var j=0;j<4;j++){
+      if(dir==='left'||dir==='right') b[i][j] = line[j];
+      else b[j][i] = line[j];
+    }
+  }
+
+  for(var i=0;i<4;i++){
+    var line = getLine(i, dir);
+    var result = g2048SlideRow(line);
+    if(JSON.stringify(result.row) !== JSON.stringify(line)) moved = true;
+    totalGain += result.gain;
+    setLine(i, dir, result.row);
+  }
+
+  if(moved){
+    G2048.score += totalGain;
+    g2048AddRandom(b);
+    if(totalGain>0){
+      var coinGain = Math.floor(totalGain * 0.5);
+      genAwardZRC(coinGain);
+    }
+  }
+  return moved;
+}
+function g2048CheckWin(){
+  for(var r=0;r<4;r++) for(var c=0;c<4;c++) if(G2048.board[r][c]>=2048) return true;
+  return false;
+}
+function g2048CheckGameOver(){
+  for(var r=0;r<4;r++) for(var c=0;c<4;c++) if(G2048.board[r][c]===0) return false;
+  for(var r2=0;r2<4;r2++){
+    for(var c2=0;c2<3;c2++){
+      if(G2048.board[r2][c2]===G2048.board[r2][c2+1]) return false;
+      if(G2048.board[c2][r2]===G2048.board[c2+1][r2]) return false;
+    }
+  }
+  return true;
+}
+
+function renderG2048Panel(){
+  var el = document.getElementById('g2048-panel-content');
+  if(!el) return;
+  genGameHeader(el, {
+    icon:'🔢', titleTr:'ZRC 2048', titleEn:'ZRC 2048',
+    descTr:'Sayilari birlestir, 2048e ulas!', descEn:'Merge numbers, reach 2048!',
+    prefix:'g2048', gradFrom:'#2ecc71', gradTo:'#1565c0',
+    startBtnFn: g2048OpenGame,
+    rerenderFn: renderG2048Panel,
+  });
+}
+
+function g2048OpenGame(){
+  if(!genCanPlay('g2048')) return;
+  if(!genUsePlay('g2048')) return;
+
+  G2048.board = g2048EmptyBoard();
+  g2048AddRandom(G2048.board);
+  g2048AddRandom(G2048.board);
+  G2048.score = 0;
+  G2048.active = true;
+  G2048.won = false;
+
+  var gameArea = document.getElementById('g2048-game-area');
+  gameArea.style.display = 'block';
+  gameArea.innerHTML =
+    '<div style="background:#bbada0;border-radius:14px;padding:12px;">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">'+
+        '<div style="background:#ff9233;border-radius:14px;padding:4px 12px;font-size:11px;color:#fff;font-weight:700;">🏆 <span id="g2048-score-display">0</span></div>'+
+      '</div>'+
+      '<div id="g2048-board-svg" style="touch-action:none;"></div>'+
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px;max-width:200px;margin-left:auto;margin-right:auto;">'+
+        '<div></div>'+
+        '<button id="g2048-up" style="background:#1565c0;border:none;border-radius:8px;padding:14px;font-size:18px;color:#fff;cursor:pointer;">⬆️</button>'+
+        '<div></div>'+
+        '<button id="g2048-left" style="background:#1565c0;border:none;border-radius:8px;padding:14px;font-size:18px;color:#fff;cursor:pointer;">⬅️</button>'+
+        '<button id="g2048-down" style="background:#1565c0;border:none;border-radius:8px;padding:14px;font-size:18px;color:#fff;cursor:pointer;">⬇️</button>'+
+        '<button id="g2048-right" style="background:#1565c0;border:none;border-radius:8px;padding:14px;font-size:18px;color:#fff;cursor:pointer;">➡️</button>'+
+      '</div>'+
+    '</div>';
+
+  document.getElementById('g2048-up').addEventListener('click', function(){ g2048DoMove('up'); });
+  document.getElementById('g2048-down').addEventListener('click', function(){ g2048DoMove('down'); });
+  document.getElementById('g2048-left').addEventListener('click', function(){ g2048DoMove('left'); });
+  document.getElementById('g2048-right').addEventListener('click', function(){ g2048DoMove('right'); });
+
+  document.addEventListener('keydown', g2048KeyHandler);
+
+  var boardEl = document.getElementById('g2048-board-svg');
+  var touchStartX=0, touchStartY=0;
+  boardEl.addEventListener('touchstart', function(e){ touchStartX=e.touches[0].clientX; touchStartY=e.touches[0].clientY; });
+  boardEl.addEventListener('touchend', function(e){
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    var dy = e.changedTouches[0].clientY - touchStartY;
+    if(Math.abs(dx)>Math.abs(dy)) g2048DoMove(dx>0?'right':'left');
+    else g2048DoMove(dy>0?'down':'up');
+  });
+
+  g2048RenderBoard();
+}
+
+function g2048KeyHandler(e){
+  if(!G2048.active) return;
+  if(e.key==='ArrowUp') g2048DoMove('up');
+  else if(e.key==='ArrowDown') g2048DoMove('down');
+  else if(e.key==='ArrowLeft') g2048DoMove('left');
+  else if(e.key==='ArrowRight') g2048DoMove('right');
+}
+
+function g2048DoMove(dir){
+  if(!G2048.active) return;
+  var moved = g2048Move(dir);
+  if(moved) g2048RenderBoard();
+
+  if(!G2048.won && g2048CheckWin()){
+    G2048.won = true;
+    genAwardZRC(800);
+    g2048EndGame(true);
+    return;
+  }
+  if(g2048CheckGameOver()){
+    var finalBonus = Math.min(500, Math.floor(G2048.score*0.1));
+    if(finalBonus>0) genAwardZRC(finalBonus);
+    g2048EndGame(false);
+  }
+}
+
+function g2048EndGame(won){
+  G2048.active = false;
+  document.removeEventListener('keydown', g2048KeyHandler);
+  var msg = won ?
+    (currentLang==='tr'?'🎉 2048e ulastin! +800 ZRC':'🎉 You reached 2048! +800 ZRC') :
+    (currentLang==='tr'?'Oyun bitti! Skor bonusu kazandın.':'Game over! Score bonus earned.');
+  showNotif(msg);
+  setTimeout(renderG2048Panel, 1500);
+}
+
+var G2048_COLORS = {
+  0:'#cdc1b4', 2:'#eee4da', 4:'#ede0c8', 8:'#f2b179', 16:'#f59563',
+  32:'#f67c5f', 64:'#f65e3b', 128:'#edcf72', 256:'#edcc61', 512:'#edc850',
+  1024:'#edc53f', 2048:'#edc22e',
+};
+var G2048_TEXT_COLORS = { 2:'#776e65', 4:'#776e65' };
+
+function g2048RenderBoard(){
+  var el = document.getElementById('g2048-board-svg');
+  if(!el) return;
+  var cell = 70, gap = 8, size = 4*cell + 5*gap;
+  var svg = '<svg width="100%" viewBox="0 0 '+size+' '+size+'" xmlns="http://www.w3.org/2000/svg">';
+  svg += '<rect width="'+size+'" height="'+size+'" rx="8" fill="#a89684"/>';
+  for(var r=0;r<4;r++){
+    for(var c=0;c<4;c++){
+      var x = gap + c*(cell+gap), y = gap + r*(cell+gap);
+      var val = G2048.board[r][c];
+      var fill = G2048_COLORS[val] || '#3c3a32';
+      svg += '<rect x="'+x+'" y="'+y+'" width="'+cell+'" height="'+cell+'" rx="6" fill="'+fill+'"/>';
+      if(val>0){
+        var textColor = G2048_TEXT_COLORS[val] || '#f9f6f2';
+        var fontSize = val>=1000 ? 22 : val>=100 ? 26 : 30;
+        svg += '<text x="'+(x+cell/2)+'" y="'+(y+cell/2+fontSize/3)+'" text-anchor="middle" font-size="'+fontSize+'" font-weight="700" fill="'+textColor+'">'+val+'</text>';
+      }
+    }
+  }
+  svg += '</svg>';
+  el.innerHTML = svg;
+  var scoreEl = document.getElementById('g2048-score-display');
+  if(scoreEl) scoreEl.textContent = G2048.score;
+}
+
+
+// ============ MAYIN TARLASI OYUNU ============
+var MINES = { grid: [], revealed: [], active: false, gridSize: 5, mineCount: 5, coinsEarned: 0 };
+
+function minesGenerate(){
+  var size = MINES.gridSize;
+  var grid = [];
+  for(var i=0;i<size*size;i++) grid.push(false);
+  var minePositions = [];
+  while(minePositions.length < MINES.mineCount){
+    var pos = Math.floor(Math.random()*size*size);
+    if(minePositions.indexOf(pos)===-1) minePositions.push(pos);
+  }
+  minePositions.forEach(function(p){ grid[p]=true; });
+  MINES.grid = grid;
+  MINES.revealed = grid.map(function(){return false;});
+}
+
+function renderMinesPanel(){
+  var el = document.getElementById('mines-panel-content');
+  if(!el) return;
+  genGameHeader(el, {
+    icon:'💣', titleTr:'ZRC Mayın Tarlası', titleEn:'ZRC Minefield',
+    descTr:'Mayınlardan kaçın, güvenli kareleri aç!', descEn:'Avoid mines, reveal safe tiles!',
+    prefix:'mines', gradFrom:'#ff9233', gradTo:'#cc6a1a',
+    startBtnFn: minesOpenGame,
+    rerenderFn: renderMinesPanel,
+  });
+}
+
+function minesOpenGame(){
+  if(!genCanPlay('mines')) return;
+  if(!genUsePlay('mines')) return;
+
+  minesGenerate();
+  MINES.active = true;
+  MINES.coinsEarned = 0;
+
+  var gameArea = document.getElementById('mines-game-area');
+  gameArea.style.display = 'block';
+  gameArea.innerHTML =
+    '<div style="background:#3a2a1a;border-radius:14px;padding:12px;">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">'+
+        '<div style="background:#2ecc71;border-radius:14px;padding:4px 12px;font-size:11px;color:#fff;font-weight:700;">🪙 <span id="mines-coins-display">0</span> ZRC</div>'+
+        '<button id="mines-cashout-btn" style="background:#ff9233;border:none;border-radius:14px;padding:4px 14px;font-size:11px;color:#fff;font-weight:700;cursor:pointer;">'+(currentLang==='tr'?'Topla & Çık':'Cash Out')+'</button>'+
+      '</div>'+
+      '<div id="mines-grid-svg"></div>'+
+    '</div>';
+
+  document.getElementById('mines-cashout-btn').addEventListener('click', minesCashOut);
+
+  minesRenderGrid();
+}
+
+function minesRevealTile(idx){
+  if(!MINES.active || MINES.revealed[idx]) return;
+  MINES.revealed[idx] = true;
+
+  if(MINES.grid[idx]){
+    // Mayina bastin
+    minesRenderGrid(true);
+    MINES.active = false;
+    var loseMsg = currentLang==='tr' ? '💥 Mayına bastın! '+MINES.coinsEarned+' ZRC kazandın.' : '💥 Hit a mine! Earned '+MINES.coinsEarned+' ZRC.';
+    showNotif(loseMsg);
+    if(MINES.coinsEarned>0) genAwardZRC(MINES.coinsEarned);
+    setTimeout(renderMinesPanel, 1500);
+    return;
+  }
+
+  MINES.coinsEarned += 20;
+  var safeCount = MINES.revealed.filter(function(r,i){return r && !MINES.grid[i];}).length;
+  var totalSafe = MINES.gridSize*MINES.gridSize - MINES.mineCount;
+  if(safeCount >= totalSafe){
+    // Tum guvenli kareler acildi - buyuk bonus
+    MINES.coinsEarned += 200;
+    minesRenderGrid(true);
+    MINES.active = false;
+    var winMsg = currentLang==='tr' ? '🎉 Tüm kareleri açtın! +'+MINES.coinsEarned+' ZRC' : '🎉 Cleared the board! +'+MINES.coinsEarned+' ZRC';
+    showNotif(winMsg);
+    genAwardZRC(MINES.coinsEarned);
+    setTimeout(renderMinesPanel, 1500);
+    return;
+  }
+
+  minesRenderGrid();
+}
+
+function minesCashOut(){
+  if(!MINES.active) return;
+  MINES.active = false;
+  var msg = currentLang==='tr' ? '💰 Topladın! +'+MINES.coinsEarned+' ZRC' : '💰 Cashed out! +'+MINES.coinsEarned+' ZRC';
+  showNotif(msg);
+  if(MINES.coinsEarned>0) genAwardZRC(MINES.coinsEarned);
+  minesRenderGrid(true);
+  setTimeout(renderMinesPanel, 1200);
+}
+
+function minesRenderGrid(showAll){
+  var el = document.getElementById('mines-grid-svg');
+  if(!el) return;
+  var size = MINES.gridSize;
+  var cell = 56, gap = 6, boardSize = size*cell + (size+1)*gap;
+
+  var svg = '<svg width="100%" viewBox="0 0 '+boardSize+' '+boardSize+'" xmlns="http://www.w3.org/2000/svg">';
+  for(var r=0;r<size;r++){
+    for(var c=0;c<size;c++){
+      var idx = r*size+c;
+      var x = gap + c*(cell+gap), y = gap + r*(cell+gap);
+      var revealed = MINES.revealed[idx];
+      var isMine = MINES.grid[idx];
+
+      if(revealed || showAll){
+        if(isMine){
+          svg += '<rect x="'+x+'" y="'+y+'" width="'+cell+'" height="'+cell+'" rx="6" fill="#d83a3a"/>';
+          svg += '<text x="'+(x+cell/2)+'" y="'+(y+cell/2+8)+'" text-anchor="middle" font-size="24">💣</text>';
+        } else {
+          svg += '<rect x="'+x+'" y="'+y+'" width="'+cell+'" height="'+cell+'" rx="6" fill="#eafaf1" stroke="#2ecc71" stroke-width="1.5"/>';
+          svg += '<text x="'+(x+cell/2)+'" y="'+(y+cell/2+6)+'" text-anchor="middle" font-size="16">💎</text>';
+        }
+      } else {
+        svg += '<rect x="'+x+'" y="'+y+'" width="'+cell+'" height="'+cell+'" rx="6" fill="#5a4530" stroke="#3a2a1a" stroke-width="1" data-idx="'+idx+'" class="mines-tile" style="cursor:pointer;"/>';
+      }
+    }
+  }
+  svg += '</svg>';
+  el.innerHTML = svg;
+
+  if(!showAll){
+    el.querySelectorAll('.mines-tile').forEach(function(tile){
+      tile.addEventListener('click', function(){ minesRevealTile(parseInt(tile.dataset.idx)); });
+    });
+  }
+
+  var coinsEl = document.getElementById('mines-coins-display');
+  if(coinsEl) coinsEl.textContent = MINES.coinsEarned;
+}
+
+
+// ============ SLOT MACHINE OYUNU ============
+var SLOT_SYMBOLS = [
+  {icon:'💎', weight:25, payout3:300, payout2:80},
+  {icon:'🍀', weight:25, payout3:400, payout2:100},
+  {icon:'🪙', weight:25, payout3:500, payout2:120},
+  {icon:'⚡', weight:15, payout3:800, payout2:200},
+  {icon:'⭐', weight:8,  payout3:1500, payout2:400},
+  {icon:'💠', weight:2,  payout3:3000, payout2:800},
+];
+
+function slotPickSymbol(){
+  var total = SLOT_SYMBOLS.reduce(function(a,s){return a+s.weight;},0);
+  var roll = Math.random()*total;
+  var sum = 0;
+  for(var i=0;i<SLOT_SYMBOLS.length;i++){
+    sum += SLOT_SYMBOLS[i].weight;
+    if(roll<=sum) return SLOT_SYMBOLS[i];
+  }
+  return SLOT_SYMBOLS[0];
+}
+
+function renderSlotPanel(){
+  var el = document.getElementById('slot-panel-content');
+  if(!el) return;
+  genGameHeader(el, {
+    icon:'🎰', titleTr:'ZRC Slot', titleEn:'ZRC Slot',
+    descTr:'3 aynı sembol = büyük ödül!', descEn:'3 matching symbols = big prize!',
+    prefix:'slot', gradFrom:'#1565c0', gradTo:'#0d47a1',
+    startBtnFn: slotOpenGame,
+    rerenderFn: renderSlotPanel,
+  });
+}
+
+function slotOpenGame(){
+  if(!genCanPlay('slot')) return;
+
+  var gameArea = document.getElementById('slot-game-area');
+  gameArea.style.display = 'block';
+  gameArea.innerHTML =
+    '<div style="background:#0d1f30;border-radius:14px;padding:16px;text-align:center;">'+
+      '<div id="slot-reels" style="display:flex;justify-content:center;gap:6px;margin-bottom:16px;">'+
+        '<div class="slot-reel" style="width:70px;height:80px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:34px;">❓</div>'+
+        '<div class="slot-reel" style="width:70px;height:80px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:34px;">❓</div>'+
+        '<div class="slot-reel" style="width:70px;height:80px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:34px;">❓</div>'+
+      '</div>'+
+      '<button id="slot-spin-btn" style="background:#ff9233;border:none;border-radius:14px;padding:12px 36px;font-family:Orbitron,monospace;font-size:14px;color:#fff;font-weight:700;cursor:pointer;">🎰 '+(currentLang==='tr'?'ÇEVİR':'SPIN')+'</button>'+
+      '<div id="slot-result-msg" style="margin-top:10px;font-size:12px;color:#fff;min-height:18px;"></div>'+
+    '</div>';
+
+  document.getElementById('slot-spin-btn').addEventListener('click', slotSpin);
+}
+
+function slotSpin(){
+  if(!genUsePlay('slot')) return;
+  var btn = document.getElementById('slot-spin-btn');
+  btn.disabled = true;
+
+  var reels = document.querySelectorAll('.slot-reel');
+  var results = [slotPickSymbol(), slotPickSymbol(), slotPickSymbol()];
+
+  // Donme animasyonu
+  var spins = 0;
+  var spinInterval = setInterval(function(){
+    spins++;
+    reels.forEach(function(r){
+      r.textContent = SLOT_SYMBOLS[Math.floor(Math.random()*SLOT_SYMBOLS.length)].icon;
+    });
+    if(spins>=12){
+      clearInterval(spinInterval);
+      reels.forEach(function(r,i){ r.textContent = results[i].icon; });
+      slotEvaluateResult(results);
+      btn.disabled = false;
+      var playsLeft = genGetPlaysLeft('slot') + genGetExtraPlays('slot');
+      if(playsLeft<=0) setTimeout(renderSlotPanel, 1800);
+    }
+  }, 80);
+}
+
+function slotEvaluateResult(results){
+  var icons = results.map(function(r){return r.icon;});
+  var msgEl = document.getElementById('slot-result-msg');
+  var won = 0;
+
+  if(icons[0]===icons[1] && icons[1]===icons[2]){
+    won = results[0].payout3;
+    msgEl.textContent = '🎉 '+(currentLang==='tr'?'3 EŞLEŞTİ!':'TRIPLE MATCH!')+' +'+won+' ZRC';
+    msgEl.style.color = '#7fff9a';
+  } else if(icons[0]===icons[1] || icons[1]===icons[2] || icons[0]===icons[2]){
+    var matchSym = icons[0]===icons[1] ? results[0] : icons[1]===icons[2] ? results[1] : results[0];
+    won = matchSym.payout2;
+    msgEl.textContent = '✨ '+(currentLang==='tr'?'2 eşleşti!':'2 matched!')+' +'+won+' ZRC';
+    msgEl.style.color = '#ffd166';
+  } else {
+    won = 50;
+    msgEl.textContent = (currentLang==='tr'?'Eşleşme yok. Katılım ödülü:':'No match. Participation:')+' +'+won+' ZRC';
+    msgEl.style.color = '#cfd8dc';
+  }
+  genAwardZRC(won);
+}
+
+
+// ============ TAP RUSH OYUNU ============
+var RUSH = { active: false, taps: 0, timeLeft: 10, timerId: null };
+
+function renderRushPanel(){
+  var el = document.getElementById('rush-panel-content');
+  if(!el) return;
+  genGameHeader(el, {
+    icon:'⚡', titleTr:'Tap Rush', titleEn:'Tap Rush',
+    descTr:'10 saniyede ne kadar çok tıklayabilirsin?', descEn:'How many taps in 10 seconds?',
+    prefix:'rush', gradFrom:'#ff9233', gradTo:'#2ecc71',
+    startBtnFn: rushOpenGame,
+    rerenderFn: renderRushPanel,
+  });
+}
+
+function rushOpenGame(){
+  if(!genCanPlay('rush')) return;
+  if(!genUsePlay('rush')) return;
+
+  RUSH.taps = 0;
+  RUSH.timeLeft = 10;
+  RUSH.active = false;
+
+  var gameArea = document.getElementById('rush-game-area');
+  gameArea.style.display = 'block';
+  gameArea.innerHTML =
+    '<div style="background:#fff3e0;border-radius:14px;padding:20px;text-align:center;">'+
+      '<div id="rush-timer-bar" style="background:#fff;border:2px solid #ff9233;border-radius:18px;height:36px;margin-bottom:20px;position:relative;overflow:hidden;">'+
+        '<div id="rush-timer-fill" style="background:#ff9233;height:100%;width:100%;transition:width 0.1s linear;"></div>'+
+        '<div id="rush-timer-text" style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#1a3a2a;">'+(currentLang==='tr'?'Başlamak için dokun':'Tap to start')+'</div>'+
+      '</div>'+
+      '<button id="rush-tap-btn" style="width:140px;height:140px;border-radius:50%;background:#eafaf1;border:4px solid #2ecc71;font-size:48px;cursor:pointer;">👆</button>'+
+      '<div style="margin-top:16px;font-family:Orbitron,monospace;font-size:22px;color:#0a8a3a;font-weight:800;"><span id="rush-tap-count">0</span> '+(currentLang==='tr'?'tap':'taps')+'</div>'+
+    '</div>';
+
+  var tapBtn = document.getElementById('rush-tap-btn');
+  tapBtn.addEventListener('click', rushHandleTap);
+}
+
+function rushHandleTap(){
+  if(RUSH.timeLeft<=0 && RUSH.active===false && RUSH.taps===0){
+    rushStartTimer();
+  }
+  if(!RUSH.active) return;
+  RUSH.taps++;
+  document.getElementById('rush-tap-count').textContent = RUSH.taps;
+}
+
+function rushStartTimer(){
+  RUSH.active = true;
+  RUSH.timeLeft = 10;
+  document.getElementById('rush-timer-text').textContent = RUSH.timeLeft.toFixed(1)+'s';
+
+  var startTime = Date.now();
+  RUSH.timerId = setInterval(function(){
+    var elapsed = (Date.now()-startTime)/1000;
+    RUSH.timeLeft = Math.max(0, 10-elapsed);
+    var pct = (RUSH.timeLeft/10)*100;
+    document.getElementById('rush-timer-fill').style.width = pct+'%';
+    document.getElementById('rush-timer-text').textContent = RUSH.timeLeft.toFixed(1)+'s';
+    if(RUSH.timeLeft<=0){
+      clearInterval(RUSH.timerId);
+      rushEndGame();
+    }
+  }, 100);
+}
+
+function rushEndGame(){
+  RUSH.active = false;
+  var earned = RUSH.taps * 5;
+  var bonus = RUSH.taps>=60 ? 200 : RUSH.taps>=40 ? 100 : 0;
+  var total = earned + bonus;
+
+  var msg = currentLang==='tr' ?
+    RUSH.taps+' tap! +'+earned+' ZRC'+(bonus>0?' + '+bonus+' bonus!':'') :
+    RUSH.taps+' taps! +'+earned+' ZRC'+(bonus>0?' + '+bonus+' bonus!':'');
+  showNotif('⚡ '+msg);
+  genAwardZRC(total);
+
+  setTimeout(renderRushPanel, 1800);
+}
+
+
+// ============ REACTION TEST OYUNU ============
+var REACTION = { state: 'idle', startTime: 0, timeoutId: null };
+
+function renderReactionPanel(){
+  var el = document.getElementById('reaction-panel-content');
+  if(!el) return;
+  genGameHeader(el, {
+    icon:'🎯', titleTr:'Reaction Test', titleEn:'Reaction Test',
+    descTr:'Yeşile dönünce hemen tıkla!', descEn:'Tap the moment it turns green!',
+    prefix:'reaction', gradFrom:'#8e24aa', gradTo:'#1565c0',
+    startBtnFn: reactionOpenGame,
+    rerenderFn: renderReactionPanel,
+  });
+}
+
+function reactionOpenGame(){
+  if(!genCanPlay('reaction')) return;
+  if(!genUsePlay('reaction')) return;
+
+  REACTION.state = 'waiting';
+
+  var gameArea = document.getElementById('reaction-game-area');
+  gameArea.style.display = 'block';
+  gameArea.innerHTML =
+    '<div id="reaction-box" style="background:#d83a3a;border-radius:14px;padding:60px 20px;text-align:center;cursor:pointer;transition:background 0.15s;">'+
+      '<div id="reaction-text" style="font-family:Orbitron,monospace;font-size:18px;color:#fff;font-weight:700;">'+(currentLang==='tr'?'Bekle...':'Wait...')+'</div>'+
+    '</div>';
+
+  document.getElementById('reaction-box').addEventListener('click', reactionHandleClick);
+
+  var delay = 1500 + Math.random()*2500;
+  REACTION.timeoutId = setTimeout(function(){
+    if(REACTION.state !== 'waiting') return;
+    REACTION.state = 'go';
+    REACTION.startTime = Date.now();
+    var box = document.getElementById('reaction-box');
+    if(box){
+      box.style.background = '#2ecc71';
+      document.getElementById('reaction-text').textContent = currentLang==='tr' ? 'ŞİMDİ TIKLA!' : 'TAP NOW!';
+    }
+  }, delay);
+}
+
+function reactionHandleClick(){
+  if(REACTION.state === 'waiting'){
+    // Erken tiklama
+    clearTimeout(REACTION.timeoutId);
+    REACTION.state = 'idle';
+    var box = document.getElementById('reaction-box');
+    box.style.background = '#888';
+    document.getElementById('reaction-text').textContent = currentLang==='tr' ? 'Çok erken! 0 ZRC' : 'Too early! 0 ZRC';
+    showNotif(currentLang==='tr' ? '😅 Çok erken tıkladın!' : '😅 Too early!');
+    setTimeout(renderReactionPanel, 1500);
+    return;
+  }
+  if(REACTION.state === 'go'){
+    var reactionTime = Date.now() - REACTION.startTime;
+    REACTION.state = 'idle';
+    var reward = reactionTime<300 ? 600 : reactionTime<500 ? 350 : 150;
+    var msg = currentLang==='tr' ?
+      reactionTime+'ms! +'+reward+' ZRC' :
+      reactionTime+'ms! +'+reward+' ZRC';
+    var box = document.getElementById('reaction-box');
+    box.style.background = '#1565c0';
+    document.getElementById('reaction-text').textContent = msg;
+    showNotif('🎯 '+msg);
+    genAwardZRC(reward);
+    setTimeout(renderReactionPanel, 1800);
+  }
+}
+
+
 
 
 
@@ -3159,12 +3883,77 @@ var TM_BOARD_OFFSET_Y = 10;
 
 var TM_LAYER_COLORS = ['#3a2a1a','#5a4530','#7a6a4a','#9c8a68'];
 
+
+function tmGetMascotSVG(id, cx, cy, scale){
+  scale = scale || 1;
+  var s = scale;
+  switch(id){
+    case 'btc':
+      return '<circle cx="'+cx+'" cy="'+cy+'" r="'+(16*s)+'" fill="#ff9233"/>'+
+        '<circle cx="'+(cx-6*s)+'" cy="'+(cy-3*s)+'" r="'+(2*s)+'" fill="#3a2a18"/>'+
+        '<circle cx="'+(cx+6*s)+'" cy="'+(cy-3*s)+'" r="'+(2*s)+'" fill="#3a2a18"/>'+
+        '<path d="M'+(cx-5*s)+' '+(cy+5*s)+' Q'+cx+' '+(cy+9*s)+' '+(cx+5*s)+' '+(cy+5*s)+'" fill="none" stroke="#7a4a18" stroke-width="'+(1.5*s)+'" stroke-linecap="round"/>'+
+        '<text x="'+cx+'" y="'+(cy+2*s)+'" text-anchor="middle" font-size="'+(9*s)+'" font-weight="900" fill="#7a4a18">₿</text>';
+    case 'ton':
+      return '<polygon points="'+cx+','+(cy-16*s)+' '+(cx+12*s)+','+cy+' '+cx+','+(cy+16*s)+' '+(cx-12*s)+','+cy+'" fill="#1565c0"/>'+
+        '<circle cx="'+(cx-4*s)+'" cy="'+(cy-2*s)+'" r="'+(2*s)+'" fill="#0d2a4a"/>'+
+        '<circle cx="'+(cx+4*s)+'" cy="'+(cy-2*s)+'" r="'+(2*s)+'" fill="#0d2a4a"/>'+
+        '<path d="M'+(cx-3*s)+' '+(cy+4*s)+' Q'+cx+' '+(cy+7*s)+' '+(cx+3*s)+' '+(cy+4*s)+'" fill="none" stroke="#0d2a4a" stroke-width="'+(1.3*s)+'" stroke-linecap="round"/>';
+    case 'eth':
+      return '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(15*s)+'" ry="'+(16*s)+'" fill="#8e24aa"/>'+
+        '<polygon points="'+(cx-13*s)+','+(cy-12*s)+' '+(cx-18*s)+','+(cy-20*s)+' '+(cx-11*s)+','+(cy-8*s)+'" fill="#8e24aa"/>'+
+        '<polygon points="'+(cx+13*s)+','+(cy-12*s)+' '+(cx+18*s)+','+(cy-20*s)+' '+(cx+11*s)+','+(cy-8*s)+'" fill="#8e24aa"/>'+
+        '<circle cx="'+(cx-5*s)+'" cy="'+(cy-2*s)+'" r="'+(2*s)+'" fill="#3a1050"/>'+
+        '<circle cx="'+(cx+5*s)+'" cy="'+(cy-2*s)+'" r="'+(2*s)+'" fill="#3a1050"/>'+
+        '<text x="'+cx+'" y="'+(cy+2*s)+'" text-anchor="middle" font-size="'+(8*s)+'" font-weight="900" fill="#3a1050">Ξ</text>';
+    case 'nft':
+      return '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(15*s)+'" ry="'+(13*s)+'" fill="#2ecc71"/>'+
+        '<circle cx="'+(cx-10*s)+'" cy="'+(cy-9*s)+'" r="'+(5*s)+'" fill="#2ecc71"/>'+
+        '<circle cx="'+(cx+10*s)+'" cy="'+(cy-9*s)+'" r="'+(5*s)+'" fill="#2ecc71"/>'+
+        '<circle cx="'+(cx-10*s)+'" cy="'+(cy-9*s)+'" r="'+(2.2*s)+'" fill="#0a4a1a"/>'+
+        '<circle cx="'+(cx+10*s)+'" cy="'+(cy-9*s)+'" r="'+(2.2*s)+'" fill="#0a4a1a"/>'+
+        '<path d="M'+(cx-4*s)+' '+(cy+5*s)+' Q'+cx+' '+(cy+8*s)+' '+(cx+4*s)+' '+(cy+5*s)+'" fill="none" stroke="#0a4a1a" stroke-width="'+(1.3*s)+'" stroke-linecap="round"/>';
+    case 'zrc':
+      return '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(13*s)+'" ry="'+(12*s)+'" fill="#d84315"/>'+
+        '<polygon points="'+(cx-10*s)+','+(cy-10*s)+' '+(cx-14*s)+','+(cy-19*s)+' '+(cx-6*s)+','+(cy-13*s)+'" fill="#d84315"/>'+
+        '<polygon points="'+(cx+10*s)+','+(cy-10*s)+' '+(cx+14*s)+','+(cy-19*s)+' '+(cx+6*s)+','+(cy-13*s)+'" fill="#d84315"/>'+
+        '<circle cx="'+(cx-4*s)+'" cy="'+(cy-2*s)+'" r="'+(1.8*s)+'" fill="#3a1208"/>'+
+        '<circle cx="'+(cx+4*s)+'" cy="'+(cy-2*s)+'" r="'+(1.8*s)+'" fill="#3a1208"/>'+
+        '<polygon points="'+cx+','+(cy+3*s)+' '+(cx-2*s)+','+(cy+6*s)+' '+(cx+2*s)+','+(cy+6*s)+'" fill="#3a1208"/>';
+    case 'diamond':
+      return '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(15*s)+'" ry="'+(13*s)+'" fill="#80deea"/>'+
+        '<circle cx="'+(cx-10*s)+'" cy="'+(cy-13*s)+'" r="'+(5*s)+'" fill="#80deea"/>'+
+        '<circle cx="'+(cx+10*s)+'" cy="'+(cy-13*s)+'" r="'+(5*s)+'" fill="#80deea"/>'+
+        '<circle cx="'+(cx-10*s)+'" cy="'+(cy-13*s)+'" r="'+(2*s)+'" fill="#0d4a52"/>'+
+        '<circle cx="'+(cx+10*s)+'" cy="'+(cy-13*s)+'" r="'+(2*s)+'" fill="#0d4a52"/>'+
+        '<circle cx="'+(cx-4*s)+'" cy="'+(cy-1*s)+'" r="'+(1.8*s)+'" fill="#0d4a52"/>'+
+        '<circle cx="'+(cx+4*s)+'" cy="'+(cy-1*s)+'" r="'+(1.8*s)+'" fill="#0d4a52"/>'+
+        '<polygon points="'+cx+','+(cy+2*s)+' '+(cx+3*s)+','+(cy+5*s)+' '+cx+','+(cy+8*s)+' '+(cx-3*s)+','+(cy+5*s)+'" fill="#26c6da" opacity="0.7"/>';
+    case 'turtle':
+      return '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(16*s)+'" ry="'+(13*s)+'" fill="#a1887f"/>'+
+        '<path d="M'+(cx-13*s)+' '+(cy-3*s)+' L'+(cx-7*s)+' '+(cy-10*s)+' L'+cx+' '+(cy-7*s)+' L'+(cx+7*s)+' '+(cy-10*s)+' L'+(cx+13*s)+' '+(cy-3*s)+' L'+(cx+9*s)+' '+(cy+6*s)+' L'+cx+' '+(cy+10*s)+' L'+(cx-9*s)+' '+(cy+6*s)+' Z" fill="#6d4c41" opacity="0.45"/>'+
+        '<circle cx="'+(cx-4*s)+'" cy="'+(cy-2*s)+'" r="'+(1.6*s)+'" fill="#2a1810"/>'+
+        '<circle cx="'+(cx+4*s)+'" cy="'+(cy-2*s)+'" r="'+(1.6*s)+'" fill="#2a1810"/>'+
+        '<ellipse cx="'+cx+'" cy="'+(cy+5*s)+'" rx="'+(3*s)+'" ry="'+(1.8*s)+'" fill="#3a2418"/>';
+    case 'bunny':
+      return '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+(13*s)+'" ry="'+(11*s)+'" fill="#fff59d"/>'+
+        '<ellipse cx="'+(cx-7*s)+'" cy="'+(cy-15*s)+'" rx="'+(3*s)+'" ry="'+(9*s)+'" fill="#fff59d" transform="rotate(-10 '+(cx-7*s)+' '+(cy-15*s)+')"/>'+
+        '<ellipse cx="'+(cx+7*s)+'" cy="'+(cy-15*s)+'" rx="'+(3*s)+'" ry="'+(9*s)+'" fill="#fff59d" transform="rotate(10 '+(cx+7*s)+' '+(cy-15*s)+')"/>'+
+        '<circle cx="'+(cx-4*s)+'" cy="'+(cy-2*s)+'" r="'+(1.7*s)+'" fill="#7a5a00"/>'+
+        '<circle cx="'+(cx+4*s)+'" cy="'+(cy-2*s)+'" r="'+(1.7*s)+'" fill="#7a5a00"/>'+
+        '<polygon points="'+cx+','+(cy+2*s)+' '+(cx-2*s)+','+(cy+5*s)+' '+(cx+2*s)+','+(cy+5*s)+'" fill="#ff8a65"/>'+
+        '<text x="'+cx+'" y="'+(cy-8*s)+'" text-anchor="middle" font-size="'+(7*s)+'" fill="#7a5a00">⚡</text>';
+    default:
+      return '<circle cx="'+cx+'" cy="'+cy+'" r="'+(14*s)+'" fill="#ccc"/>';
+  }
+}
+
 function tmRenderBoard(){
   var el = document.getElementById('tm-board-svg');
   if(!el) return;
 
-  var w = 5*TM_GRID_UNIT + TM_BOARD_OFFSET_X*2;
-  var h = 4.2*TM_GRID_UNIT + TM_BOARD_OFFSET_Y*2;
+  var w = 4*TM_GRID_UNIT + TM_BOARD_OFFSET_X*2;
+  var h = 3.8*TM_GRID_UNIT + TM_BOARD_OFFSET_Y*2;
 
   var svg = '<svg width="100%" viewBox="0 0 '+w+' '+h+'" xmlns="http://www.w3.org/2000/svg">';
 
@@ -3179,15 +3968,19 @@ function tmRenderBoard(){
     var shadowOffset = card.layer*1.5;
 
     // Golge (derinlik hissi)
-    svg += '<rect x="'+(px+2)+'" y="'+(py+2+shadowOffset)+'" width="'+size+'" height="'+size+'" rx="6" fill="rgba(0,0,0,0.15)"/>';
+    svg += '<rect x="'+(px+2)+'" y="'+(py+2+shadowOffset)+'" width="'+size+'" height="'+size+'" rx="10" fill="rgba(0,0,0,0.18)"/>';
 
-    var fillColor = covered ? 'rgba(150,150,150,0.5)' : '#fff8ea';
-    var strokeColor = covered ? 'rgba(100,100,100,0.4)' : '#d4a86a';
-    var opacity = covered ? '0.55' : '1';
+    var fillColor = covered ? '#6fa888' : '#fffdf8';
+    var strokeColor = covered ? '#4a7a5a' : '#2ecc71';
+    var opacity = covered ? '0.7' : '1';
 
     svg += '<g style="cursor:'+(covered?'default':'pointer')+';" '+(covered?'':'data-tmcard="'+card.id+'"')+' opacity="'+opacity+'">';
-    svg += '<rect x="'+px+'" y="'+py+'" width="'+size+'" height="'+size+'" rx="6" fill="'+fillColor+'" stroke="'+strokeColor+'" stroke-width="2"/>';
-    svg += '<text x="'+(px+size/2)+'" y="'+(py+size/2+8)+'" text-anchor="middle" font-size="22">'+(covered?'':card.symbol)+'</text>';
+    svg += '<rect x="'+px+'" y="'+py+'" width="'+size+'" height="'+size+'" rx="10" fill="'+fillColor+'" stroke="'+strokeColor+'" stroke-width="2.5"/>';
+    if(covered){
+      svg += '<text x="'+(px+size/2)+'" y="'+(py+size/2+7)+'" text-anchor="middle" font-size="20" font-weight="900" fill="#ffffff" opacity="0.85">?</text>';
+    } else {
+      svg += tmGetMascotSVG(card.symbol, px+size/2, py+size/2, size/38);
+    }
     svg += '</g>';
   });
 
@@ -3213,9 +4006,11 @@ function tmRenderSlots(){
     var hasCard = i < TM.slots.length;
     var cardId = hasCard ? TM.slots[i] : null;
     var card = cardId!==null ? TM.board.find(function(c){return c.id===cardId;}) : null;
-    d.style.cssText = 'width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:18px;'+
-      (hasCard ? 'background:#fff8ea;border:2px solid #d4a86a;' : 'background:rgba(0,0,0,0.2);border:1px dashed #5a8a2a;');
-    d.textContent = card ? card.symbol : '';
+    d.style.cssText = 'width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;'+
+      (hasCard ? 'background:#fffdf8;border:2.5px solid #2ecc71;' : 'background:rgba(0,0,0,0.08);border:2px dashed #b8e0c8;');
+    if(card){
+      d.innerHTML = '<svg width="32" height="32" viewBox="0 0 32 32">'+tmGetMascotSVG(card.symbol, 16, 16, 0.85)+'</svg>';
+    }
     el.appendChild(d);
   }
   var countLabel = document.getElementById('tm-slots-count');
@@ -3995,7 +4790,7 @@ function switchTab(t){
   if(t==='ref') loadReferrals();
   if(t==='quest') renderQuests();
   if(t==='upgrade') renderUpgrades();
-  if(t==='games'){ renderSnakePanel(); renderTripleMatchPanel(); renderRaidPanel(); }
+  if(t==='games'){ renderSnakePanel(); }
   if(t==='city') renderCityPanel();
   if(t==='raid') renderRaidPanel();
   if(t==='nft') renderNFTPanel();
@@ -5421,7 +6216,14 @@ document.addEventListener('click', function(e){
     document.querySelectorAll('.games-sub-panel').forEach(function(p){ p.style.display='none'; });
     var target = document.getElementById('games-sub-'+sub);
     if(target) target.style.display='block';
+    if(sub === 'snake') renderSnakePanel();
+    if(sub === 'match') renderTripleMatchPanel();
     if(sub === 'raid') renderRaidPanel();
+    if(sub === 'g2048') renderG2048Panel();
+    if(sub === 'mines') renderMinesPanel();
+    if(sub === 'slot') renderSlotPanel();
+    if(sub === 'rush') renderRushPanel();
+    if(sub === 'reaction') renderReactionPanel();
   }
 });
 
@@ -5516,6 +6318,11 @@ apiLogin().then(function(){
   renderSnakePanel();
   renderTripleMatchPanel();
   renderRaidPanel();
+  renderG2048Panel();
+  renderMinesPanel();
+  renderSlotPanel();
+  renderRushPanel();
+  renderReactionPanel();
 });
 </script>
 </body>
